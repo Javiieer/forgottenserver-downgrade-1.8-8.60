@@ -69,7 +69,9 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 		end
 		return true
 	end
-	return false
+	
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You can only use this on a training dummy.")
+	return true
 end
 
 for weaponId, weapon in pairs(ExerciseWeaponsTable) do

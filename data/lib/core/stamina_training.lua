@@ -7,6 +7,25 @@ staminaBonus = {
 	eventsPz = {} -- stamina in Pz
 }
 
+function Creature:addEventStamina(target)
+	if not self:isPlayer() then
+		return false
+	end
+	
+	local playerId = self:getId()
+	
+	if not configManager.getBoolean(configKeys.STAMINA_TRAINER) then
+		return false
+	end
+	
+	if target and target:getName() == staminaBonus.target then
+		if not staminaBonus.eventsTrainer[playerId] then
+			staminaBonus.eventsTrainer[playerId] = addEvent(addStamina, staminaBonus.period, playerId)
+		end
+	end
+	return true
+end
+
 function addStamina(playerId, ...)
 	-- Creature:onTargetCombat
 	if playerId then
