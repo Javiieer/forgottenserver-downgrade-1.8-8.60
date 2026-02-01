@@ -1,2 +1,9 @@
 <?xml version="1.0"?>
-<spawns />
+<spawns>
+	<spawn centerx="96" centery="129" centerz="8" radius="1">
+		<monster name="Rat" x="1" y="0" z="8" spawntime="10" direction="2" />
+	</spawn>
+	<spawn centerx="91" centery="133" centerz="8" radius="1">
+		<monster name="Rat" x="0" y="0" z="8" spawntime="10" direction="2" />
+	</spawn>
+</spawns>

@@ -20,6 +20,7 @@ struct spawnBlock_t
 	std::vector<std::pair<MonsterType*, uint16_t>> mTypes;
 	int64_t lastSpawn;
 	uint32_t interval;
+	uint32_t effectInitialInterval; // original respawn interval (ms) used to accelerate effects as spawn approaches
 	Direction direction;
 };
 
@@ -67,6 +68,7 @@ private:
 	bool spawnMonster(uint32_t spawnId, spawnBlock_t sb, bool startup = false);
 	bool spawnMonster(uint32_t spawnId, MonsterType* mType, const Position& pos, Direction dir, bool startup = false);
 	void checkSpawn();
+	void scheduleSpawn(uint32_t spawnId, uint32_t interval, bool blocked = false);
 };
 
 class Spawns

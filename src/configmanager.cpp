@@ -269,6 +269,7 @@ bool ConfigManager::load()
 	booleans[Boolean::ALLOW_CHANGEOUTFIT] = getGlobalBoolean(L, "allowChangeOutfit", true);
 	booleans[Boolean::ONE_PLAYER_ON_ACCOUNT] = getGlobalBoolean(L, "onePlayerOnlinePerAccount", true);
 	booleans[Boolean::AIMBOT_HOTKEY_ENABLED] = getGlobalBoolean(L, "hotkeyAimbotEnabled", true);
+	booleans[Boolean::SPAWN_START_EFFECT_ENABLED] = getGlobalBoolean(L, "spawnStartEffectEnabled", true);
 	booleans[Boolean::REMOVE_RUNE_CHARGES] = getGlobalBoolean(L, "removeChargesFromRunes", true);
 	booleans[Boolean::REMOVE_WEAPON_AMMO] = getGlobalBoolean(L, "removeWeaponAmmunition", true);
 	booleans[Boolean::REMOVE_WEAPON_CHARGES] = getGlobalBoolean(L, "removeWeaponCharges", true);
@@ -345,6 +346,8 @@ bool ConfigManager::load()
 	integers[Integer::RATE_LOOT] = getGlobalInteger(L, "rateLoot", 2);
 	integers[Integer::RATE_MAGIC] = getGlobalInteger(L, "rateMagic", 3);
 	integers[Integer::RATE_SPAWN] = getGlobalInteger(L, "rateSpawn", 1);
+	integers[Integer::RATE_START_EFFECT] = getGlobalInteger(L, "timeStartEffect", 4200);
+	integers[Integer::RATE_BETWEEN_EFFECT] = getGlobalInteger(L, "timeBetweenTeleportEffects", 1400);
 	integers[Integer::HOUSE_PRICE] = getGlobalInteger(L, "housePriceEachSQM", 1000);
 	integers[Integer::KILLS_TO_RED] = getGlobalInteger(L, "killsToRedSkull", 3);
 	integers[Integer::KILLS_TO_BLACK] = getGlobalInteger(L, "killsToBlackSkull", 6);

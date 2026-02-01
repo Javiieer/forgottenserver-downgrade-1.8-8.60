@@ -306,22 +306,51 @@ bool Spawn::spawnMonster(uint32_t spawnId, MonsterType* mType, const Position& p
 		return false;
 	}
 
+	Position finalPos = pos;
 	if (startup) {
 		// No need to send out events to the surrounding since there is no one out there to listen!
 		if (!g_game.internalPlaceCreature(monster_ptr.get(), pos, true)) {
-			LOG_WARN(fmt::format("[Warning - Spawns::startup] Couldn't spawn monster \"{}\" on position: {}.", monster_ptr->getName(), pos));
+			LOG_WARN(fmt::format("[Warning - Spawns::startup] Couldn't spawn monster \"{}\" on position: {}.", monster_ptr->getName(), finalPos ));
 			return false;
 		}
 	} else {
-		if (!g_game.placeCreature(monster_ptr.get(), pos, false, true)) {
-			return false;
+		// Try to place normally (non-forced) on the desired position first.
+		// If there is a player blocking the tile, attempt to place the monster
+		// on an adjacent free tile (search radius 1). If none found, fallback
+		// to forced placement (compatibility).
+		if (g_game.placeCreature(monster_ptr.get(), finalPos, false, false)) {
+			// placed on original position
+		} else {
+			bool placed = false;
+			// If a player is blocking the original position, try adjacent tiles.
+			if (findPlayer(pos)) {
+				for (int dx = -1; dx <= 1 && !placed; ++dx) {
+					for (int dy = -1; dy <= 1 && !placed; ++dy) {
+						if (dx == 0 && dy == 0) {
+							continue;
+						}
+						Position tryPos(pos.x + dx, pos.y + dy, pos.z);
+						if (g_game.placeCreature(monster_ptr.get(), tryPos, false, false)) {
+							finalPos = tryPos;
+							placed = true;
+						}
+					}
+				}
+			}
+			
+			// If not placed yet, attempt the old forced placement as a fallback.
+			if (!placed) {
+				if (!g_game.placeCreature(monster_ptr.get(), finalPos, false, true)) {
+					return false;
+				}
+			}
 		}
 	}
 
 	Monster* monster = monster_ptr.release();
 	monster->setDirection(dir);
 	monster->setSpawn(this);
-	monster->setMasterPos(pos);
+	monster->setMasterPos(finalPos);
 	monster->incrementReferenceCounter();
 
 	spawnedMap.insert({spawnId, monster});
@@ -343,7 +372,7 @@ void Spawn::checkSpawn()
 	checkSpawnEvent = 0;
 
 	cleanup();
-
+	
 	uint32_t spawnCount = 0;
 
 	for (auto& it : spawnMap) {
@@ -351,23 +380,91 @@ void Spawn::checkSpawn()
 		if (spawnedMap.find(spawnId) != spawnedMap.end()) {
 			continue;
 		}
-
+		
 		spawnBlock_t& sb = it.second;
-		if (OTSYS_TIME() >= sb.lastSpawn + sb.interval) {
-			if (!spawnMonster(spawnId, sb)) {
-				sb.lastSpawn = OTSYS_TIME();
-				continue;
+		
+		if (OTSYS_TIME() >= sb.lastSpawn + std::max<uint32_t>(static_cast<uint32_t>(MINSPAWN_INTERVAL), sb.interval / static_cast<uint32_t>(std::max<int64_t>(1, ConfigManager::getInteger(ConfigManager::RATE_SPAWN))))) {
+			
+			// If there is a player blocking and no monster in the set ignores the block,
+			// we show POFF and retry on the next cycle (no teleport effect).
+			bool playerBlocking = findPlayer(sb.pos);
+			if (playerBlocking) {
+				bool anyIgnoresBlock = false;
+				for (const auto& pair : sb.mTypes) {
+					if (pair.first->info.isIgnoringSpawnBlock) {
+						anyIgnoresBlock = true;
+						break;
+					}
+				}
+				if (!anyIgnoresBlock) {
+					if (++spawnCount >= static_cast<uint32_t>(1)) {
+						uint32_t effectDuration = ConfigManager::getBoolean(ConfigManager::SPAWN_START_EFFECT_ENABLED) ? static_cast<uint32_t>(ConfigManager::getInteger(ConfigManager::RATE_START_EFFECT)) : 0;
+						scheduleSpawn(spawnId, effectDuration, true);
+						break;
+					}
+				}
 			}
 
-			if (++spawnCount >= getInteger(ConfigManager::RATE_SPAWN)) {
+			if (++spawnCount >= static_cast<uint32_t>(1)) {
+				uint32_t effectDuration = ConfigManager::getBoolean(ConfigManager::SPAWN_START_EFFECT_ENABLED) ? static_cast<uint32_t>(ConfigManager::getInteger(ConfigManager::RATE_START_EFFECT)) : 0;
+				scheduleSpawn(spawnId, effectDuration);
 				break;
 			}
 		}
 	}
-
+	
 	if (spawnedMap.size() < spawnMap.size()) {
-		checkSpawnEvent = g_scheduler.addEvent(createSchedulerTask(getInterval(), [this]() { checkSpawn(); }));
+		checkSpawnEvent = g_scheduler.addEvent(createSchedulerTask(getInterval(), std::bind(&Spawn::checkSpawn, this)));
 	}
+}
+void Spawn::scheduleSpawn(uint32_t spawnId, uint32_t interval, bool blocked)
+{
+	auto it = spawnMap.find(spawnId);
+	if (interval <= 0 || it == spawnMap.end()) {
+		if (it == spawnMap.end()) {
+			return;
+		}
+
+		spawnBlock_t& sb = it->second;
+		if (blocked) {
+			g_game.addMagicEffect(sb.pos, CONST_ME_POFF);
+			sb.lastSpawn = OTSYS_TIME();
+			sb.effectInitialInterval = 0;
+			return;
+		}
+
+		spawnMonster(spawnId, sb);
+		sb.effectInitialInterval = 0;
+		return;
+	}
+
+	spawnBlock_t& sb = it->second;
+	g_game.addMagicEffect(sb.pos, CONST_ME_TELEPORT);
+
+	uint32_t initialInterval = sb.effectInitialInterval;
+	if (initialInterval == 0) {
+		sb.effectInitialInterval = interval;
+		initialInterval = interval;
+	}
+
+	// Base delay between effects from config
+	const uint32_t normalRate = static_cast<uint32_t>(ConfigManager::getInteger(ConfigManager::RATE_BETWEEN_EFFECT));
+	// Minimum delay when accelerating (avoid zero) and enforce scheduler minimum
+	const uint32_t minRate = std::max<uint32_t>(std::max<int32_t>(SCHEDULER_MINTICKS, 50), normalRate / 5);
+	// Use the initial interval as the scaling range and avoid division by zero
+	const uint32_t accelStart = std::max<uint32_t>(1, initialInterval);
+
+	uint32_t nextDelay = normalRate;
+	if (interval <= accelStart) {
+		uint32_t rangeRate = (normalRate > minRate) ? (normalRate - minRate) : 0;
+		uint32_t scaled = minRate + static_cast<uint32_t>((static_cast<uint64_t>(interval) * rangeRate) / accelStart);
+		nextDelay = std::max<uint32_t>(minRate, std::min<uint32_t>(normalRate, scaled));
+	}
+
+	nextDelay = std::max<uint32_t>(nextDelay, static_cast<uint32_t>(SCHEDULER_MINTICKS));
+
+	uint32_t remaining = (interval > nextDelay) ? (interval - nextDelay) : 0;
+	g_scheduler.addEvent(createSchedulerTask(nextDelay, std::bind(&Spawn::scheduleSpawn, this, spawnId, remaining, blocked)));
 }
 
 void Spawn::cleanup()

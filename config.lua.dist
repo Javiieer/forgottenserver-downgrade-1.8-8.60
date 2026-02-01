@@ -243,6 +243,14 @@ rateLoot = 2
 rateMagic = 3
 rateSpawn = 1
 
+-- Spawn Start Effect & Timer
+-- Placing true makes it take effect when the monster is about to reappear.
+-- timeStartEffect = Effect time that it will do when this point reappears.
+-- timeBetweenTeleportEffects = Time of effect that it will do at the beginning.
+spawnStartEffectEnabled = true
+timeStartEffect = 4200
+timeBetweenTeleportEffects = 1400
+
 -- Offline Training
 -- offlineTrainingEfficiency: 1.0 = 100%, 0.5 = 50% (default)
 offlineTrainingEfficiency = 0.5
