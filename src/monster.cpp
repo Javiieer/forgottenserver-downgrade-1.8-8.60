@@ -1983,8 +1983,7 @@ void Monster::death(Creature*)
 		int32_t totalDamageTaken = 0;
 		int32_t totalHealingDone = 0;
 		for (const auto& [playerId, playerScoreInfo] : scoreInfo.playerScoreTable) {
-			int32_t playerScore =
-			    playerScoreInfo.damageDone + playerScoreInfo.damageTaken + playerScoreInfo.healingDone;
+			int32_t playerScore = playerScoreInfo.damageDone + playerScoreInfo.damageTaken + playerScoreInfo.healingDone;
 			totalScore += playerScore;
 			totalDamageDone += playerScoreInfo.damageDone;
 			totalDamageTaken += playerScoreInfo.damageTaken;
@@ -2057,14 +2056,22 @@ void Monster::death(Creature*)
 			}
 			if (hasLoot) {
 				if (player) {
+					std::string lootString;
+					const auto& itemList = rewardContainer->getItemList();
+					for (auto lootIt = itemList.begin(); lootIt != itemList.end(); ++lootIt) {
+						if (lootIt != itemList.begin()) {
+							lootString += ", ";
+						}
+						lootString += (*lootIt)->getNameDescription();
+					}
 					player->getRewardChest().internalAddThing(rewardContainer);
 					player->sendTextMessage(
-					    MESSAGE_STATUS_DEFAULT,
-					    "The following items dropped by " + getMonster()->getName() +
-					        " are available in your reward chest: " + rewardContainer->getNameDescription() + ".");
-				} else {
-					DBInsert rewardQuery(
-					    "INSERT INTO `player_rewarditems` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES ");
+						MESSAGE_STATUS_DEFAULT,
+						"The following items dropped by " + getMonster()->getName() +
+						" are available in your reward chest: Reward Container (" + lootString + ").");
+					} else {
+						DBInsert rewardQuery(
+							"INSERT INTO `player_rewarditems` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES ");
 					PropWriteStream propWriteStream;
 					ItemBlockList itemList;
 					int32_t currentPid = 1;
