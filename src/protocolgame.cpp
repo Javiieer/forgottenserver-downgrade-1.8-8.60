@@ -2283,11 +2283,7 @@ void ProtocolGame::sendMagicEffect(const Position& pos, uint16_t type)
 	NetworkMessage msg;
 	msg.addByte(0x83);
 	msg.addPosition(pos);
-	if (isOTCv8) {
-		msg.add<uint16_t>(type);
-	} else {
-		msg.addByte(type);
-	}
+	msg.add<uint16_t>(type);
 	writeToOutputBuffer(msg, false);
 	
 	if (player && player->isLiveCasting()) {
