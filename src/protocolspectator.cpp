@@ -1230,8 +1230,8 @@ void ProtocolSpectator::AddPlayerStats(NetworkMessage& msg)
 {
 	msg.addByte(0xA0);
 
-	msg.add<uint16_t>(std::min<int32_t>(caster->getHealth(), std::numeric_limits<uint16_t>::max()));
-	msg.add<uint16_t>(std::min<int32_t>(caster->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
+	msg.add<uint32_t>(caster->getHealth());
+	msg.add<uint32_t>(caster->getMaxHealth());
 
 	msg.add<uint32_t>(caster->getFreeCapacity());
 
@@ -1240,8 +1240,8 @@ void ProtocolSpectator::AddPlayerStats(NetworkMessage& msg)
 	msg.add<uint16_t>(caster->getLevel());
 	msg.addByte(caster->getLevelPercent());
 
-	msg.add<uint16_t>(std::min<int32_t>(caster->getMana(), std::numeric_limits<uint16_t>::max()));
-	msg.add<uint16_t>(std::min<int32_t>(caster->getMaxMana(), std::numeric_limits<uint16_t>::max()));
+	msg.add<uint32_t>(caster->getMana());
+	msg.add<uint32_t>(caster->getMaxMana());
 
 	msg.addByte(std::min<uint32_t>(caster->getMagicLevel(), std::numeric_limits<uint8_t>::max()));
 
