@@ -1,7 +1,22 @@
+local function convertIp(int)
+    if not int then return "0.0.0.0" end
+    local b1 = int % 256
+    local b2 = math.floor(int / 256) % 256
+    local b3 = math.floor(int / 65536) % 256
+    local b4 = math.floor(int / 16777216) % 256
+    return string.format("%d.%d.%d.%d", b1, b2, b3, b4)
+end
+
 local loginMessage = CreatureEvent("loginMessage")
 
 function loginMessage.onLogin(player)
-    print(string.format("\27[32m%s has logged in.\27[0m", player:getName()))
+   local prevColor = logger.colors.green
+    local resetColor = logger.colors.reset
+    local ipStr = convertIp(player:getIp())
+    local vocation = player:getVocation():getName()
+    local level = player:getLevel()
+    
+    logger.info("%s%s has logged in.%s [Lvl: %d] [Voc: %s] [IP: %s]", prevColor, player:getName(), resetColor, level, vocation, ipStr)
 
     local rewardChest = player:getRewardChest()
     local rewardContainerCount = 0
@@ -54,7 +69,13 @@ loginMessage:register()
 
 local logoutMessage = CreatureEvent("logoutMessage")
 function logoutMessage.onLogout(player)
-    print(string.format("\27[31m%s has logged out.\27[0m", player:getName()))
+     local prevColor = logger.colors.green
+    local resetColor = logger.colors.reset
+    local ipStr = convertIp(player:getIp())
+    local vocation = player:getVocation():getName()
+    local level = player:getLevel()
+
+	logger.info("%s%s has logged out.%s [Lvl: %d] [Voc: %s] [IP: %s]", prevColor, player:getName(), resetColor, level, vocation, ipStr)
     local playerId = player:getId()
     nextUseStaminaTime[playerId] = nil
     return true
