@@ -139,6 +139,20 @@ end
 
 ---
 
+## 🎮 Extended Options for Modified 8.60 CIP Clients
+
+This server supports extended protocol features for **modified 8.60 CIP clients** using DLL patches. These features allow the old Tibia client to handle values beyond the original protocol limitations:
+
+| Feature | Status | Description |
+|---------|--------|-------------|
+| `__MAGIC_EFFECTS_U16__` | ✅ OK | Supports magic effects up to 65535 (uint16) instead of 255 |
+| `__DISTANCE_SHOOT_U16__` | ✅ OK | Supports distance/projectile effects up to 65535 (uint16) instead of 255 |
+| `__PLAYER_HEALTH_U32__` | ✅ OK | Supports player health values up to 4.2 billion (uint32) instead of 65535 |
+| `__PLAYER_MANA_U32__` | ✅ OK | Supports player mana values up to 4.2 billion (uint32) instead of 65535 |
+| `__PLAYER_SKILLS_U16__` | ⏳ Pending | Skill levels up to 65535 (requires implementation) |
+| **Outfit Limit Changer** | ✅ OK | Allows more than 255 outfits (uses uint16 for outfit count) |
+---
+
 ## 🐛 Contributing & Issues
 
 Found a bug? Please report it on our [Issues Page](https://github.com/MillhioreBT/forgottenserver-downgrade/issues).
