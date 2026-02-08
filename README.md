@@ -182,3 +182,27 @@ Basta copiar a chave abaixo e colar no seu banco na opção **Chave Aleatória**
 `f8761afe-5581-417d-afc8-08cac410a1b0`
 
 Agradeço imensamente a quem puder contribuir para manter este projeto vivo e melhorando!
+
+---
+
+## 📥 How to Download the Latest Client (Executable & DLLs) / Client Updater
+
+If you need the ready-to-use **executable** and **DLLs**, follow these simple steps:
+
+1.  **Click this link**: [Project on AppVeyor](https://ci.appveyor.com/project/Mateuzkl/forgottenserver-downgrade-1-7-8-60)
+2.  Look for the **"Artifacts"** tab (or click on the latest Job specific to your platform, often named `Environment: ...` or `Configuration: ...`, then find the "Artifacts" tab there).
+    *   *Note: If you are on the main project page, you might need to click on the latest "Job" listed under "Job name" first.*
+3.  **Download** the files listed there (usually a `.zip` or `.7z` file containing the executable and DLLs).
+4.  **Extract** the downloaded files into your client folder, replacing existing ones if necessary.
+
+---
+
+## 🔄 Client Updater (Automated)
+
+To easily update your client files (CipSoft client, executables, DLLs), follow our simple tutorial: 
+
+*   **[Click here for the Client Updater Tutorial](https://github.com/Mateuzkl/Client_Mout_Updater)**
+
+This guide explains how to automatically update everything with just a few clicks.
+
+
