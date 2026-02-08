@@ -1,20 +1,8 @@
 local traps = {
-    [1510] = { -- strange slits
-        transformTo = 1511,
-        damage = {-60, -60}
-    },
-    [1513] = { -- spikes
-        damage = {-60, -60}
-    },
-    [2579] = { -- trap
-        transformTo = 2578,
-        damage = {-30, -30}
-    },
-    [4208] = { -- jungle maw
-        transformTo = 4209,
-        damage = {-30, -30},
-        type = COMBAT_EARTHDAMAGE
-    }
+    [2145] = {transformTo = 2146, damage = {-50, -100}},
+    [2148] = {damage = {-50, -100}},
+    [3482] = {transformTo = 3481, damage = {-15, -30}, ignorePlayer = (Game.getWorldType() == WORLD_TYPE_NO_PVP) },
+    [3944] = {transformTo = 3945, damage = {-15, -30}, type = COMBAT_EARTHDAMAGE}
 }
 
 local stepIn = MoveEvent()
@@ -32,9 +20,10 @@ function stepIn.onStepIn(creature, item, position, fromPosition)
     return true
 end
 stepIn:type("stepin")
-stepIn:id(1510, 1513, 2579, 4208)
+for itemId, info in pairs(traps) do
+    stepIn:id(itemId)
+end
 stepIn:register()
-
 
 local stepOut = MoveEvent()
 function stepOut.onStepOut(creature, item, position, fromPosition)
@@ -42,7 +31,7 @@ function stepOut.onStepOut(creature, item, position, fromPosition)
     return true
 end
 stepOut:type("stepout")
-stepOut:id(1511)
+stepOut:id(2146, 3945)
 stepOut:register()
 
 local removeItem = MoveEvent()
@@ -55,5 +44,5 @@ function removeItem.onRemoveItem(item, tile, position)
     return true
 end
 removeItem:type("removeitem")
-removeItem:id(2579)
+removeItem:id(3482)
 removeItem:register()

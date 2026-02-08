@@ -17,9 +17,8 @@ function stepIn.onStepIn(creature, item, position, fromPosition)
     return true
 end
 stepIn:type("stepin")
-stepIn:id(4620, 4621, 4622, 4623, 4624, 4625, 4820, 4821, 4822, 4823, 4824, 4825)
+stepIn:id(629, 630, 631, 632, 633, 634)
 stepIn:register()
-
 
 local stepOut = MoveEvent()
 function stepOut.onStepOut(creature, item, position, fromPosition)
@@ -28,5 +27,5 @@ function stepOut.onStepOut(creature, item, position, fromPosition)
     return true
 end
 stepOut:type("stepout")
-stepOut:id(4620, 4621, 4622, 4623, 4624, 4625, 4820, 4821, 4822, 4823, 4824, 4825)
+stepOut:id(629, 630, 631, 632, 633, 634)
 stepOut:register()

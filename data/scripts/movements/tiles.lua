@@ -1,19 +1,5 @@
-local increasing = {
-    [416] = 417,
-    [426] = 425,
-    [446] = 447,
-    [3216] = 3217,
-    [3202] = 3215,
-    [11062] = 11063
-}
-local decreasing = {
-    [417] = 416,
-    [425] = 426,
-    [447] = 446,
-    [3217] = 3216,
-    [3215] = 3202,
-    [11063] = 11062
-}
+local increasing = {[419] = 420, [431] = 430, [452] = 453, [563] = 564, [549] = 562, [10145] = 10146}
+local decreasing = {[420] = 419, [430] = 431, [453] = 452, [564] = 563, [562] = 549, [10146] = 10145}
 
 local stepIn = MoveEvent()
 function stepIn.onStepIn(creature, item, position, fromPosition)
@@ -59,9 +45,10 @@ function stepIn.onStepIn(creature, item, position, fromPosition)
     return true
 end
 stepIn:type("stepin")
-stepIn:id(416, 426, 446, 3216, 3202, 11062)
+for index, value in pairs(increasing) do
+    stepIn:id(index)
+end
 stepIn:register()
-
 
 local stepOut = MoveEvent()
 function stepOut.onStepOut(creature, item, position, fromPosition)
@@ -73,5 +60,7 @@ function stepOut.onStepOut(creature, item, position, fromPosition)
     return true
 end
 stepOut:type("stepout")
-stepOut:id(417, 425, 447, 3217, 3215, 11063)
+for index, value in pairs(decreasing) do
+    stepOut:id(index)
+end
 stepOut:register()

@@ -28,7 +28,7 @@ monster.flags = {
 
 monster.loot = {
 {
-	id = "the Handmaiden's protector",
+	id = "Handmaiden's protector",
 	chance = 35000
 }
 }

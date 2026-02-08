@@ -198,7 +198,7 @@ monster.loot = {
 	chance = 1210
 },
 {
-	id = "the stomper",
+	id = "stomper",
 	chance = 403
 }
 }

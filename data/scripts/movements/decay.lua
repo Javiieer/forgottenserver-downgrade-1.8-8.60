@@ -9,5 +9,5 @@ local player = creature:getPlayer()
 	return true
 end
 moveevent:type("stepin")
-moveevent:id(293, 461)
+moveevent:id(293, 475, 1066)
 moveevent:register()

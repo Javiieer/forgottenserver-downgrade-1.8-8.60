@@ -46,7 +46,7 @@ monster.loot = {
 	chance = 2300
 },
 {
-	id = "the ring of the count",
+	id = "ring of the count",
 	chance = 100000
 }
 }

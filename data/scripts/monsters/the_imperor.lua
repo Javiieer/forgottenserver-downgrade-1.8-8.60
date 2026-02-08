@@ -102,7 +102,7 @@ monster.loot = {
 	maxCount = 5
 },
 {
-	id = "the Imperor's trident",
+	id = "Imperor's trident",
 	chance = 100000
 },
 {

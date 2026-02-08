@@ -72,7 +72,7 @@ monster.loot = {
 	chance = 45000
 },
 {
-	id = "the Plasmother's remains",
+	id = "Plasmother's remains",
 	chance = 100000
 }
 }

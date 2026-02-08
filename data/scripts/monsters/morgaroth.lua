@@ -68,7 +68,7 @@ monster.loot = {
 	maxCount = 18
 },
 {
-	id = "the devileye",
+	id = "devileye",
 	chance = 36364
 },
 {
@@ -116,7 +116,7 @@ monster.loot = {
 	maxCount = 7
 },
 {
-	id = "the ironworker",
+	id = "ironworker",
 	chance = 22727
 },
 {
@@ -182,7 +182,7 @@ monster.loot = {
 	chance = 13636
 },
 {
-	id = "the stomper",
+	id = "stomper",
 	chance = 13636
 },
 {
