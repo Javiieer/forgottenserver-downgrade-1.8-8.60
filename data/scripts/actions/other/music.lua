@@ -1,42 +1,42 @@
 local action = Action()
 
 local instruments = {
-	[2070] = {effect = CONST_ME_SOUND_GREEN}, -- wooden flute
-	[2071] = {effect = CONST_ME_SOUND_GREEN}, -- lyre
-	[2072] = {effect = CONST_ME_SOUND_GREEN}, -- lute
-	[2073] = {effect = CONST_ME_SOUND_GREEN}, -- drum
-	[2074] = {effect = CONST_ME_SOUND_GREEN}, -- panpipes
-	[2075] = {effect = CONST_ME_SOUND_GREEN}, -- simple fanfare
-	[2076] = {effect = CONST_ME_SOUND_GREEN}, -- fanfare
-	[2077] = {effect = CONST_ME_SOUND_GREEN}, -- royal fanfare
-	[2078] = {effect = CONST_ME_SOUND_GREEN}, -- post horn
-	[2079] = {effect = CONST_ME_SOUND_GREEN}, -- war horn
-	[2080] = {effects = {failure = CONST_ME_SOUND_PURPLE, success = CONST_ME_SOUND_GREEN}, chance = 50}, -- piano
-	[2081] = {effects = {failure = CONST_ME_SOUND_PURPLE, success = CONST_ME_SOUND_GREEN}, chance = 50}, -- piano
-	[2082] = {effects = {failure = CONST_ME_SOUND_PURPLE, success = CONST_ME_SOUND_GREEN}, chance = 50}, -- piano
-	[2083] = {effects = {failure = CONST_ME_SOUND_PURPLE, success = CONST_ME_SOUND_GREEN}, chance = 50}, -- piano
-	[2084] = {effect = CONST_ME_SOUND_GREEN}, -- harp
-	[2085] = {effect = CONST_ME_SOUND_GREEN}, -- harp
-	[2332] = {effect = CONST_ME_SOUND_GREEN}, -- Waldo's post horn
-	[2367] = {effect = CONST_ME_SOUND_GREEN}, -- drum (immovable)
-	[2368] = {effect = CONST_ME_SOUND_GREEN}, -- simple fanfare (immovable)
-	[2369] = {
+	[2948] = {effect = CONST_ME_SOUND_GREEN}, -- wooden flute
+	[2949] = {effect = CONST_ME_SOUND_GREEN}, -- lyre
+	[2950] = {effect = CONST_ME_SOUND_GREEN}, -- lute
+	[14253] = {effect = CONST_ME_SOUND_GREEN}, -- drum
+	[2953] = {effect = CONST_ME_SOUND_GREEN}, -- panpipes
+	[2954] = {effect = CONST_ME_SOUND_GREEN}, -- simple fanfare
+	[2955] = {effect = CONST_ME_SOUND_GREEN}, -- fanfare
+	[2956] = {effect = CONST_ME_SOUND_GREEN}, -- royal fanfare
+	[3252] = {effect = CONST_ME_SOUND_GREEN}, -- post horn
+	[2958] = {effect = CONST_ME_SOUND_GREEN}, -- war horn
+	[2959] = {effects = {failure = CONST_ME_SOUND_PURPLE, success = CONST_ME_SOUND_GREEN}, chance = 50}, -- piano
+	[2960] = {effects = {failure = CONST_ME_SOUND_PURPLE, success = CONST_ME_SOUND_GREEN}, chance = 50}, -- piano
+	[2961] = {effects = {failure = CONST_ME_SOUND_PURPLE, success = CONST_ME_SOUND_GREEN}, chance = 50}, -- piano
+	[2962] = {effects = {failure = CONST_ME_SOUND_PURPLE, success = CONST_ME_SOUND_GREEN}, chance = 50}, -- piano
+	[2963] = {effect = CONST_ME_SOUND_GREEN}, -- harp
+	[2964] = {effect = CONST_ME_SOUND_GREEN}, -- harp
+	[3219] = {effect = CONST_ME_SOUND_GREEN}, -- Waldo's post horn
+	[3255] = {effect = CONST_ME_SOUND_GREEN}, -- drum (immovable)
+	[3256] = {effect = CONST_ME_SOUND_GREEN}, -- simple fanfare (immovable)
+	[3257] = {
 		effect = CONST_ME_SOUND_YELLOW,
-		itemId = 2681,
+		itemId = 3592,
 		itemCount = 10,
 		chance = 80,
 		remove = true
 	}, -- cornucopia (immovable)
-	[2370] = {effect = CONST_ME_SOUND_GREEN}, -- lute (immovable)
-	[2371] = {effect = CONST_ME_SOUND_BLUE}, -- the horn of sundering (actual effect is unknown; immovable)
-	[2372] = {effect = CONST_ME_SOUND_GREEN}, -- lyre (immovable)
-	[2373] = {effect = CONST_ME_SOUND_GREEN}, -- panpipes (immovable)
-	[3951] = {effect = CONST_ME_SOUND_BLUE}, -- bongo drum (actual effect is unknown)
-	[3952] = {effects = {failure = CONST_ME_POFF, success = CONST_ME_SOUND_GREEN}, chance = 20}, -- didgeridoo
-	[3953] = {effect = CONST_ME_SOUND_RED}, -- war drum
-	[3957] = {
+	[3258] = {effect = CONST_ME_SOUND_GREEN}, -- lute (immovable)
+	[3259] = {effect = CONST_ME_SOUND_BLUE}, -- the horn of sundering (actual effect is unknown; immovable)
+	[3260] = {effect = CONST_ME_SOUND_GREEN}, -- lyre (immovable)
+	[3261] = {effect = CONST_ME_SOUND_GREEN}, -- panpipes (immovable)
+	[2951] = {effect = CONST_ME_SOUND_BLUE}, -- bongo drum (actual effect is unknown)
+	[2965] = {effects = {failure = CONST_ME_POFF, success = CONST_ME_SOUND_GREEN}, chance = 20}, -- didgeridoo
+	[2966] = {effect = CONST_ME_SOUND_RED}, -- war drum
+	[3103] = {
 		effect = CONST_ME_SOUND_YELLOW,
-		itemId = 2681,
+		itemId = 3592,
 		itemCount = 10,
 		chance = 80,
 		remove = true
@@ -47,8 +47,8 @@ local instruments = {
 		chance = 60,
 		remove = true
 	}, -- wooden whistle
-	[6572] = {effect = CONST_ME_SOUND_GREEN, text = "TOOOOOOT", transformId = 13578, decayId = 6572}, -- party trumpet
-	[6573] = {effect = CONST_ME_SOUND_GREEN, text = "TOOOOOOT", transformId = 13578, decayId = 6573} -- party trumpet
+	[6572] = {effect = CONST_ME_SOUND_GREEN, text = "TOOOOOOT", transformId = 6573, decayId = 6572}, -- party trumpet
+	[6572] = {effect = CONST_ME_SOUND_GREEN, text = "TOOOOOOT", transformId = 6573, decayId = 6572} -- party trumpet
 }
 
 function action.onUse(player, item, fromPosition, target, toPosition, isHotkey)
@@ -78,5 +78,5 @@ function action.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	return true
 end
 
-action:id(2070, 2071, 2072, 2073, 2074, 2075, 2076, 2077, 2078, 2079, 2080, 2081, 2082, 2083, 2084, 2085, 2332, 2364, 2367, 2368, 2369, 2370, 2371, 2372, 2373, 3951, 3952, 3953, 3957, 5786, 6572, 6573)
+action:id(2948, 2949, 2950, 14253, 2953, 2954, 2955, 2956, 3252, 2958, 2959, 2960, 2961, 2962, 2963, 2964, 3219, 3252, 3255, 3256, 3257, 3258, 3259, 3260, 3261, 2951, 2965, 2966, 3103, 5786, 6572, 6572)
 action:register()

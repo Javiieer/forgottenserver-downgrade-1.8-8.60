@@ -33,5 +33,5 @@ function spellbook.onUse(player, item, fromPosition, target, toPosition,
 	return true
 end
 
-spellbook:id(2175, 6120, 8900, 8901, 8902, 8903, 8904, 8918)
+spellbook:id(3059, 6120, 8072, 8073, 8074, 8075, 8076, 8090)
 spellbook:register()

@@ -19,7 +19,7 @@ bullseye:setParameter(CONDITION_PARAM_BUFF_SPELL, true)
 
 local potions = {
 	[6558] = { -- concentrated demonic blood
-		transform = {7588, 7589},
+		transform = {236, 237},
 		effect = CONST_ME_DRAWBLOOD
 	},
 	[7439] = { -- berserk potion
@@ -43,64 +43,64 @@ local potions = {
 		description = "Only paladins may drink this potion.",
 		text = "You feel more accurate."
 	},
-	[7588] = { -- strong health potion
+	[236] = { -- strong health potion
 		health = {250, 350},
 		vocations = {3, 4, 7, 8},
 		level = 50,
-		flask = 7634,
+		flask = 283,
 		description = "Only knights and paladins of level 50 or above may drink this fluid."
 	},
-	[7589] = { -- strong mana potion
+	[237] = { -- strong mana potion
 		mana = {115, 185},
 		vocations = {1, 2, 3, 5, 6, 7},
 		level = 50,
-		flask = 7634,
+		flask = 283,
 		description = "Only sorcerers, druids and paladins of level 50 or above may drink this fluid."
 	},
-	[7590] = { -- great mana potion
+	[238] = { -- great mana potion
 		mana = {150, 250},
 		vocations = {1, 2, 5, 6},
 		level = 80,
-		flask = 7635,
+		flask = 284,
 		description = "Only druids and sorcerers of level 80 or above may drink this fluid."
 	},
-	[7591] = { -- great health potion
-		health = {425, 575},
+	[239] = { -- great health potion
+		health = {430, 575},
 		vocations = {4, 8},
 		level = 80,
-		flask = 7635,
+		flask = 284,
 		description = "Only knights of level 80 or above may drink this fluid."
 	},
-	[7618] = { -- health potion
+	[266] = { -- health potion
 		health = {125, 175},
-		flask = 7636
+		flask = 285
 	},
-	[7620] = { -- mana potion
+	[268] = { -- mana potion
 		mana = {75, 125},
-		flask = 7636
+		flask = 285
 	},
-	[8472] = { -- great spirit potion
+	[7642] = { -- great spirit potion
 		health = {250, 350},
 		mana = {100, 200},
 		vocations = {3, 7},
 		level = 80,
-		flask = 7635,
+		flask = 284,
 		description = "Only paladins of level 80 or above may drink this fluid."
 	},
-	[8473] = { -- ultimate health potion
+	[7643] = { -- ultimate health potion
 		health = {650, 850},
 		vocations = {4, 8},
 		level = 130,
-		flask = 7635,
+		flask = 284,
 		description = "Only knights of level 130 or above may drink this fluid."
 	},
-	[8474] = { -- antidote potion
+	[7644] = { -- antidote potion
 		antidote = true,
-		flask = 7636
+		flask = 285
 	},
-	[8704] = { -- small health potion
+	[7876] = { -- small health potion
 		health = {60, 90},
-		flask = 7636
+		flask = 285
 	}
 }
 
@@ -154,5 +154,5 @@ function action.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	return true
 end
 
-action:id(6558, 7439, 7440, 7443, 7588, 7589, 7590, 7591, 7618, 7620, 8472, 8473, 8474, 8704)
+action:id(6558, 7439, 7440, 7443, 236, 237, 238, 239, 266, 268, 7642, 7643, 7644, 7876)
 action:register()

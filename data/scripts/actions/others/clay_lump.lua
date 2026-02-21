@@ -1,16 +1,16 @@
 local config = {
 	{
 		chance = {0.0, 1.54},
-		transformId = 11342,
+		transformId = 10425,
 		description = "This little figurine of Brog, the raging Titan, was skillfully made by |PLAYERNAME|.",
 		achievement = true
 	}, {
 		chance = {1.54, 9.16},
-		transformId = 11341,
+		transformId = 10424,
 		description = "It was made by |PLAYERNAME| and is clearly a little figurine of.. hm, one does not recognise that yet."
 	}, {
 		chance = {9.16, 25.48},
-		transformId = 11340,
+		transformId = 10423,
 		description = "It was made by |PLAYERNAME|, whose potter skills could use some serious improvement."
 	}, {
 		chance = {25.48, 100.0},
@@ -55,5 +55,5 @@ function clayLump.onUse(player, item, fromPosition, target, toPosition, isHotkey
 	return true
 end
 
-clayLump:id(11339)
+clayLump:id(10422)
 clayLump:register()
