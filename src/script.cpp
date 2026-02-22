@@ -6,10 +6,10 @@
 #include "script.h"
 
 #include "configmanager.h"
+#include "logger.h"
 
 #include <fmt/color.h>
 #include <fmt/ranges.h>
-#include "logger.h"
 
 extern LuaEnvironment g_luaEnvironment;
 
@@ -49,7 +49,10 @@ bool Scripts::loadScripts(const std::string& folderName, bool isLib, bool reload
 				}
 				continue;
 			}
-			v.push_back(it->path());
+			const std::string canonical = fs::canonical(it->path()).string();
+			if (loadedFiles.find(canonical) == loadedFiles.end()) {
+				v.push_back(it->path());
+			}
 		}
 	}
 	sort(v.begin(), v.end());
@@ -60,6 +63,8 @@ bool Scripts::loadScripts(const std::string& folderName, bool isLib, bool reload
 			LOG_ERROR(fmt::format("^ {}", scriptInterface.getLastLuaError()));
 			continue;
 		}
+
+		loadedFiles.insert(fs::canonical(*it).string());
 
 		if (scriptsConsoleLogs) {
 			const auto& scrName = it->filename().string();

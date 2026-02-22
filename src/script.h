@@ -7,6 +7,9 @@
 #include "enums.h"
 #include "luascript.h"
 
+#include <set>
+#include <string>
+
 class Scripts
 {
 public:
@@ -16,8 +19,11 @@ public:
 	bool loadScripts(const std::string& folderName, bool isLib, bool reload);
 	LuaScriptInterface& getScriptInterface() { return scriptInterface; }
 
+	void clearLoadedFiles() { loadedFiles.clear(); }
+
 private:
 	LuaScriptInterface scriptInterface;
+	std::set<std::string> loadedFiles;
 };
 
 #endif
