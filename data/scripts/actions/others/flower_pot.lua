@@ -1,222 +1,222 @@
 local flowers = {
 	{
-		itemid = 7655,
+		itemid = 306,
 		watered = false,
 		advance = false,
 		msg = "You should plant some seeds first."
 	}, {
-		itemid = 7665,
+		itemid = 316,
 		watered = true,
 		advance = false,
 		msg = "You watered your plant.",
-		after = 7673
+		after = 324
 	}, {
-		itemid = 7673,
+		itemid = 324,
 		watered = false,
 		advance = false,
 		msg = "Your plant doesn't need water."
 	}, {
-		itemid = 7670,
+		itemid = 321,
 		watered = false,
 		advance = false,
 		msg = "Your plant doesn't need water."
 	}, {
-		itemid = 7680,
+		itemid = 331,
 		watered = false,
 		advance = false,
 		msg = "Your plant doesn't need water."
 	}, {
-		itemid = 7682,
+		itemid = 333,
 		watered = false,
 		advance = false,
 		msg = "Your plant doesn't need water."
 	}, {
-		itemid = 7684,
+		itemid = 335,
 		watered = false,
 		advance = false,
 		msg = "Your plant doesn't need water."
 	}, {
-		itemid = 7686,
+		itemid = 337,
 		watered = false,
 		advance = false,
 		msg = "Your plant doesn't need water."
 	}, {
-		itemid = 7688,
+		itemid = 339,
 		watered = false,
 		advance = false,
 		msg = "Your plant doesn't need water."
 	}, {
-		itemid = 7690,
+		itemid = 341,
 		watered = false,
 		advance = false,
 		msg = "Your plant doesn't need water."
 	}, {
-		itemid = 7992,
+		itemid = 1030,
 		watered = false,
 		advance = false,
 		msg = "Your plant doesn't need water."
 	}, {
-		itemid = 7994,
+		itemid = 1032,
 		watered = false,
 		advance = false,
 		msg = "Your plant doesn't need water."
 	}, {
-		itemid = 9982,
+		itemid = 9069,
 		watered = false,
 		advance = false,
 		msg = "Your plant doesn't need water."
 	}, {
-		itemid = 9990,
+		itemid = 9077,
 		watered = false,
 		advance = false,
 		msg = "Your plant doesn't need water."
 	}, {
-		itemid = 7692,
+		itemid = 343,
 		watered = false,
 		advance = false,
 		msg = "Your plant doesn't need water."
 	}, {
-		itemid = 7694,
+		itemid = 345,
 		watered = false,
 		advance = false,
 		msg = "Your plant doesn't need water."
 	}, {
-		itemid = 9986,
+		itemid = 9073,
 		watered = false,
 		advance = false,
 		msg = "Your plant doesn't need water."
 	}, {
-		itemid = 9988,
+		itemid = 9075,
 		watered = false,
 		advance = false,
 		msg = "Your plant doesn't need water."
 	}, {
-		itemid = 7689,
+		itemid = 340,
 		watered = true,
 		advance = false,
 		msg = "You watered your plant.",
-		after = 7688
+		after = 339
 	}, {
-		itemid = 7691,
+		itemid = 342,
 		watered = true,
 		advance = false,
 		msg = "You watered your plant.",
-		after = 7690
+		after = 341
 	}, {
-		itemid = 7693,
+		itemid = 344,
 		watered = true,
 		advance = false,
 		msg = "You watered your plant.",
-		after = 7692
+		after = 343
 	}, {
-		itemid = 7695,
+		itemid = 346,
 		watered = true,
 		advance = false,
 		msg = "You watered your plant.",
-		after = 7694
+		after = 345
 	}, {
-		itemid = 9991,
+		itemid = 9078,
 		watered = true,
 		advance = false,
 		msg = "You watered your plant.",
-		after = 9990
+		after = 9077
 	}, {
-		itemid = 9989,
+		itemid = 9076,
 		watered = true,
 		advance = false,
 		msg = "You watered your plant.",
-		after = 9988
+		after = 9075
 	}, {
-		itemid = 7674,
+		itemid = 325,
 		watered = true,
 		advance = false,
 		msg = "You finally remembered to water your plant and it recovered.",
-		after = 7688
+		after = 339
 	}, {
-		itemid = 7675,
+		itemid = 326,
 		watered = true,
 		advance = false,
 		msg = "You finally remembered to water your plant and it recovered.",
-		after = 7690
+		after = 341
 	}, {
-		itemid = 7676,
+		itemid = 327,
 		watered = true,
 		advance = false,
 		msg = "You finally remembered to water your plant and it recovered.",
-		after = 7692
+		after = 343
 	}, {
-		itemid = 7677,
+		itemid = 328,
 		watered = true,
 		advance = false,
 		msg = "You finally remembered to water your plant and it recovered.",
-		after = 7694
+		after = 345
 	}, {
-		itemid = 9984,
+		itemid = 9071,
 		watered = true,
 		advance = false,
 		msg = "You finally remembered to water your plant and it recovered.",
-		after = 9990
+		after = 9077
 	}, {
-		itemid = 9985,
+		itemid = 9072,
 		watered = true,
 		advance = false,
 		msg = "You finally remembered to water your plant and it recovered.",
-		after = 9988
+		after = 9075
 	}, {
-		itemid = 7679,
+		itemid = 330,
 		watered = true,
 		advance = true,
 		msg = {"You watered your plant.", "Your plant has grown to the next stage!"},
-		after = {7673, 7670},
+		after = {324, 321},
 		chance = 80
 	}, {
-		itemid = 7681,
+		itemid = 332,
 		watered = true,
 		advance = true,
 		msg = {"You watered your plant.", "Your plant has grown to the next stage!"},
-		after = {7680, 7688},
+		after = {331, 339},
 		chance = 80
 	}, {
-		itemid = 7683,
+		itemid = 334,
 		watered = true,
 		advance = true,
 		msg = {"You watered your plant.", "Your plant has grown to the next stage!"},
-		after = {7682, 7690},
+		after = {333, 341},
 		chance = 80
 	}, {
-		itemid = 7685,
+		itemid = 336,
 		watered = true,
 		advance = true,
 		msg = {"You watered your plant.", "Your plant has grown to the next stage!"},
-		after = {7684, 7692},
+		after = {335, 343},
 		chance = 80
 	}, {
-		itemid = 7687,
+		itemid = 338,
 		watered = true,
 		advance = true,
 		msg = {"You watered your plant.", "Your plant has grown to the next stage!"},
-		after = {7686, 7694},
+		after = {337, 345},
 		chance = 80
 	}, {
-		itemid = 9983,
+		itemid = 9070,
 		watered = true,
 		advance = true,
 		msg = {"You watered your plant.", "Your plant has grown to the next stage!"},
-		after = {9982, 9990},
+		after = {9069, 9077},
 		chance = 80
 	}, {
-		itemid = 9987,
+		itemid = 9074,
 		watered = true,
 		advance = true,
 		msg = {"You watered your plant.", "Your plant has grown to the next stage!"},
-		after = {9986, 9988},
+		after = {9073, 9075},
 		chance = 80
 	}, {
-		itemid = 7678,
+		itemid = 329,
 		watered = true,
 		advance = true,
 		msg = {"You watered your plant.", "Your plant has grown to the next stage!"},
-		after = {7670, 7680, 7682, 7684, 7686, 9982, 9986},
+		after = {321, 331, 333, 335, 337, 9069, 9073},
 		chance = 80
 	}
 }
@@ -252,5 +252,5 @@ function flowerPot.onUse(player, item, fromPosition, target, toPosition,
 	return true
 end
 
-flowerPot:id(7734) -- watering can
+flowerPot:id(650) -- watering can
 flowerPot:register()

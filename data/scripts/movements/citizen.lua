@@ -12,5 +12,5 @@ function moveevent.onStepIn(creature, item, position, fromPosition)
 	return true
 end
 moveevent:type("stepin")
-moveevent:id(1387)
+moveevent:id(1949)
 moveevent:register()

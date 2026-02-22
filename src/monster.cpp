@@ -2165,6 +2165,10 @@ void Monster::updateLookDirection()
 
 void Monster::dropLoot(Container* corpse, Creature*)
 {
+	if (!corpse) {
+		return;
+	}
+
 	if (getMonster()->isRewardBoss()) {
 		int64_t currentTime = std::time(nullptr);
 		Item* rewardContainer = Item::CreateItem(ITEM_REWARD_CONTAINER);
@@ -2174,7 +2178,7 @@ void Monster::dropLoot(Container* corpse, Creature*)
 		rewardContainer->setIntAttr(ITEM_ATTRIBUTE_DATE, currentTime);
 		rewardContainer->setIntAttr(ITEM_ATTRIBUTE_REWARDID, getMonster()->getID());
 		corpse->internalAddThing(rewardContainer);
-	} else if (corpse && lootDrop) {
+	} else if (lootDrop) {
 		g_events->eventMonsterOnDropLoot(this, corpse);
 	}
 }

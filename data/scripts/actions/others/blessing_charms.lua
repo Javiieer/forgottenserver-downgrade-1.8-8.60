@@ -1,25 +1,25 @@
 local items = {
-	[11260] = {
+	[10343] = {
 		text = "The Spiritual Shielding protects you.",
 		id = 1,
 		effect = CONST_ME_LOSEENERGY
 	},
-	[11259] = {
+	[10342] = {
 		text = "The Embrace of Tibia surrounds you.",
 		id = 2,
 		effect = CONST_ME_MAGIC_BLUE
 	},
-	[11261] = {
+	[10344] = {
 		text = "The Fire of the Suns engulfs you.",
 		id = 3,
 		effect = CONST_ME_MAGIC_RED
 	},
-	[11262] = {
+	[10345] = {
 		text = "The Wisdom of Solitude inspires you.",
 		id = 4,
 		effect = CONST_ME_MAGIC_GREEN
 	},
-	[11258] = {
+	[10341] = {
 		text = "The Spark of the Phoenix emblazes you.",
 		id = 5,
 		effect = CONST_ME_FIREATTACK

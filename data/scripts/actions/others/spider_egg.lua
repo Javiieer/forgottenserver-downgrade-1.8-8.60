@@ -12,10 +12,10 @@ function spiderEgg.onUse(player, item, fromPosition, target, toPosition,
 	else
 		item:getPosition():sendMagicEffect(CONST_ME_POFF)
 	end
-	item:transform(7536)
+	item:transform(180)
 	item:decay()
 	return true
 end
 
-spiderEgg:id(7537)
+spiderEgg:id(233)
 spiderEgg:register()

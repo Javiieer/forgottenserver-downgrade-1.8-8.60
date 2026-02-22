@@ -15,12 +15,12 @@ function clawOfTheNoxiousSpawn.onUse(player, item, fromPosition, target,
 			player:addCondition(cursed)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
 			                       "You are cursed by The Noxious Spawn!")
-			item:transform(10312)
+			item:transform(9394)
 			item:decay()
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
 		else
 			player:removeCondition(CONDITION_POISON)
-			item:transform(10311)
+			item:transform(9394)
 			item:decay()
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
 		end
@@ -29,5 +29,5 @@ function clawOfTheNoxiousSpawn.onUse(player, item, fromPosition, target,
 	return false
 end
 
-clawOfTheNoxiousSpawn:id(10309)
+clawOfTheNoxiousSpawn:id(9392)
 clawOfTheNoxiousSpawn:register()

@@ -1,62 +1,62 @@
 local config = {
 	[5908] = {
 		-- Minotaurs
-		[3090] = {chance = 7000, newItem = 5878, after = 2831}, -- minotaur
-		[5969] = {chance = 7000, newItem = 5878, after = 2831}, -- minotaur, after being killed
-		[2871] = {chance = 7000, newItem = 5878, after = 2872}, -- minotaur archer
-		[5982] = {chance = 7000, newItem = 5878, after = 2872}, -- minotaur archer, after being killed
-		[2866] = {chance = 7000, newItem = 5878, after = 2867}, -- minotaur mage
-		[5981] = {chance = 7000, newItem = 5878, after = 2867}, -- minotaur mage, after being killed
-		[2876] = {chance = 7000, newItem = 5878, after = 2877}, -- minotaur guard
-		[5983] = {chance = 7000, newItem = 5878, after = 2877}, -- minotaur guard, after being killed
+		[4272] = {chance = 7000, newItem = 5878, after = 4012}, -- minotaur
+		[5969] = {chance = 7000, newItem = 5878, after = 4012}, -- minotaur, after being killed
+		[4052] = {chance = 7000, newItem = 5878, after = 4053}, -- minotaur archer
+		[5982] = {chance = 7000, newItem = 5878, after = 4053}, -- minotaur archer, after being killed
+		[4047] = {chance = 7000, newItem = 5878, after = 4048}, -- minotaur mage
+		[5981] = {chance = 7000, newItem = 5878, after = 4048}, -- minotaur mage, after being killed
+		[4057] = {chance = 7000, newItem = 5878, after = 4058}, -- minotaur guard
+		[5983] = {chance = 7000, newItem = 5878, after = 4058}, -- minotaur guard, after being killed
 
 		-- Low Class Lizards
-		[4259] = {chance = 6000, newItem = 5876, after = 4260}, -- lizard sentinel
-		[6040] = {chance = 6000, newItem = 5876, after = 4260}, -- lizard sentinel, after being killed
-		[4262] = {chance = 6000, newItem = 5876, after = 4263}, -- lizard snakecharmer
-		[6041] = {chance = 6000, newItem = 5876, after = 4263}, -- lizard snakecharmer, after being killed
-		[4256] = {chance = 6000, newItem = 5876, after = 4257}, -- lizard templar
-		[4251] = {chance = 6000, newItem = 5876, after = 4257}, -- lizard templar, after being killed
+		[4324] = {chance = 6000, newItem = 5876, after = 4325}, -- lizard sentinel
+		[6040] = {chance = 6000, newItem = 5876, after = 4325}, -- lizard sentinel, after being killed
+		[4327] = {chance = 6000, newItem = 5876, after = 4328}, -- lizard snakecharmer
+		[6041] = {chance = 6000, newItem = 5876, after = 4328}, -- lizard snakecharmer, after being killed
+		[4321] = {chance = 6000, newItem = 5876, after = 4322}, -- lizard templar
+		[4239] = {chance = 6000, newItem = 5876, after = 4322}, -- lizard templar, after being killed
 
 		-- High Class Lizards
-		[11285] = {chance = 10000, newItem = 5876, after = 11286}, -- lizard chosen,
-		[11288] = {chance = 10000, newItem = 5876, after = 11286}, -- lizard chosen, after being killed
-		[11277] = {chance = 10000, newItem = 5876, after = 11278}, -- lizard dragon priest
-		[11280] = {chance = 10000, newItem = 5876, after = 11278}, -- lizard dragon priest, after being killed
-		[11269] = {chance = 10000, newItem = 5876, after = 11270}, -- lizard high guard
-		[11272] = {chance = 10000, newItem = 5876, after = 11270}, -- lizard high guard, after being killed
-		[11281] = {chance = 10000, newItem = 5876, after = 11282}, -- lizard zaogun
-		[11284] = {chance = 10000, newItem = 5876, after = 11282}, -- lizard zaogun, after being killed
+		[10368] = {chance = 10000, newItem = 5876, after = 10369}, -- lizard chosen,
+		[10371] = {chance = 10000, newItem = 5876, after = 10369}, -- lizard chosen, after being killed
+		[10360] = {chance = 10000, newItem = 5876, after = 10361}, -- lizard dragon priest
+		[10363] = {chance = 10000, newItem = 5876, after = 10361}, -- lizard dragon priest, after being killed
+		[10352] = {chance = 10000, newItem = 5876, after = 10353}, -- lizard high guard
+		[10355] = {chance = 10000, newItem = 5876, after = 10353}, -- lizard high guard, after being killed
+		[10364] = {chance = 10000, newItem = 5876, after = 10365}, -- lizard zaogun
+		[10367] = {chance = 10000, newItem = 5876, after = 10365}, -- lizard zaogun, after being killed
 
 		-- Dragon
-		[3104] = {chance = 5000, newItem = 5877, after = 3105},
-		[5973] = {chance = 5000, newItem = 5877, after = 3105}, -- after being killed
+		[4286] = {chance = 5000, newItem = 5877, after = 4287},
+		[5973] = {chance = 5000, newItem = 5877, after = 4287}, -- after being killed
 
 		-- Dragon Lord
-		[2881] = {chance = 5000, newItem = 5948, after = 2882},
-		[5984] = {chance = 5000, newItem = 5948, after = 2882}, -- after being killed
+		[4062] = {chance = 5000, newItem = 5948, after = 4063},
+		[5984] = {chance = 5000, newItem = 5948, after = 4063}, -- after being killed
 
 		-- Behemoth
-		[2931] = {chance = 10000, newItem = 5893, after = 2932},
-		[5999] = {chance = 10000, newItem = 5893, after = 2932}, -- after being killed
+		[4112] = {chance = 10000, newItem = 5893, after = 4113},
+		[5999] = {chance = 10000, newItem = 5893, after = 4113}, -- after being killed
 
 		-- Bone Beast
-		[3031] = {chance = 6000, newItem = 5925, after = 3032},
-		[6030] = {chance = 6000, newItem = 5925, after = 3032}, -- after being killed
+		[4212] = {chance = 6000, newItem = 5925, after = 4213},
+		[6030] = {chance = 6000, newItem = 5925, after = 4213}, -- after being killed
 
 		-- Piece of Marble Rock
-		[11343] = {
+		[10426] = {
 			{
 				chance = 530,
-				newItem = 11346,
+				newItem = 10429,
 				desc = "This little figurine of a goddess was masterfully sculpted by |PLAYERNAME|."
 			}, {
 				chance = 9600,
-				newItem = 11345,
+				newItem = 10428,
 				desc = "This little figurine made by |PLAYERNAME| has some room for improvement."
 			}, {
 				chance = 24000,
-				newItem = 11344,
+				newItem = 10427,
 				desc = "This shoddy work was made by |PLAYERNAME|."
 			}
 		},
@@ -69,14 +69,14 @@ local config = {
 	},
 	[5942] = {
 		-- Demon
-		[2916] = {chance = 3000, newItem = 5906, after = 2917},
-		[5995] = {chance = 3000, newItem = 5906, after = 2917}, -- after being killed
+		[4097] = {chance = 3000, newItem = 5906, after = 4098},
+		[5995] = {chance = 3000, newItem = 5906, after = 4098}, -- after being killed
 
 		-- Vampires
-		[2956] = {chance = 6000, newItem = 5905, after = 2957}, -- vampire
-		[6006] = {chance = 6000, newItem = 5905, after = 2957}, -- vampire, after being killed
-		[9654] = {chance = 6000, newItem = 5905, after = 9658}, -- vampire bride
-		[9660] = {chance = 6000, newItem = 5905, after = 9658} -- vampire bride, after being killed
+		[4137] = {chance = 6000, newItem = 5905, after = 4138}, -- vampire
+		[6006] = {chance = 6000, newItem = 5905, after = 4138}, -- vampire, after being killed
+		[8738] = {chance = 6000, newItem = 5905, after = 8742}, -- vampire bride
+		[8744] = {chance = 6000, newItem = 5905, after = 8742} -- vampire bride, after being killed
 	}
 }
 
@@ -95,13 +95,13 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 		local added = false
 		for _, skinChild in ipairs(skin) do
 			if randomChance <= skinChild.chance then
-				if target.itemid == 11343 then
+				if target.itemid == 10426 then
 					local marble = player:addItem(skinChild.newItem, skinChild.amount or 1)
 					if marble then
 						marble:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION,
 						                    skinChild.desc:gsub("|PLAYERNAME|", player:getName()))
 					end
-					if skinChild.newItem == 11346 then
+					if skinChild.newItem == 10429 then
 						player:addAchievement("Marblelous")
 						player:addAchievementProgress("Marble Madness", 5)
 					end
@@ -117,7 +117,7 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 			end
 		end
 
-		if not added and target.itemid == 11343 then
+		if not added and target.itemid == 10426 then
 			effect = CONST_ME_HITAREA
 			player:say("Your attempt at shaping that marble rock failed miserably.",
 			           TALKTYPE_MONSTER_SAY)

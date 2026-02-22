@@ -35,5 +35,5 @@ for index, currency in pairs(currencyItems) do
 	}
 end
 
-goldConverter:id(26378)
+goldConverter:id(23722)
 goldConverter:register()

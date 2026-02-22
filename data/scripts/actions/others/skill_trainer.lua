@@ -1,5 +1,5 @@
 local statues = {
-	18488, 18489, 18490, 18491, 18492
+	16198, 16199, 16200, 16201, 16202
 }
 
 local skillOffline = Action()
@@ -19,4 +19,4 @@ for _, id in ipairs(statues) do
 	skillOffline:id(id)
 end
 
-skillOffline:register()
+skillOffline:register() 

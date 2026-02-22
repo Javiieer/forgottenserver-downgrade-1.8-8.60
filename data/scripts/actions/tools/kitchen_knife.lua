@@ -5,5 +5,5 @@ function action.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	                         isHotkey)
 end
 
-action:id(2566)
+action:id(3469)
 action:register()

@@ -1,10 +1,10 @@
 local config = {
-	[9075] = {
+	[653] = {
 		"orc warrior", "pirate cutthroat", "dworc voodoomaster", "dwarf guard",
   "minotaur mage"
 	}, -- common
-	[9077] = {"serpent spawn", "demon", "juggernaut", "behemoth", "ashmunrah"}, -- deluxe
-	[9076] = {
+	[655] = {"serpent spawn", "demon", "juggernaut", "behemoth", "ashmunrah"}, -- deluxe
+	[654] = {
 		"quara hydromancer", "diabolic imp", "banshee", "frost giant", "lich"
 	} -- uncommon
 }

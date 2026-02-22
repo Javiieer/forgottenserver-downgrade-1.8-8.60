@@ -15,5 +15,5 @@ end
 
 clawOfTheNoxiousSpawn:type("equip")
 clawOfTheNoxiousSpawn:slot("ring")
-clawOfTheNoxiousSpawn:id(10310)
+clawOfTheNoxiousSpawn:id(9393)
 clawOfTheNoxiousSpawn:register()
