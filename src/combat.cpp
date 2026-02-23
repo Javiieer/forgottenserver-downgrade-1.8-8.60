@@ -646,6 +646,9 @@ void Combat::addDistanceEffect(Creature* caster, const Position& fromPos, const 
 			case WEAPON_CLUB:
 				effect = CONST_ANI_WHIRLWINDCLUB;
 				break;
+			case WEAPON_FIST:
+				effect = CONST_ANI_LARGEROCK;
+				break;
 			default:
 				effect = CONST_ANI_NONE;
 				break;
@@ -854,8 +857,8 @@ void Combat::doTargetCombat(Creature* caster, Creature* target, CombatDamage& da
 			g_game.addMagicEffect(target->getPosition(), CONST_ME_BLOODYSTEPS);
 		}
 
-		if (!damage.leeched && damage.primary.type != COMBAT_HEALING && casterPlayer &&
-		    target != caster && damage.origin != ORIGIN_CONDITION) {
+		if (!damage.leeched && damage.primary.type != COMBAT_HEALING && casterPlayer && target != caster &&
+		    damage.origin != ORIGIN_CONDITION) {
 			CombatDamage leechCombat;
 			leechCombat.origin = ORIGIN_NONE;
 			leechCombat.leeched = true;
@@ -1029,9 +1032,9 @@ void Combat::doAreaCombat(Creature* caster, const Position& position, const Area
 					uint16_t chance = casterPlayer->getSpecialSkill(SPECIALSKILL_LIFELEECHCHANCE);
 					uint16_t skill = casterPlayer->getSpecialSkill(SPECIALSKILL_LIFELEECHAMOUNT);
 					if (chance > 0 && skill > 0 && normal_random(1, 100) <= chance) {
-						leechCombat.primary.value =
-						    std::ceil(totalDamage * ((skill / 10000.) + ((targetsCount - 1) * ((skill / 10000.) / 10.))) /
-						              targetsCount);
+						leechCombat.primary.value = std::ceil(
+						    totalDamage * ((skill / 10000.) + ((targetsCount - 1) * ((skill / 10000.) / 10.))) /
+						    targetsCount);
 						g_game.combatChangeHealth(nullptr, casterPlayer, leechCombat);
 						casterPlayer->sendMagicEffect(casterPlayer->getPosition(), CONST_ME_MAGIC_RED);
 					}
@@ -1041,9 +1044,9 @@ void Combat::doAreaCombat(Creature* caster, const Position& position, const Area
 					uint16_t chance = casterPlayer->getSpecialSkill(SPECIALSKILL_MANALEECHCHANCE);
 					uint16_t skill = casterPlayer->getSpecialSkill(SPECIALSKILL_MANALEECHAMOUNT);
 					if (chance > 0 && skill > 0 && normal_random(1, 100) <= chance) {
-						leechCombat.primary.value =
-						    std::ceil(totalDamage * ((skill / 10000.) + ((targetsCount - 1) * ((skill / 10000.) / 10.))) /
-						              targetsCount);
+						leechCombat.primary.value = std::ceil(
+						    totalDamage * ((skill / 10000.) + ((targetsCount - 1) * ((skill / 10000.) / 10.))) /
+						    targetsCount);
 						g_game.combatChangeMana(nullptr, casterPlayer, leechCombat);
 						casterPlayer->sendMagicEffect(casterPlayer->getPosition(), CONST_ME_MAGIC_BLUE);
 					}
