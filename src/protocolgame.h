@@ -264,14 +264,6 @@ private:
 
 	// OTCv8
 	void sendFeatures();
-<<<<<<< HEAD
-	void sendFloorDescription(const Position& pos, int floor);
-	void sendFloorDescription(const Position& pos, int floor, bool broadcast);
-	void parseChangeAwareRange(NetworkMessage& msg);
-	void updateAwareRange(int width, int height);
-	void sendAwareRange();
-=======
->>>>>>> 25acf1e (Remove Extended Map View.)
 	void sendNewPing(uint32_t pingId);
 	void parseNewPing(NetworkMessage& msg);
 

@@ -1046,70 +1046,15 @@ void ProtocolSpectator::sendAddTileCreature(const Creature* creature, const Posi
 	}
 }
 
-void ProtocolSpectator::sendMoveCreature(const Creature* creature, const Position& newPos, int32_t newStackPos,
-                                         const Position& oldPos, int32_t oldStackPos, bool teleport)
+void ProtocolSpectator::sendMoveCreature(const Creature*, const Position& newPos, int32_t, const Position& oldPos,
+                                         int32_t oldStackPos, bool)
 {
-	if (!caster || !player) return;
+	NetworkMessage msg;
 
-	if (creature != caster) {
-		int32_t specOldStackPos = oldStackPos;
-		int32_t specNewStackPos = newStackPos;
-
-		// The creature has ALREADY moved in Map, so getClientIndexOfCreature fails (returns 255).
-		// Fortunately, oldStackPos < 10 maps 1:1 perfectly with the Old Client's stackpos!
-		if (canSee(oldPos) && canSee(newPos)) {
-			if (teleport || (oldPos.z == 7 && newPos.z >= 8) || specOldStackPos < 0 ||
-			    specOldStackPos >= MAX_STACKPOS_THINGS) {
-				if (specOldStackPos >= 0 && specOldStackPos < MAX_STACKPOS_THINGS) {
-					NetworkMessage msg;
-					msg.addByte(0x6C);
-					msg.addPosition(oldPos);
-					msg.addByte(static_cast<uint8_t>(specOldStackPos));
-					writeToOutputBuffer(msg);
-				}
-				sendAddTileCreature(creature, newPos, specNewStackPos);
-			} else {
-				NetworkMessage msg;
-				msg.addByte(0x6D);
-				msg.addPosition(oldPos);
-				msg.addByte(static_cast<uint8_t>(specOldStackPos));
-				msg.addPosition(newPos);
-				writeToOutputBuffer(msg);
-			}
-		} else if (canSee(oldPos)) {
-			if (specOldStackPos >= 0 && specOldStackPos < MAX_STACKPOS_THINGS) {
-				NetworkMessage msg;
-				msg.addByte(0x6C);
-				msg.addPosition(oldPos);
-				msg.addByte(static_cast<uint8_t>(specOldStackPos));
-				writeToOutputBuffer(msg);
-			}
-		} else if (canSee(newPos)) {
-			sendAddTileCreature(creature, newPos, specNewStackPos);
-		}
-		return;
-	}
-
-	if (!isOTCv8) {
-		int32_t specOldStackPos = oldStackPos;
-
-		if (teleport || oldPos.z != newPos.z || specOldStackPos >= MAX_STACKPOS_THINGS) {
-			if (specOldStackPos >= 0 && specOldStackPos < MAX_STACKPOS_THINGS) {
-				NetworkMessage msg;
-				msg.addByte(0x6C);
-				msg.addPosition(oldPos);
-				msg.addByte(static_cast<uint8_t>(specOldStackPos));
-				writeToOutputBuffer(msg);
-			}
-			sendMapDescription(newPos);
-			return;
-		}
-
-		NetworkMessage msg;
-		msg.addByte(0x6D);
-		msg.addPosition(oldPos);
-		msg.addByte(static_cast<uint8_t>(specOldStackPos));
-		msg.addPosition(newPos);
+	msg.addByte(0x6D);
+	msg.addPosition(oldPos);
+	msg.addByte(oldStackPos);
+	msg.addPosition(newPos);
 
 		if (oldPos.y > newPos.y) {
 			msg.addByte(0x65);
@@ -1169,6 +1114,95 @@ void ProtocolSpectator::sendMoveCreature(const Creature* creature, const Positio
 		                  msg);
 	}
 	writeToOutputBuffer(msg);
+}
+
+void ProtocolSpectator::MoveDownCreature(NetworkMessage& msg, const Position& newPos,
+                                    const Position& oldPos)
+{
+	// floor change down
+	msg.addByte(0xBF);
+
+	// going from surface to underground
+	if (newPos.z == 8) {
+		int32_t skip = -1;
+
+		for (int i = 0; i < 3; ++i) {
+			GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY,
+			                    newPos.z + i, (Map::maxClientViewportX * 2) + 2, (Map::maxClientViewportY * 2) + 2,
+			                    -i - 1, skip);
+		}
+		if (skip >= 0) {
+			msg.addByte(static_cast<uint8_t>(skip));
+			msg.addByte(0xFF);
+		}
+	}
+	// going further down
+	else if (newPos.z > oldPos.z && newPos.z > 8 && newPos.z < 14) {
+		int32_t skip = -1;
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, newPos.z + 2,
+		                    (Map::maxClientViewportX * 2) + 2, (Map::maxClientViewportY * 2) + 2, -3, skip);
+
+		if (skip >= 0) {
+			msg.addByte(static_cast<uint8_t>(skip));
+			msg.addByte(0xFF);
+		}
+	}
+
+	// moving down a floor makes us out of sync
+	// east
+	msg.addByte(0x66);
+	GetMapDescription(oldPos.x + (Map::maxClientViewportX + 1), oldPos.y - (Map::maxClientViewportY + 1), newPos.z, 1,
+	                  (Map::maxClientViewportY * 2) + 2, msg);
+
+	// south
+	msg.addByte(0x67);
+	GetMapDescription(oldPos.x - Map::maxClientViewportX, oldPos.y + (Map::maxClientViewportY + 1), newPos.z,
+	                  (Map::maxClientViewportX * 2) + 2, 1, msg);
+}
+
+void ProtocolSpectator::MoveUpCreature(NetworkMessage& msg, const Position& newPos,
+                                  const Position& oldPos)
+{
+	// floor change up
+	msg.addByte(0xBE);
+
+	// going to surface
+	if (newPos.z == 7) {
+		int32_t skip = -1;
+
+		// floor 7 and 6 already set
+		for (int i = 5; i >= 0; --i) {
+			GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, i,
+			                    (Map::maxClientViewportX * 2) + 2, (Map::maxClientViewportY * 2) + 2, 8 - i, skip);
+		}
+		if (skip >= 0) {
+			msg.addByte(static_cast<uint8_t>(skip));
+			msg.addByte(0xFF);
+		}
+	}
+	// underground, going one floor up (still underground)
+	else if (newPos.z > 7) {
+		int32_t skip = -1;
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY,
+		                    oldPos.getZ() - 3, (Map::maxClientViewportX * 2) + 2, (Map::maxClientViewportY * 2) + 2, 3,
+		                    skip);
+
+		if (skip >= 0) {
+			msg.addByte(static_cast<uint8_t>(skip));
+			msg.addByte(0xFF);
+		}
+	}
+
+	// moving up a floor up makes us out of sync
+	// west
+	msg.addByte(0x68);
+	GetMapDescription(oldPos.x - Map::maxClientViewportX, oldPos.y - (Map::maxClientViewportY - 1), newPos.z, 1,
+	                  (Map::maxClientViewportY * 2) + 2, msg);
+
+	// north
+	msg.addByte(0x65);
+	GetMapDescription(oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, newPos.z,
+	                  (Map::maxClientViewportX * 2) + 2, 1, msg);
 }
 
 void ProtocolSpectator::sendInventoryItem(slots_t slot, const Item* item)
