@@ -344,6 +344,7 @@ void ProtocolGame::spectate(const std::string& name, const std::string& password
 	syncOpenContainers();
 
 	player->client->addSpectator(getThis());
+	player->resetIdleTime();
 	acceptPackets = true;
 	sendWelcomeMessage();
 
@@ -1662,6 +1663,15 @@ void ProtocolGame::sendTextMessage(const TextMessage& message)
 	msg.addByte(0xB4);
 	msg.addByte(message.type);
 	msg.addString(message.text);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendTextMessage(MessageClasses mclass, const std::string& message)
+{
+	NetworkMessage msg;
+	msg.addByte(0xB4);
+	msg.addByte(mclass);
+	msg.addString(message);
 	writeToOutputBuffer(msg);
 }
 
@@ -3209,10 +3219,7 @@ void ProtocolGame::spectatorSay(const std::string text, uint16_t channelId)
 
 void ProtocolGame::sendCastChannel()
 {
-	if (!isOTCv8) {
-		return;
-	}
-
+	
 	sendChannel(CHANNEL_CAST, "Cast Channel");
 }
 
@@ -3225,4 +3232,78 @@ void ProtocolGame::syncOpenContainers()
 		bool hasParent = (dynamic_cast<const Container*>(container->getParent()) != nullptr);
 		sendContainer(it.first, container, hasParent, openContainer.index);
 	}
+}
+
+void ProtocolGame::sendWelcomeMessage()
+{
+	std::string message = "Welcome to the Live Cast System!\n\n"
+		"Do you know you can use CTRL + ARROWS to switch casts?\n\n"
+		"Voce sabia que pode usar CTRL + SETAS para alternar casts?\n\n"
+		"Type /commands in the cast channel to see available commands.";
+	TextMessage textMessage(MESSAGE_EVENT_ADVANCE, message);
+	sendTextMessage(textMessage);
+}
+
+void ProtocolGame::parseSwitchCast(uint8_t direction)
+{
+	if (!player || !player->client) {
+		return;
+	}
+
+	std::vector<Player*> casters = g_game.getLiveCasters("");
+	if (casters.empty()) {
+		sendTextMessage(MESSAGE_STATUS_SMALL, "No live casts available.");
+		return;
+	}
+
+	auto it = std::find(casters.begin(), casters.end(), player);
+	if (it == casters.end()) {
+		if (!casters.empty()) {
+			Player* newCaster = casters[0];
+			if (newCaster && newCaster != player) {
+				player->client->removeSpectator(getThis());
+				player->client->sendCastMessage(spectator_name, spectator_name + " has left the cast.", TALKTYPE_CHANNEL_O);
+				knownCreatureSet.clear();
+				player = newCaster;
+				player->client->addSpectator(getThis());
+				sendAddCreature(player, player->getPosition(), 0, CONST_ME_NONE);
+				syncOpenContainers();
+				player->client->sendCastMessage(spectator_name, spectator_name + " has joined the cast.", TALKTYPE_CHANNEL_O);
+				sendMagicEffect(player->getPosition(), CONST_ME_TELEPORT);
+			}
+		}
+		return;
+	}
+
+	size_t currentIndex = std::distance(casters.begin(), it);
+	size_t newIndex;
+	if (direction == 1) {
+		newIndex = (currentIndex + 1) % casters.size();
+	} else {
+		newIndex = (currentIndex == 0) ? casters.size() - 1 : currentIndex - 1;
+	}
+
+	if (newIndex == currentIndex) {
+		sendTextMessage(MESSAGE_STATUS_SMALL, "No other casts available.");
+		return;
+	}
+
+	Player* newCaster = casters[newIndex];
+	if (!newCaster || newCaster == player) {
+		return;
+	}
+
+	player->client->removeSpectator(getThis());
+	player->client->sendCastMessage(spectator_name, spectator_name + " has left the cast.", TALKTYPE_CHANNEL_O);
+	knownCreatureSet.clear();
+	player = newCaster;
+	player->client->addSpectator(getThis());
+	sendAddCreature(player, player->getPosition(), 0, CONST_ME_NONE);
+	syncOpenContainers();
+	player->client->sendCastMessage(spectator_name, spectator_name + " has joined the cast.", TALKTYPE_CHANNEL_O);
+	sendMagicEffect(player->getPosition(), CONST_ME_TELEPORT);
+
+	std::stringstream ss;
+	ss << "Switched to cast: " << player->getName();
+	sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE, ss.str());
 }

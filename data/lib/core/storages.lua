@@ -18,13 +18,11 @@ PlayerStorageKeys = {
     achievementsBase = 300000,
     achievementsCounter = 20000,
     ExerciseDummyExhaust = 30029,
+    firstItems = 30025,
+    isCasting = 30030,
+    isCastingPassword = 30031,
 
-    TaskLinked = {
-        storageBase = 1010000,
-        activeTaskStorage = 1011000,
-        roomStorageBase = 1010500,
-        chestActionId = 49026
-    }
+ 
 }
 
 

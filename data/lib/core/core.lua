@@ -23,5 +23,4 @@ dofile("data/lib/core/quests.lua")
 dofile('data/lib/core/exercise_training.lua')
 dofile("data/lib/core/spells.lua")
 
-
-dofile("data/lib/core/taskLinked.lua")
+dofile("data/lib/core/house_autowrap.lua")

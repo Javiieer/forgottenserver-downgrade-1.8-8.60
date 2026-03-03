@@ -1647,7 +1647,7 @@ void Player::onThink(uint32_t interval)
 		const int32_t kickAfterMinutes = getInteger(ConfigManager::KICK_AFTER_MINUTES);
 		if (idleTime > (kickAfterMinutes * 60000) + 60000) {
 			kickPlayer(true);
-		} else if (client && idleTime == 60000 * kickAfterMinutes) {
+		} else if (client && idleTime >= 60000 * kickAfterMinutes && idleTime < (60000 * kickAfterMinutes) + interval) {
 			client->sendTextMessage(TextMessage(
 			    MESSAGE_STATUS_WARNING,
 			    fmt::format(
