@@ -2410,9 +2410,7 @@ void ProtocolGame::sendFYIBox(std::string_view message)
 }
 
 // tile
-void ProtocolGame::sendMapDescription(const Position& pos) { sendMapDescription(pos, true); }
-
-void ProtocolGame::sendMapDescription(const Position& pos, bool broadcast)
+void ProtocolGame::sendMapDescription(const Position& pos)
 {
 	if (isOTCv8) {
 		int32_t startz, endz, zstep;
@@ -2428,7 +2426,7 @@ void ProtocolGame::sendMapDescription(const Position& pos, bool broadcast)
 		}
 
 		for (int32_t nz = startz; nz != endz + zstep; nz += zstep) {
-			sendFloorDescription(pos, nz, broadcast);
+			sendFloorDescription(pos, nz);
 		}
 	} else {
 		NetworkMessage msg;
@@ -2436,14 +2434,15 @@ void ProtocolGame::sendMapDescription(const Position& pos, bool broadcast)
 		msg.addPosition(player->getPosition());
 		GetMapDescription(pos.x - awareRange.left(), pos.y - awareRange.top(), pos.z, awareRange.horizontal(),
 		                  awareRange.vertical(), msg);
-		writeToOutputBuffer(msg, broadcast);
+		writeToOutputBuffer(msg);
 	}
 }
 
-void ProtocolGame::sendFloorDescription(const Position& pos, int floor) { sendFloorDescription(pos, floor, true); }
-
-void ProtocolGame::sendFloorDescription(const Position& pos, int floor, bool broadcast)
+void ProtocolGame::sendFloorDescription(const Position& pos, int floor)
 {
+	// When map view range is big, let's say 30x20 all floors may not fit in single packets
+	// So we split one packet with every floor to few packets with single floor
+	
 	NetworkMessage msg;
 	msg.addByte(0x4B);
 	msg.addPosition(player->getPosition());
@@ -2455,7 +2454,7 @@ void ProtocolGame::sendFloorDescription(const Position& pos, int floor, bool bro
 		msg.addByte(skip);
 		msg.addByte(0xFF);
 	}
-	writeToOutputBuffer(msg, broadcast);
+	writeToOutputBuffer(msg);
 }
 
 void ProtocolGame::sendAddTileItem(const Position& pos, uint32_t stackpos, const Item* item)
@@ -2675,18 +2674,18 @@ void ProtocolGame::sendMoveCreature(const Creature* creature, const Position& ne
 					                  (Map::maxClientViewportX * 2) + 2, 1, msg);
 				} else if (oldPos.y < newPos.y) {
 					msg.addByte(0x67);
-					GetMapDescription(oldPos.x - awareRange.left(), newPos.y + awareRange.bottom(), newPos.z,
-					                  awareRange.horizontal(), 1, msg);
+					GetMapDescription(oldPos.x - awareRange.left(), newPos.y + awareRange.bottom(),
+					                  newPos.z, awareRange.horizontal(), 1, msg);
 				}
 
 				if (oldPos.x < newPos.x) {
 					msg.addByte(0x66);
-					GetMapDescription(newPos.x + awareRange.right(), newPos.y - awareRange.top(), newPos.z, 1,
-					                  awareRange.vertical(), msg);
+					GetMapDescription(newPos.x + awareRange.right(), newPos.y - awareRange.top(),
+					                  newPos.z, 1, awareRange.vertical(), msg);
 				} else if (oldPos.x > newPos.x) {
 					msg.addByte(0x68);
-					GetMapDescription(newPos.x - awareRange.left(), newPos.y - awareRange.top(), newPos.z, 1,
-					                  awareRange.vertical(), msg);
+					GetMapDescription(newPos.x - awareRange.left(), newPos.y - awareRange.top(), newPos.z,
+					                  1, awareRange.vertical(), msg);
 				}
 			}
 			writeToOutputBuffer(msg);
@@ -3346,9 +3345,9 @@ void ProtocolGame::updateAwareRange(int width, int height)
 	// If you want to change max awareRange, edit maxViewportX, maxViewportY, maxClientViewportX, maxClientViewportY in
 	// map.h
 	awareRange.width =
-	    std::min(Map::maxViewportX * 2 - 1, std::min(Map::maxClientViewportX_OTCv8 * 2 + 1, std::max(15, width)));
+	    std::min(Map::maxViewportX * 2 - 1, std::min(Map::maxClientViewportX * 2 + 1, std::max(15, width)));
 	awareRange.height =
-	    std::min(Map::maxViewportY * 2 - 1, std::min(Map::maxClientViewportY_OTCv8 * 2 + 1, std::max(11, height)));
+	     std::min(Map::maxViewportY * 2 - 1, std::min(Map::maxClientViewportY * 2 + 1, std::max(11, height)));
 	// numbers must be odd
 	if (awareRange.width % 2 != 1) awareRange.width -= 1;
 	if (awareRange.height % 2 != 1) awareRange.height -= 1;

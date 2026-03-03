@@ -60,9 +60,6 @@ public:
 
 	uint16_t getVersion() const { return version; }
 
-	// Known creature management - fix for creature desync bug
-	void removeKnownCreature(uint32_t creatureId);
-
 	bool isAcceptingPackets() const { return acceptPackets; }
 
 private:
