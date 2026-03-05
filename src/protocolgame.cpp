@@ -491,7 +491,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage& msg)
 	bool cast = false;
 	auto authPair = IOLoginData::gameworldAuthentication(accountName, password, characterName, cast);
 	if (cast) {
-		g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::spectate, getThis(), std::string(characterName), std::string(password))));
+		g_dispatcher.addTask([thisPtr = getThis(), name = std::string(characterName), pass = std::string(password)]() { thisPtr->spectate(name, pass); });
 		return;
 	}
 	uint32_t accountId = authPair.first;
@@ -593,7 +593,7 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 
 		if (isSpectator) {
 		switch (recvbyte) {
-			case 0x14: g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::disconnect, getThis()))); break;
+			case 0x14: g_dispatcher.addTask([thisPtr = getThis()]() { thisPtr->disconnect(); }); break;
 			case 0x32:
 				if (isOTCv8) {
 					parseExtendedOpcode(msg);
@@ -606,20 +606,20 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 				break; // GameClientExtendedPing
 			case 0x6F:
 			case 0x71:
-				g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::spectatorTurn, getThis(), recvbyte - 0x6F)));
+				g_dispatcher.addTask([thisPtr = getThis(), dir = recvbyte - 0x6F]() { thisPtr->spectatorTurn(dir); });
 				break;
 			case 0x70: // Turn East - used for Next Cast (CTRL + RIGHT)
-				g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::parseSwitchCast, getThis(), uint8_t(1))));
+				g_dispatcher.addTask([thisPtr = getThis()]() { thisPtr->parseSwitchCast(uint8_t(1)); });
 				break;
 			case 0x72: // Turn West - used for Prev Cast (CTRL + LEFT)
-				g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::parseSwitchCast, getThis(), uint8_t(0))));
+				g_dispatcher.addTask([thisPtr = getThis()]() { thisPtr->parseSwitchCast(uint8_t(0)); });
 				break;
 			case 0x8C: parseLookAt(msg); break; // Look at tile/item
 				break;
 			case 0x96: parseSpectatorSay(msg); break;
-			case 0x97: g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::sendCastChannel, getThis()))); break;
+			case 0x97: g_dispatcher.addTask([thisPtr = getThis()]() { thisPtr->sendCastChannel(); }); break;
 			default:
-				g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::sendCancelWalk, getThis())));
+				g_dispatcher.addTask([thisPtr = getThis()]() { thisPtr->sendCancelWalk(); });
 				break;
 		}
 		return;
@@ -3075,7 +3075,7 @@ void ProtocolGame::parseNewPing(NetworkMessage& msg)
 {
 	uint32_t pingId = msg.get<uint32_t>();
 	if (g_game.getGameState() == GAME_STATE_NORMAL && player) {
-		g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::sendNewPing, getThis(), pingId)));
+		g_dispatcher.addTask([thisPtr = getThis(), pingId]() { thisPtr->sendNewPing(pingId); });
 	}
 }
 
@@ -3205,7 +3205,7 @@ void ProtocolGame::parseSpectatorSay(NetworkMessage& msg)
 		return;
 	}
 
-	g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::spectatorSay, getThis(), text, channelId)));
+	g_dispatcher.addTask([thisPtr = getThis(), text = std::string(text), channelId]() { thisPtr->spectatorSay(text, channelId); });
 }
 
 void ProtocolGame::spectatorSay(const std::string text, uint16_t channelId)

@@ -32,6 +32,9 @@ class Scheduler : public ThreadHolder<Scheduler>
 {
 public:
 	uint32_t addEvent(SchedulerTask* task);
+	uint32_t addEvent(uint32_t delay, TaskFunc&& f) {
+		return addEvent(createSchedulerTask(delay, std::move(f)));
+	}
 	void stopEvent(uint32_t eventId) noexcept;
 
 	void shutdown() noexcept;

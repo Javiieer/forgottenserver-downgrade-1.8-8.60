@@ -219,28 +219,28 @@ void ProtocolAdmin::parsePacket(NetworkMessage& msg)
 				case CMD_SHALLOW_SAVE_SERVER: {
 					addLogLine("saving server");
 					g_game.broadcastMessage("Server is saving...", MESSAGE_STATUS_WARNING);
-					g_dispatcher.addTask(createTask(std::bind(&Game::saveGameState, &g_game)));
+					g_dispatcher.addTask([]() { g_game.saveGameState(); });
 					output->addByte(AP_MSG_COMMAND_OK);
 					break;
 				}
 
 				case CMD_CLOSE_SERVER: {
 					addLogLine("closing server");
-					g_dispatcher.addTask(createTask(std::bind(&Game::setGameState, &g_game, GAME_STATE_CLOSED)));
+					g_dispatcher.addTask([]() { g_game.setGameState(GAME_STATE_CLOSED); });
 					output->addByte(AP_MSG_COMMAND_OK);
 					break;
 				}
 
 				case CMD_OPEN_SERVER: {
 					addLogLine("opening server");
-					g_dispatcher.addTask(createTask(std::bind(&Game::setGameState, &g_game, GAME_STATE_NORMAL)));
+					g_dispatcher.addTask([]() { g_game.setGameState(GAME_STATE_NORMAL); });
 					output->addByte(AP_MSG_COMMAND_OK);
 					break;
 				}
 
 				case CMD_SHUTDOWN_SERVER: {
 					addLogLine("shutting down server");
-					g_dispatcher.addTask(createTask(std::bind(&Game::shutdown, &g_game)));
+					g_dispatcher.addTask([]() { g_game.shutdown(); });
 					output->addByte(AP_MSG_COMMAND_OK);
 					break;
 				}
@@ -259,26 +259,26 @@ void ProtocolAdmin::parsePacket(NetworkMessage& msg)
 					// Schedule standard shutdown
 					// Convert minutes to milliseconds
 					uint32_t delay = minutes * 60 * 1000;
-					g_scheduler.addEvent(createSchedulerTask(delay, std::bind(&Game::shutdown, &g_game)));
+					g_scheduler.addEvent(delay, []() { g_game.shutdown(); });
 
 					output->addByte(AP_MSG_COMMAND_OK);
 					break;
 				}
 
 				case CMD_PAY_HOUSES: {
-					g_dispatcher.addTask(createTask(std::bind(&ProtocolAdmin::adminCommandPayHouses, this)));
+					g_dispatcher.addTask([this]() { adminCommandPayHouses(); });
 					break;
 				}
 
 				case CMD_RELOAD_SCRIPTS: {
 					int8_t reload = msg.getByte();
-					g_dispatcher.addTask(createTask(std::bind(&ProtocolAdmin::adminCommandReload, this, reload)));
+					g_dispatcher.addTask([this, reload]() { adminCommandReload(reload); });
 					break;
 				}
 
 				case CMD_KICK: {
 					std::string param = std::string(msg.getString());
-					g_dispatcher.addTask(createTask(std::bind(&ProtocolAdmin::adminCommandKickPlayer, this, param)));
+					g_dispatcher.addTask([this, param = std::move(param)]() { adminCommandKickPlayer(param); });
 					break;
 				}
 
@@ -291,7 +291,7 @@ void ProtocolAdmin::parsePacket(NetworkMessage& msg)
 				case CMD_BROADCAST: {
 					std::string param = std::string(msg.getString());
 					addLogLine("broadcasting: " + param);
-					g_dispatcher.addTask(createTask(std::bind(&Game::broadcastMessage, &g_game, param, MESSAGE_STATUS_WARNING)));
+					g_dispatcher.addTask([param = std::move(param)]() { g_game.broadcastMessage(param, MESSAGE_STATUS_WARNING); });
 					output->addByte(AP_MSG_COMMAND_OK);
 					break;
 				}
@@ -299,7 +299,7 @@ void ProtocolAdmin::parsePacket(NetworkMessage& msg)
 				case CMD_CLEAN: {
 					addLogLine("cleaning map");
 					g_game.broadcastMessage("Clean Map executed by OTAdmin.", MESSAGE_STATUS_WARNING);
-					g_dispatcher.addTask(createTask(std::bind(&Map::clean, &g_game.map)));
+					g_dispatcher.addTask([]() { g_game.map.clean(); });
 					output->addByte(AP_MSG_COMMAND_OK);
 					break;
 				}

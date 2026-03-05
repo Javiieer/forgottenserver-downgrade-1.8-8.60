@@ -234,7 +234,7 @@ bool Spawns::isInZone(const Position& centerPos, int32_t radius, const Position&
 void Spawn::startSpawnCheck()
 {
 	if (checkSpawnEvent == 0) {
-		checkSpawnEvent = g_scheduler.addEvent(createSchedulerTask(getInterval(), [this]() { checkSpawn(); }));
+		checkSpawnEvent = g_scheduler.addEvent(getInterval(), [this]() { checkSpawn(); });
 	}
 }
 
@@ -415,7 +415,7 @@ void Spawn::checkSpawn()
 	}
 	
 	if (spawnedMap.size() < spawnMap.size()) {
-		checkSpawnEvent = g_scheduler.addEvent(createSchedulerTask(getInterval(), std::bind(&Spawn::checkSpawn, this)));
+		checkSpawnEvent = g_scheduler.addEvent(getInterval(), [this]() { checkSpawn(); });
 	}
 }
 void Spawn::scheduleSpawn(uint32_t spawnId, uint32_t interval, bool blocked)
@@ -478,7 +478,7 @@ void Spawn::scheduleSpawn(uint32_t spawnId, uint32_t interval, bool blocked)
 	nextDelay = std::max<uint32_t>(nextDelay, static_cast<uint32_t>(SCHEDULER_MINTICKS));
 
 	uint32_t remaining = (interval > nextDelay) ? (interval - nextDelay) : 0;
-	g_scheduler.addEvent(createSchedulerTask(nextDelay, std::bind(&Spawn::scheduleSpawn, this, spawnId, remaining, blocked)));
+	g_scheduler.addEvent(nextDelay, [this, spawnId, remaining, blocked]() { scheduleSpawn(spawnId, remaining, blocked); });
 }
 
 void Spawn::cleanup()
