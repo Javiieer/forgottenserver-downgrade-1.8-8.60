@@ -1,12 +1,13 @@
 // Copyright 2023 The Forgotten Server Authors. All rights reserved.
 // Use of this source code is governed by the GPL-2.0 License that can be found in the LICENSE file.
-// Modern C++20 version with performance improvements
+// Modern C++20 Dispatcher with practical improvements
 
 #include "otpch.h"
 
 #include "tasks.h"
 
 #include "game.h"
+#include "logger.h"
 
 extern Game g_game;
 
@@ -28,6 +29,9 @@ Task* createTaskWithStats(uint32_t expiration, TaskFunc&& f, const std::string& 
 
 void Dispatcher::threadMain()
 {
+    // Capture thread ID for isDispatcherThread() checks
+    threadId = std::this_thread::get_id();
+
     std::vector<Task*> tmpTaskList;
     tmpTaskList.reserve(32);
 
@@ -36,7 +40,6 @@ void Dispatcher::threadMain()
 #endif
 
     while (getState() != THREAD_STATE_TERMINATED) {
-        // Measure wait time when STATS_ENABLED
 #ifdef STATS_ENABLED
         if (g_stats.isEnabled()) {
             time_point = std::chrono::high_resolution_clock::now();
@@ -51,7 +54,6 @@ void Dispatcher::threadMain()
         taskSignal.acquire();
 #endif
 
-        // Check termination after waking up
         if (getState() == THREAD_STATE_TERMINATED) {
             break;
         }
@@ -66,15 +68,34 @@ void Dispatcher::threadMain()
 
         // Process all available tasks
         for (Task* task : tmpTaskList) {
+            auto taskStart = std::chrono::high_resolution_clock::now();
+
 #ifdef STATS_ENABLED
             if (g_stats.isEnabled()) {
-                time_point = std::chrono::high_resolution_clock::now();
+                time_point = taskStart;
             }
 #endif
             if (!task->hasExpired()) {
                 ++dispatcherCycle;
+                ++totalTasksProcessed;
                 (*task)();
+
+                // Slow task detection
+                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(
+                    std::chrono::high_resolution_clock::now() - taskStart
+                ).count();
+
+                if (static_cast<uint64_t>(elapsed) > SLOW_TASK_THRESHOLD_NS) {
+                    ++slowTaskCount;
+                    auto elapsedMs = elapsed / 1'000'000;
+                    if (!task->description.empty()) {
+                        LOG_WARN(">> Slow task detected: {}ms [{}] {}", elapsedMs, task->description, task->extraDescription);
+                    } else {
+                        LOG_WARN(">> Slow task detected: {}ms [unknown]", elapsedMs);
+                    }
+                }
             }
+
 #ifdef STATS_ENABLED
             if (g_stats.isEnabled()) {
                 task->executionTime = std::chrono::duration_cast<std::chrono::nanoseconds>(
@@ -96,7 +117,6 @@ void Dispatcher::addTask(Task* task)
 {
 	bool do_signal = false;
 
-	// C++20: Use lock_guard with explicit scope for better RAII and clarity
 	{
 		std::lock_guard<std::mutex> lockGuard(taskLock);
 
@@ -108,8 +128,6 @@ void Dispatcher::addTask(Task* task)
 		}
 	}
 
-	// C++20: Use semaphore release instead of condition_variable notify
-	// This is more efficient and has lower overhead
 	if (do_signal) {
 		taskSignal.release();
 	}
@@ -117,17 +135,14 @@ void Dispatcher::addTask(Task* task)
 
 void Dispatcher::shutdown()
 {
-	// Create shutdown task
 	Task* task = createTaskWithStats([this]() {
 		setState(THREAD_STATE_TERMINATED);
 	}, "Dispatcher::shutdown", "");
 
-	// Add task to queue
 	{
 		std::lock_guard<std::mutex> lockGuard(taskLock);
 		taskList.push_back(task);
 	}
 
-	// C++20: Signal with semaphore release
 	taskSignal.release();
 }
