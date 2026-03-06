@@ -227,6 +227,7 @@ enum ItemParseAttributes_t
 	ITEM_PARSE_REDUCESKILLLOSS,
 	ITEM_PARSE_ELEMENTALBOND,
 	ITEM_PARSE_SCRIPT,
+	ITEM_PARSE_IMBUEMENTSLOT,
 };
 
 struct Abilities
@@ -377,6 +378,7 @@ public:
 	uint16_t speed = 0;
 	uint16_t wareId = 0;
 
+	uint16_t imbuementSlot = 0;
 	MagicEffectClasses magicEffect = CONST_ME_NONE;
 	Direction bedPartnerDir = DIRECTION_NONE;
 	WeaponType_t weaponType = WEAPON_NONE;

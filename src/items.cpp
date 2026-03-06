@@ -216,6 +216,7 @@ const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributes
     {"reduceskillloss", ITEM_PARSE_REDUCESKILLLOSS},
     {"elementalbond", ITEM_PARSE_ELEMENTALBOND},
     {"script", ITEM_PARSE_SCRIPT},
+    {"imbuementslot", ITEM_PARSE_IMBUEMENTSLOT},
 };
 
 const std::unordered_map<std::string, ItemTypes_t> ItemTypesMap = {{"key", ITEM_TYPE_KEY},
@@ -1925,11 +1926,17 @@ void Items::parseItemNode(const pugi::xml_node& itemNode, uint16_t id)
 					break;
 				}
 
+				case ITEM_PARSE_SCRIPT: {
+					parseScriptAttribute(it, attributeNode, valueAttribute);
+					break;
+				}
+
+				case ITEM_PARSE_IMBUEMENTSLOT: {
+					it.imbuementSlot = pugi::cast<uint16_t>(valueAttribute.value());
+					break;
+				}
+
 				default: {
-					if (parseType == ITEM_PARSE_SCRIPT) {
-						parseScriptAttribute(it, attributeNode, valueAttribute);
-						break;
-					}
 					// It should not ever get to here, only if you add a new key to the map and don't configure a case
 					// for it.
 					// for it.
@@ -2032,6 +2039,10 @@ void Items::parseScriptAttribute(ItemType& it, const pugi::xml_node& attributeNo
 						else if (slotName == "ring") moveevent.setSlot(SLOTP_RING);
 						else if (slotName == "ammo") moveevent.setSlot(SLOTP_AMMO);
 						else if (slotName == "two-handed") moveevent.setSlot(SLOTP_TWO_HAND);
+
+						if (type == MoveEvent_t::MOVE_EVENT_EQUIP && moveevent.getSlot() != SlotPositionBits::SLOTP_WHEREEVER) {
+							it.slotPosition = moveevent.getSlot();
+						}
 					} else if (key == "level") {
 						moveevent.setRequiredLevel(subValue.as_uint());
 						moveevent.setWieldInfo(WIELDINFO_LEVEL);

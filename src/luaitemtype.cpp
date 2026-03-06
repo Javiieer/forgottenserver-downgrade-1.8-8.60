@@ -963,6 +963,18 @@ int luaItemTypeGetElementalBond(lua_State* L)
 	return 1;
 }
 
+int luaItemTypeGetImbuementSlot(lua_State* L)
+{
+	// itemType:getImbuementSlot()
+	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	if (itemType) {
+		lua_pushinteger(L, itemType->imbuementSlot);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 } // namespace
 
 void LuaScriptInterface::registerItemType()
@@ -1045,6 +1057,8 @@ void LuaScriptInterface::registerItemType()
 	registerMethod("ItemType", "getVocationString", luaItemTypeGetVocationString);
 	registerMethod("ItemType", "getMinReqLevel", luaItemTypeGetMinReqLevel);
 	registerMethod("ItemType", "getMinReqMagicLevel", luaItemTypeGetMinReqMagicLevel);
+
+	registerMethod("ItemType", "getImbuementSlot", luaItemTypeGetImbuementSlot);
 
 	registerMethod("ItemType", "hasSubType", luaItemTypeHasSubType);
 }

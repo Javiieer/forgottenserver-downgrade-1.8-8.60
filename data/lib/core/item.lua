@@ -639,6 +639,18 @@ do
 		-- dot after primary attributes info
 		response[#response + 1] = "."
 
+		-- imbuements
+		do
+			local imbuementSlots = itemType:getImbuementSlot()
+			if imbuementSlots > 0 then
+				local slots = {}
+				for i = 1, imbuementSlots do
+					slots[#slots + 1] = "Empty Slot"
+				end
+				response[#response + 1] = fmt("\nImbuements: (%s).", concat(slots, ", "))
+			end
+		end
+
 		-- empty fluid container suffix
 		if itemGroup == ITEM_GROUP_FLUID and subType < 1 then response[#response + 1] = " It is empty." end
 
@@ -708,8 +720,14 @@ do
 						wieldAttrs[#wieldAttrs + 1] = fmt("of %s or higher", concat(levelInfo, " and "))
 					end
 
-					response[#response + 1] = fmt("\n%s can only be wielded properly by %s.",
-					                              (count > 1 and "They" or "It"), concat(wieldAttrs, " "))
+					local slotPosition = itemType:getSlotPosition()
+					local wieldStr = "wielded"
+					if (slotPosition & (SLOTP_HEAD | SLOTP_NECKLACE | SLOTP_ARMOR | SLOTP_LEGS | SLOTP_FEET | SLOTP_RING)) ~= 0 then
+						wieldStr = "worn"
+					end
+
+					response[#response + 1] = fmt("\n%s can only be %s properly by %s.",
+					                              (count > 1 and "They" or "It"), wieldStr, concat(wieldAttrs, " "))
 				end
 			end
 		end
