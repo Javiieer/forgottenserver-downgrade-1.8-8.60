@@ -38,6 +38,9 @@ public:
 	bool registerLuaEvent(Weapon* event);
 	void clear(bool fromLua) override final;
 
+	// public access for items.xml script attribute registration
+	LuaScriptInterface* getScriptInterfacePtr() { return &scriptInterface; }
+
 private:
 	LuaScriptInterface& getScriptInterface() override;
 	std::string_view getScriptBaseName() const override;

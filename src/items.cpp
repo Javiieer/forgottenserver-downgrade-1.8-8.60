@@ -215,6 +215,7 @@ const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributes
     {"experienceratestamina", ITEM_PARSE_EXPERIENCERATE_STAMINA},
     {"reduceskillloss", ITEM_PARSE_REDUCESKILLLOSS},
     {"elementalbond", ITEM_PARSE_ELEMENTALBOND},
+    {"script", ITEM_PARSE_SCRIPT},
 };
 
 const std::unordered_map<std::string, ItemTypes_t> ItemTypesMap = {{"key", ITEM_TYPE_KEY},
@@ -1925,6 +1926,10 @@ void Items::parseItemNode(const pugi::xml_node& itemNode, uint16_t id)
 				}
 
 				default: {
+					if (parseType == ITEM_PARSE_SCRIPT) {
+						parseScriptAttribute(it, attributeNode, valueAttribute);
+						break;
+					}
 					// It should not ever get to here, only if you add a new key to the map and don't configure a case
 					// for it.
 					// for it.
@@ -1942,6 +1947,330 @@ void Items::parseItemNode(const pugi::xml_node& itemNode, uint16_t id)
 	     it.transformToOnUse[PLAYERSEX_MALE] != 0) &&
 	    it.type != ITEM_TYPE_BED) {
 		LOG_WARN(fmt::format("[Warning - Items::parseItemNode] Item {} is not set as a bed-type", it.id));
+	}
+}
+
+void Items::parseScriptAttribute(ItemType& it, const pugi::xml_node& attributeNode, const pugi::xml_attribute& valueAttribute)
+{
+	std::string scriptName = valueAttribute.as_string();
+	std::vector<std::string> tokens;
+	{
+		std::istringstream iss(scriptName);
+		std::string token;
+		while (std::getline(iss, token, ';')) {
+			if (!token.empty()) {
+				tokens.push_back(token);
+			}
+		}
+	}
+
+	for (const auto& scriptToken : tokens) {
+		if (scriptToken == "moveevent") {
+			// Determine event type from sub-attributes, default to equip/deequip
+			MoveEvent_t eventType = MOVE_EVENT_NONE;
+			for (const auto& subNode : attributeNode.children()) {
+				pugi::xml_attribute subKey = subNode.attribute("key");
+				if (!subKey) continue;
+				pugi::xml_attribute subValue = subNode.attribute("value");
+				if (!subValue) continue;
+
+				std::string key = boost::algorithm::to_lower_copy<std::string>(subKey.as_string());
+				if (key == "eventtype") {
+					std::string evtName = boost::algorithm::to_lower_copy<std::string>(subValue.as_string());
+					if (evtName == "stepin") eventType = MOVE_EVENT_STEP_IN;
+					else if (evtName == "stepout") eventType = MOVE_EVENT_STEP_OUT;
+					else if (evtName == "equip") eventType = MOVE_EVENT_EQUIP;
+					else if (evtName == "deequip") eventType = MOVE_EVENT_DEEQUIP;
+					else if (evtName == "additem") eventType = MOVE_EVENT_ADD_ITEM;
+					else if (evtName == "removeitem") eventType = MOVE_EVENT_REMOVE_ITEM;
+					break;
+				}
+			}
+
+			auto createMoveEvent = [&](MoveEvent_t type) {
+				// We create a MoveEvent on the stack using moveEvents' script interface
+				MoveEvent moveevent(g_moveEvents->getScriptInterfacePtr());
+				moveevent.setEventType(type);
+				moveevent.fromItem = true;
+				moveevent.addItemId(it.id);
+
+				if (type == MOVE_EVENT_EQUIP) {
+					moveevent.equipFunction = MoveEvent::EquipItem;
+				} else if (type == MOVE_EVENT_DEEQUIP) {
+					moveevent.equipFunction = MoveEvent::DeEquipItem;
+				} else if (type == MOVE_EVENT_STEP_IN) {
+					moveevent.stepFunction = MoveEvent::StepInField;
+				} else if (type == MOVE_EVENT_STEP_OUT) {
+					moveevent.stepFunction = MoveEvent::StepOutField;
+				} else if (type == MOVE_EVENT_ADD_ITEM_ITEMTILE) {
+					moveevent.moveFunction = MoveEvent::AddItemField;
+				} else if (type == MOVE_EVENT_REMOVE_ITEM) {
+					moveevent.moveFunction = MoveEvent::RemoveItemField;
+				}
+
+				// Parse sub-attributes
+				std::list<std::string> vocStringList;
+				for (const auto& subNode : attributeNode.children()) {
+					pugi::xml_attribute subKey = subNode.attribute("key");
+					if (!subKey) continue;
+					pugi::xml_attribute subValue = subNode.attribute("value");
+					if (!subValue) continue;
+
+					std::string key = boost::algorithm::to_lower_copy<std::string>(subKey.as_string());
+
+					if (key == "slot" && (type == MOVE_EVENT_EQUIP || type == MOVE_EVENT_DEEQUIP)) {
+						std::string slotName = boost::algorithm::to_lower_copy<std::string>(subValue.as_string());
+						if (slotName == "head") moveevent.setSlot(SLOTP_HEAD);
+						else if (slotName == "necklace") moveevent.setSlot(SLOTP_NECKLACE);
+						else if (slotName == "backpack") moveevent.setSlot(SLOTP_BACKPACK);
+						else if (slotName == "armor" || slotName == "body") moveevent.setSlot(SLOTP_ARMOR);
+						else if (slotName == "right-hand") moveevent.setSlot(SLOTP_RIGHT);
+						else if (slotName == "left-hand") moveevent.setSlot(SLOTP_LEFT);
+						else if (slotName == "hand" || slotName == "shield") moveevent.setSlot(SLOTP_RIGHT | SLOTP_LEFT);
+						else if (slotName == "legs") moveevent.setSlot(SLOTP_LEGS);
+						else if (slotName == "feet") moveevent.setSlot(SLOTP_FEET);
+						else if (slotName == "ring") moveevent.setSlot(SLOTP_RING);
+						else if (slotName == "ammo") moveevent.setSlot(SLOTP_AMMO);
+						else if (slotName == "two-handed") moveevent.setSlot(SLOTP_TWO_HAND);
+					} else if (key == "level") {
+						moveevent.setRequiredLevel(subValue.as_uint());
+						moveevent.setWieldInfo(WIELDINFO_LEVEL);
+					} else if (key == "maglevel") {
+						moveevent.setRequiredMagLevel(subValue.as_uint());
+						moveevent.setWieldInfo(WIELDINFO_MAGLV);
+					} else if (key == "premium") {
+						if (subValue.as_bool()) {
+							moveevent.setNeedPremium(true);
+							moveevent.setWieldInfo(WIELDINFO_PREMIUM);
+						}
+					} else if (key == "vocation") {
+						std::string vocations = subValue.as_string();
+						std::istringstream vss(vocations);
+						std::string vtoken;
+						while (std::getline(vss, vtoken, ',')) {
+							// trim
+							vtoken.erase(vtoken.begin(), std::find_if(vtoken.begin(), vtoken.end(), [](unsigned char ch) { return !std::isspace(ch); }));
+							vtoken.erase(std::find_if(vtoken.rbegin(), vtoken.rend(), [](unsigned char ch) { return !std::isspace(ch); }).base(), vtoken.end());
+
+							// format: "vocname;true" or just "vocname"
+							std::string vocName;
+							bool showInDescription = false;
+							std::istringstream inner(vtoken);
+							std::getline(inner, vocName, ';');
+							std::string showStr;
+							std::getline(inner, showStr, ';');
+							showInDescription = (showStr == "true");
+
+							moveevent.addVocationEquipSet(vocName);
+							moveevent.setWieldInfo(WIELDINFO_VOCREQ);
+
+							if (showInDescription) {
+								vocStringList.push_back(boost::algorithm::to_lower_copy(vocName) + "s");
+							}
+						}
+					}
+				}
+
+				// Build vocation string
+				if (!vocStringList.empty()) {
+					std::string vocStr;
+					for (auto it2 = vocStringList.begin(); it2 != vocStringList.end(); ++it2) {
+						if (!vocStr.empty()) {
+							auto next = it2;
+							++next;
+							if (next == vocStringList.end()) {
+								vocStr += " and ";
+							} else {
+								vocStr += ", ";
+							}
+						}
+						vocStr += *it2;
+					}
+					moveevent.setVocationString(vocStr);
+				}
+
+				// Update ItemType wield info from the equip moveevent
+				if (type == MOVE_EVENT_EQUIP) {
+					it.wieldInfo = moveevent.getWieldInfo();
+					it.minReqLevel = moveevent.getReqLevel();
+					it.minReqMagicLevel = moveevent.getReqMagLv();
+					it.vocationString = moveevent.getVocationString();
+				}
+
+				// Register the moveevent
+				g_moveEvents->addEvent(std::move(moveevent), it.id, g_moveEvents->getItemIdMap());
+			};
+
+			if (eventType == MOVE_EVENT_NONE) {
+				// Default: create both equip and deequip
+				createMoveEvent(MOVE_EVENT_EQUIP);
+				createMoveEvent(MOVE_EVENT_DEEQUIP);
+			} else {
+				createMoveEvent(eventType);
+			}
+
+		} else if (scriptToken == "weapon") {
+			// Determine weapon type from sub-attributes
+			WeaponType_t weaponType = it.weaponType;
+			for (const auto& subNode : attributeNode.children()) {
+				pugi::xml_attribute subKey = subNode.attribute("key");
+				if (!subKey) continue;
+				pugi::xml_attribute subValue = subNode.attribute("value");
+				if (!subValue) continue;
+
+				std::string key = boost::algorithm::to_lower_copy<std::string>(subKey.as_string());
+				if (key == "weapontype") {
+					std::string wt = boost::algorithm::to_lower_copy<std::string>(subValue.as_string());
+					auto found = WeaponTypesMap.find(wt);
+					if (found != WeaponTypesMap.end()) {
+						weaponType = found->second;
+					}
+					break;
+				}
+			}
+
+			if (weaponType == WEAPON_NONE) {
+				LOG_WARN(fmt::format("[Warning - Items::parseScriptAttribute] No weapon type for item id: {}", it.id));
+				continue;
+			}
+
+			LuaScriptInterface* weaponInterface = g_weapons->getScriptInterfacePtr();
+			std::unique_ptr<Weapon> weapon;
+
+			if (weaponType == WEAPON_DISTANCE || weaponType == WEAPON_AMMO) {
+				weapon = std::make_unique<WeaponDistance>(weaponInterface);
+			} else if (weaponType == WEAPON_WAND) {
+				weapon = std::make_unique<WeaponWand>(weaponInterface);
+			} else {
+				weapon = std::make_unique<WeaponMelee>(weaponInterface);
+			}
+
+			weapon->weaponType = weaponType;
+			it.weaponType = weaponType;
+			weapon->configureWeapon(it);
+
+			// Parse sub-attributes for weapon
+			int32_t fromDamage = 0;
+			int32_t toDamage = 0;
+			std::list<std::string> vocStringList;
+
+			for (const auto& subNode : attributeNode.children()) {
+				pugi::xml_attribute subKey = subNode.attribute("key");
+				if (!subKey) continue;
+				pugi::xml_attribute subValue = subNode.attribute("value");
+				if (!subValue) continue;
+
+				std::string key = boost::algorithm::to_lower_copy<std::string>(subKey.as_string());
+
+				if (key == "level") {
+					weapon->setRequiredLevel(subValue.as_uint());
+					weapon->setWieldInfo(WIELDINFO_LEVEL);
+				} else if (key == "maglevel") {
+					weapon->setRequiredMagLevel(subValue.as_uint());
+					weapon->setWieldInfo(WIELDINFO_MAGLV);
+				} else if (key == "unproperly") {
+					weapon->setWieldUnproperly(subValue.as_bool());
+				} else if (key == "action") {
+					std::string action = boost::algorithm::to_lower_copy<std::string>(subValue.as_string());
+					if (action == "removecharge") weapon->action = WEAPONACTION_REMOVECHARGE;
+					else if (action == "removecount") weapon->action = WEAPONACTION_REMOVECOUNT;
+					else if (action == "move") weapon->action = WEAPONACTION_MOVE;
+				} else if (key == "breakchance") {
+					weapon->setBreakChance(std::min<uint8_t>(100, static_cast<uint8_t>(subValue.as_uint())));
+				} else if (key == "mana") {
+					weapon->setMana(subValue.as_uint());
+				} else if (key == "soul") {
+					weapon->setSoul(subValue.as_uint());
+				} else if (key == "premium") {
+					weapon->setNeedPremium(subValue.as_bool());
+					if (subValue.as_bool()) {
+						weapon->setWieldInfo(WIELDINFO_PREMIUM);
+					}
+				} else if (key == "fromdamage") {
+					fromDamage = subValue.as_int();
+				} else if (key == "todamage") {
+					toDamage = subValue.as_int();
+				} else if (key == "wandtype") {
+					std::string elementName = boost::algorithm::to_lower_copy<std::string>(subValue.as_string());
+					if (elementName == "earth") weapon->params.combatType = COMBAT_EARTHDAMAGE;
+					else if (elementName == "ice") weapon->params.combatType = COMBAT_ICEDAMAGE;
+					else if (elementName == "energy") weapon->params.combatType = COMBAT_ENERGYDAMAGE;
+					else if (elementName == "fire") weapon->params.combatType = COMBAT_FIREDAMAGE;
+					else if (elementName == "death") weapon->params.combatType = COMBAT_DEATHDAMAGE;
+					else if (elementName == "holy") weapon->params.combatType = COMBAT_HOLYDAMAGE;
+				} else if (key == "slot") {
+					std::string slotName = boost::algorithm::to_lower_copy<std::string>(subValue.as_string());
+					if (slotName == "two-handed") {
+						it.slotPosition = SLOTP_TWO_HAND;
+					} else {
+						it.slotPosition = SLOTP_HAND;
+					}
+				} else if (key == "vocation") {
+					std::string vocations = subValue.as_string();
+					std::istringstream vss(vocations);
+					std::string vtoken;
+					while (std::getline(vss, vtoken, ',')) {
+						vtoken.erase(vtoken.begin(), std::find_if(vtoken.begin(), vtoken.end(), [](unsigned char ch) { return !std::isspace(ch); }));
+						vtoken.erase(std::find_if(vtoken.rbegin(), vtoken.rend(), [](unsigned char ch) { return !std::isspace(ch); }).base(), vtoken.end());
+
+						std::string vocName;
+						bool showInDescription = false;
+						std::istringstream inner(vtoken);
+						std::getline(inner, vocName, ';');
+						std::string showStr;
+						std::getline(inner, showStr, ';');
+						showInDescription = (showStr == "true");
+
+						weapon->addVocationWeaponSet(vocName);
+						weapon->setWieldInfo(WIELDINFO_VOCREQ);
+
+						if (showInDescription) {
+							vocStringList.push_back(boost::algorithm::to_lower_copy(vocName) + "s");
+						}
+					}
+				} else if (key == "reset") {
+					weapon->setRequiredReset(subValue.as_uint());
+					weapon->setWieldInfo(WIELDINFO_RESET);
+				}
+			}
+
+			// Configure wand damage
+			if (WeaponWand* wand = dynamic_cast<WeaponWand*>(weapon.get())) {
+				wand->setMinChange(fromDamage);
+				wand->setMaxChange(toDamage);
+				wand->configureWeapon(it);
+			}
+
+			// Build vocation string
+			if (!vocStringList.empty()) {
+				std::string vocStr;
+				for (auto it2 = vocStringList.begin(); it2 != vocStringList.end(); ++it2) {
+					if (!vocStr.empty()) {
+						auto next = it2;
+						++next;
+						if (next == vocStringList.end()) {
+							vocStr += " and ";
+						} else {
+							vocStr += ", ";
+						}
+					}
+					vocStr += *it2;
+				}
+				weapon->setVocationString(vocStr);
+			}
+
+			// Update ItemType with wield info
+			if (weapon->getWieldInfo() != 0) {
+				it.wieldInfo = weapon->getWieldInfo();
+				it.vocationString = weapon->getVocationString();
+				it.minReqLevel = weapon->getReqLevel();
+				it.minReqMagicLevel = weapon->getReqMagLv();
+			}
+
+			// Register weapon
+			weapon->fromItem = true;
+			g_weapons->registerLuaEvent(weapon.release());
+		}
 	}
 }
 

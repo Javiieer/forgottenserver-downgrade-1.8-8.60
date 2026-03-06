@@ -56,8 +56,13 @@ public:
 	bool registerLuaFunction(MoveEvent* event);
 	void clear(bool fromLua) override final;
 
-private:
+	// public access for items.xml script attribute registration
 	using MoveListMap = std::map<uint16_t, MoveEventList>;
+	void addEvent(MoveEvent moveEvent, uint16_t id, MoveListMap& map);
+	MoveListMap& getItemIdMap() { return itemIdMap; }
+	LuaScriptInterface* getScriptInterfacePtr() { return &scriptInterface; }
+
+private:
 	using MovePosListMap = std::map<Position, MoveEventList>;
 	void clearMap(MoveListMap& map, bool fromLua);
 	void clearPosMap(MovePosListMap& map, bool fromLua);
@@ -66,8 +71,6 @@ private:
 	std::string_view getScriptBaseName() const override;
 	Event_ptr getEvent(std::string_view nodeName) override;
 	bool registerEvent(Event_ptr event, const pugi::xml_node& node) override;
-
-	void addEvent(MoveEvent moveEvent, uint16_t id, MoveListMap& map);
 
 	void addEvent(MoveEvent moveEvent, const Position& pos, MovePosListMap& map);
 	MoveEvent* getEvent(const Tile* tile, MoveEvent_t eventType);

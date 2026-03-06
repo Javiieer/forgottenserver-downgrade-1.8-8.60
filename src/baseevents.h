@@ -26,6 +26,7 @@ public:
 
 	bool scripted = false;
 	bool fromLua = false;
+	bool fromItem = false;
 
 	int32_t getScriptId() { return scriptId; }
 

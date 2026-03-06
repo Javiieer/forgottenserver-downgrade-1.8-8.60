@@ -43,6 +43,22 @@ ScriptingManager::~ScriptingManager()
 	delete g_scripts;
 }
 
+bool ScriptingManager::loadPreItems()
+{
+	// Ensure g_luaEnvironment is properly initialized
+	if (!g_luaEnvironment.getLuaState()) {
+		if (!g_luaEnvironment.initState()) {
+			LOG_ERROR("> ERROR: Failed to initialize Lua environment!");
+			return false;
+		}
+	}
+
+	if (!g_weapons) g_weapons = new Weapons();
+	if (!g_moveEvents) g_moveEvents = new MoveEvents();
+	
+	return true;
+}
+
 bool ScriptingManager::loadScriptSystems()
 {
 	// Ensure g_luaEnvironment is properly initialized
@@ -71,12 +87,12 @@ bool ScriptingManager::loadScriptSystems()
 		return false;
 	}
 
-	g_weapons = new Weapons();
+	if (!g_weapons) g_weapons = new Weapons();
 	g_weapons->loadDefaults();
 	g_spells = new Spells();
 	g_actions = new Actions();
 	g_talkActions = new TalkActions();
-	g_moveEvents = new MoveEvents();
+	if (!g_moveEvents) g_moveEvents = new MoveEvents();
 	g_creatureEvents = new CreatureEvents();
 	g_globalEvents = new GlobalEvents();
 

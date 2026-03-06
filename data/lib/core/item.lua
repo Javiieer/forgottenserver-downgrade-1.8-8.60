@@ -194,8 +194,8 @@ do
 	local housePriceVisible = configManager.getBoolean(configKeys.HOUSE_DOOR_SHOW_PRICE)
 	local pricePerSQM = configManager.getNumber(configKeys.HOUSE_PRICE)
 
-	local showAtkWeaponTypes = {WEAPON_CLUB, WEAPON_SWORD, WEAPON_AXE, WEAPON_DISTANCE}
-	local showDefWeaponTypes = {WEAPON_CLUB, WEAPON_SWORD, WEAPON_AXE, WEAPON_DISTANCE, WEAPON_SHIELD}
+	local showAtkWeaponTypes = {WEAPON_CLUB, WEAPON_SWORD, WEAPON_AXE, WEAPON_DISTANCE, WEAPON_FIST}
+	local showDefWeaponTypes = {WEAPON_CLUB, WEAPON_SWORD, WEAPON_AXE, WEAPON_DISTANCE, WEAPON_SHIELD, WEAPON_FIST}
 	local suppressedConditionNames = {
 		-- NOTE: these names are made up just to match dwarven ring attribute style
 		[CONDITION_POISON] = "antidote",

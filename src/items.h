@@ -226,6 +226,7 @@ enum ItemParseAttributes_t
 	ITEM_PARSE_EXPERIENCERATE_STAMINA,
 	ITEM_PARSE_REDUCESKILLLOSS,
 	ITEM_PARSE_ELEMENTALBOND,
+	ITEM_PARSE_SCRIPT,
 };
 
 struct Abilities
@@ -460,6 +461,7 @@ public:
 
 	bool loadFromXml();
 	void parseItemNode(const pugi::xml_node& itemNode, uint16_t id);
+	void parseScriptAttribute(ItemType& it, const pugi::xml_node& attributeNode, const pugi::xml_attribute& valueAttribute);
 
 	void buildInventoryList();
 	const InventoryVector& getInventory() const { return inventory; }

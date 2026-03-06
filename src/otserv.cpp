@@ -157,6 +157,12 @@ void mainLoader(ServiceManager* services)
 		return;
 	}
 
+	// instantiate required script systems for items
+	if (!ScriptingManager::getInstance().loadPreItems()) {
+		startupErrorMessage("Failed to initialize pre-item script systems");
+		return;
+	}
+
 	// load item data
 	LOG_INFO(">> Loading items... ");
 	if (!Item::items.loadFromOtb("data/items/items.otb")) {
