@@ -14,6 +14,7 @@
 
 #include <cstring>
 #include <unordered_map>
+#include <absl/container/flat_hash_map.h>
 
 class Creature;
 

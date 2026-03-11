@@ -13,6 +13,7 @@
 #include "game.h"
 #include "iomap.h"
 #include "fileloader.h"
+#include <mutex>
 #include <iostream>
 #include "logger.h"
 
@@ -45,8 +46,10 @@ std::shared_ptr<BasicItem> MapCache::tryGetItemFromCache(const std::shared_ptr<B
                 ++itemCacheHits;
                 return cached;
             } else {
+                // #ifdef _DEBUG
                 // LOG_WARN(fmt::format("[MapCache] Hash collision detected for item ID {} (hash: {})", 
                 //                        item->id, h));
+                // #endif
             }
         } else {
             // Expired weak_ptr, remove it
@@ -76,7 +79,9 @@ std::shared_ptr<BasicTile> MapCache::tryGetTileFromCache(const std::shared_ptr<B
                 ++tileCacheHits;
                 return cached;
             } else {
+                // #ifdef _DEBUG
                 // LOG_WARN(fmt::format("[MapCache] Hash collision detected for tile (hash: {})", h));
+                // #endif
             }
         } else {
             // Expired weak_ptr, remove it
@@ -90,8 +95,7 @@ std::shared_ptr<BasicTile> MapCache::tryGetTileFromCache(const std::shared_ptr<B
 }
 
 void MapCache::flush() {
-    std::lock_guard<std::mutex> itemLock(itemCacheMutex);
-    std::lock_guard<std::mutex> tileLock(tileCacheMutex);
+    std::scoped_lock lock(itemCacheMutex, tileCacheMutex);
     
     size_t itemCount = itemCache.size();
     size_t tileCount = tileCache.size();

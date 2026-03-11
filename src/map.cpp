@@ -444,37 +444,32 @@ void Map::getSpectators(SpectatorVec& spectators, const Position& centerPos, boo
 		auto iter = spectatorsCache.find(centerPos);
 		if (iter != spectatorsCache.end()) {
 			auto& entry = iter->second;
-			if (entry.minRangeX == minRangeX && entry.maxRangeX == maxRangeX && entry.minRangeY == minRangeY &&
-			    entry.maxRangeY == maxRangeY) {
-				SpectatorsCache::FloorData* cacheFloorData;
-				if (onlyPlayers) {
-					cacheFloorData = &entry.players;
-				} else if (onlyMonsters) {
-					cacheFloorData = &entry.monsters;
-				} else if (onlyNpcs) {
-					cacheFloorData = &entry.npcs;
-				} else {
-					cacheFloorData = &entry.creatures;
-				}
-
-				if (multifloor) {
-					cacheOpt = &cacheFloorData->multiFloor;
-					hasCacheOpt = &cacheFloorData->hasMultiFloor;
-				} else {
-					cacheOpt = &cacheFloorData->floor;
-					hasCacheOpt = &cacheFloorData->hasFloor;
-				}
-
-				if (*hasCacheOpt) {
-					if (!spectators.empty()) {
-						spectators.addSpectators(*cacheOpt);
-					} else {
-						spectators = *cacheOpt;
-					}
-					return;
-				}
+			SpectatorsCache::FloorData* cacheFloorData;
+			if (onlyPlayers) {
+				cacheFloorData = &entry.players;
+			} else if (onlyMonsters) {
+				cacheFloorData = &entry.monsters;
+			} else if (onlyNpcs) {
+				cacheFloorData = &entry.npcs;
 			} else {
-				spectatorsCache.erase(iter);
+				cacheFloorData = &entry.creatures;
+			}
+
+			if (multifloor) {
+				cacheOpt = &cacheFloorData->multiFloor;
+				hasCacheOpt = &cacheFloorData->hasMultiFloor;
+			} else {
+				cacheOpt = &cacheFloorData->floor;
+				hasCacheOpt = &cacheFloorData->hasFloor;
+			}
+
+			if (*hasCacheOpt) {
+				if (!spectators.empty()) {
+					spectators.addSpectators(*cacheOpt);
+				} else {
+					spectators = *cacheOpt;
+				}
+				return;
 			}
 		}
 	}
