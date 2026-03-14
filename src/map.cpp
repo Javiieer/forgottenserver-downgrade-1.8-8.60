@@ -696,10 +696,7 @@ const Tile* Map::canWalkTo(const Creature& creature, const Position& pos) const
 			return nullptr;
 		}
 
-		uint32_t flags = FLAG_PATHFINDING;
-		if (!creature.getPlayer()) {
-			flags |= FLAG_IGNOREFIELDDAMAGE;
-		}
+		uint32_t flags = FLAG_PATHFINDING | FLAG_IGNOREFIELDDAMAGE;
 
 		if (tile->queryAdd(0, creature, 1, flags) != RETURNVALUE_NOERROR) {
 			return nullptr;
