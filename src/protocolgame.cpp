@@ -894,49 +894,54 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 
 void ProtocolGame::GetTileDescription(const Tile* tile, NetworkMessage& msg)
 {
-	int32_t count = 0;
-	if (const auto ground = tile->getGround()) {
+	int32_t count;
+	Item* ground = tile->getGround();
+	if (ground) {
 		msg.addItem(ground);
-		++count;
+		count = 1;
+	} else {
+		count = 0;
 	}
-
-	const bool isStacked = player->getPosition() == tile->getPosition();
 
 	const TileItemVector* items = tile->getItemList();
 	if (items) {
 		for (auto it = items->getBeginTopItem(), end = items->getEndTopItem(); it != end; ++it) {
 			msg.addItem(*it);
-
-			if (!isOTCv8) {
-				if (++count == 9 && isStacked) {
-					break;
-				} else if (count == MAX_STACKPOS_THINGS) {
-					return;
-				}
-			} else if (++count == MAX_STACKPOS_THINGS) {
+			count++;
+			if (count == 9 && tile->getPosition() == player->getPosition()) {
 				break;
+			} else if (count == 10) {
+				return;
 			}
 		}
 	}
 
+	const bool isStacked = player->getPosition() == tile->getPosition();
+
 	const CreatureVector* creatures = tile->getCreatures();
 	if (creatures) {
+		bool playerAdded = false;
 		for (auto it = creatures->rbegin(), end = creatures->rend(); it != end; ++it) {
-			if (!isOTCv8 && count == 9 && isStacked) {
-				auto [known, removedKnown] = isKnownCreature(player->getID());
-				AddCreature(msg, player, known, removedKnown);
-			} else {
-				const Creature* creature = (*it);
-				if (!player->canSeeCreature(creature)) {
-					continue;
-				}
+			const Creature* creature = (*it);
 
-				auto [known, removedKnown] = isKnownCreature(creature->getID());
-				AddCreature(msg, creature, known, removedKnown);
+			if (!player->canSeeCreature(creature)) {
+				continue;
 			}
 
-			if (++count == MAX_STACKPOS_THINGS && !isOTCv8) {
-				return;
+			if (!isOTCv8 && isStacked && count == 9 && !playerAdded) {
+				creature = player;
+			}
+
+			if (creature->getID() == player->getID()) {
+				playerAdded = true;
+			}
+
+			auto [known, removedKnown] = isKnownCreature(creature->getID());
+			AddCreature(msg, creature, known, removedKnown);
+
+			if (++count == MAX_STACKPOS_THINGS) {
+				if (!isOTCv8) return;
+				break;
 			}
 		}
 	}
@@ -944,7 +949,6 @@ void ProtocolGame::GetTileDescription(const Tile* tile, NetworkMessage& msg)
 	if (items && count < MAX_STACKPOS_THINGS) {
 		for (auto it = items->getBeginDownItem(), end = items->getEndDownItem(); it != end; ++it) {
 			msg.addItem(*it);
-
 			if (++count == MAX_STACKPOS_THINGS) {
 				return;
 			}
@@ -1590,7 +1594,8 @@ void ProtocolGame::sendCreatureEmblem(const Creature* creature)
 	msg.addByte(0x6A);
 	msg.addPosition(pos);
 	msg.addByte(stackpos);
-	AddCreature(msg, creature, false, creature->getID());
+	auto [known, removedKnown] = isKnownCreature(creature->getID());
+	AddCreature(msg, creature, known, removedKnown);
 	writeToOutputBuffer(msg);
 }
 
@@ -1997,6 +2002,11 @@ void ProtocolGame::sendCreatureTurn(const Creature* creature, uint32_t stackpos)
 		return;
 	}
 
+	uint8_t dir = static_cast<uint8_t>(creature->getDirection());
+	if (dir > 3) {
+		return;
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0x6B);
 	msg.addPosition(creature->getPosition());
@@ -2004,7 +2014,7 @@ void ProtocolGame::sendCreatureTurn(const Creature* creature, uint32_t stackpos)
 
 	msg.add<uint16_t>(0x63);
 	msg.add<uint32_t>(creature->getID());
-	msg.addByte(creature->getDirection());
+	msg.addByte(dir);
 	writeToOutputBuffer(msg);
 }
 
@@ -2323,34 +2333,17 @@ void ProtocolGame::sendRemoveTileThing(const Position& pos, uint32_t stackpos)
 
 void ProtocolGame::sendUpdateTileCreature(const Position& pos, uint32_t stackpos, const Creature* creature)
 {
-	// Adapted from Canary's reloadCreature
-	if (!creature || !canSee(pos)) {
-		return;
-	}
-
-	auto tile = creature->getTile();
-	if (!tile) {
-		return;
-	}
-
-	if (stackpos >= 10) {
+	if (stackpos >= MAX_STACKPOS_THINGS || !canSee(pos)) {
 		return;
 	}
 
 	NetworkMessage msg;
-	uint32_t creatureId = creature->getID();
-	auto it = std::find(knownCreatureSet.begin(), knownCreatureSet.end(), creatureId);
+	msg.addByte(0x6B);
+	msg.addPosition(pos);
+	msg.addByte(static_cast<uint8_t>(stackpos));
 
-	if (it != knownCreatureSet.end()) {
-		// Known creature - send reload with 0x6B
-		msg.addByte(0x6B);
-		msg.addPosition(creature->getPosition());
-		msg.addByte(static_cast<uint8_t>(stackpos));
-		AddCreature(msg, creature, false, 0);
-	} else {
-		// Unknown creature - send as new
-		sendAddCreature(creature, creature->getPosition(), stackpos, CONST_ME_NONE);
-	}
+	auto [known, removedKnown] = isKnownCreature(creature->getID());
+	AddCreature(msg, creature, known, removedKnown);
 
 	writeToOutputBuffer(msg);
 }
@@ -2502,7 +2495,6 @@ void ProtocolGame::sendMoveCreature(const Creature* creature, const Position& ne
 					GetMapDescription(oldPos.x - Map::maxClientViewportX, newPos.y + (Map::maxClientViewportY + 1),
 					                  newPos.z, (Map::maxClientViewportX * 2) + 2, 1, msg);
 				}
-
 				if (oldPos.x < newPos.x) {
 					msg.addByte(0x66);
 					GetMapDescription(newPos.x + (Map::maxClientViewportX + 1), newPos.y - Map::maxClientViewportY,
@@ -2830,7 +2822,11 @@ void ProtocolGame::AddCreature(NetworkMessage& msg, const Creature* creature, bo
 		    (static_cast<double>(creature->getHealth()) / std::max<int32_t>(creature->getMaxHealth(), 1)) * 100)));
 	}
 
-	msg.addByte(creature->getDirection());
+	uint8_t direction = static_cast<uint8_t>(creature->getDirection());
+	if (direction > 3) {
+			direction = DIRECTION_SOUTH;
+	}
+	msg.addByte(direction);
 
 	if (!creature->isInGhostMode() && !creature->isInvisible()) {
 		AddOutfit(msg, creature->getCurrentOutfit());
@@ -2986,6 +2982,10 @@ void ProtocolGame::MoveUpCreature(NetworkMessage& msg, const Creature* creature,
 		return;
 	}
 
+	if (!creature || !creature->getTile()) {
+		return;
+	}
+
 	// floor change up
 	msg.addByte(0xBE);
 
@@ -3032,6 +3032,10 @@ void ProtocolGame::MoveDownCreature(NetworkMessage& msg, const Creature* creatur
                                     const Position& oldPos)
 {
 	if (creature != player) {
+		return;
+	}
+
+	if (!creature || !creature->getTile()) {
 		return;
 	}
 
