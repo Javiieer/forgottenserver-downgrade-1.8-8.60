@@ -373,47 +373,42 @@ void Spawn::startup()
 void Spawn::checkSpawn()
 {
 	checkSpawnEvent = 0;
-
 	cleanup();
 
 	uint32_t spawnCount = 0;
-
 	const int64_t now = OTSYS_TIME();
 	const int64_t rate = std::max<int64_t>(1, ConfigManager::getInteger(ConfigManager::RATE_SPAWN));
+	const uint32_t effectDuration = ConfigManager::getBoolean(ConfigManager::SPAWN_START_EFFECT_ENABLED) ? static_cast<uint32_t>(ConfigManager::getInteger(ConfigManager::RATE_START_EFFECT)) : 0;
 
 	for (auto& [spawnId, sb] : spawnMap) {
 		if (spawnedMap.contains(spawnId)) {
 			continue;
 		}
 
+		const uint32_t spawnInterval = static_cast<uint32_t>(sb.interval / rate);
 
-		const uint32_t spawnInterval = static_cast<uint32_t>(static_cast<int64_t>(sb.interval) / rate);
-		
 		if (now >= sb.lastSpawn + std::max<uint32_t>(MINSPAWN_INTERVAL, spawnInterval)) {
-
 			// If there is a player blocking and no monster in the set ignores the block,
 			// we show POFF and retry on the next cycle (no teleport effect).
 			bool playerBlocking = findPlayer(sb.pos);
 			bool anyIgnoresBlock = std::ranges::any_of(sb.mTypes, [](const auto& pair) {
 				return pair.first->info.isIgnoringSpawnBlock;
 			});
-			
+
 			if (playerBlocking && !anyIgnoresBlock) {
 				if (++spawnCount == 1) {
-					uint32_t effectDuration = ConfigManager::getBoolean(ConfigManager::SPAWN_START_EFFECT_ENABLED) ? static_cast<uint32_t>(ConfigManager::getInteger(ConfigManager::RATE_START_EFFECT)) : 0;
 					scheduleSpawn(spawnId, effectDuration, true);
 					break;
 				}
 			}
-			
+
 			if (++spawnCount == 1) {
-				uint32_t effectDuration = ConfigManager::getBoolean(ConfigManager::SPAWN_START_EFFECT_ENABLED) ? static_cast<uint32_t>(ConfigManager::getInteger(ConfigManager::RATE_START_EFFECT)) : 0;
 				scheduleSpawn(spawnId, effectDuration);
 				break;
 			}
 		}
 	}
-	
+
 	if (spawnedMap.size() < spawnMap.size()) {
 		checkSpawnEvent = g_scheduler.addEvent(getInterval(), [this]() { checkSpawn(); });
 	}
