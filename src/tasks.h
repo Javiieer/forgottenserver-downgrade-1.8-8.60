@@ -10,8 +10,8 @@
 #include "stats.h"
 
 using TaskFunc = std::function<void(void)>;
-constexpr int DISPATCHER_TASK_EXPIRATION = 2000;
-constexpr uint64_t SLOW_TASK_THRESHOLD_NS = 50'000'000; // 50ms in nanoseconds
+inline constexpr int DISPATCHER_TASK_EXPIRATION = 2000;
+inline constexpr uint64_t SLOW_TASK_THRESHOLD_NS = 50'000'000; // 50ms in nanoseconds
 
 // C++20: Use steady_clock for monotonic time
 const auto SYSTEM_TIME_ZERO = std::chrono::steady_clock::time_point(std::chrono::milliseconds(0));
@@ -47,6 +47,8 @@ public:
 	const std::string description;
 	const std::string extraDescription;
 	uint64_t executionTime = 0;
+
+	bool trackInStats = true;
 
 protected:
 	std::chrono::steady_clock::time_point expiration = SYSTEM_TIME_ZERO;
