@@ -31,6 +31,9 @@ Creature::~Creature()
 		delete condition;
 	}
 	conditions.clear();
+
+	// clear damage for prevent memory leak
+	damageMap.clear();
 }
 
 bool Creature::canSee(const Position& myPos, const Position& pos, int32_t viewRangeX, int32_t viewRangeY)
