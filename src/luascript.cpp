@@ -263,7 +263,11 @@ int32_t LuaScriptInterface::scriptEnvIndex = -1;
 
 LuaScriptInterface::LuaScriptInterface(std::string_view interfaceName) : interfaceName{interfaceName} {}
 
-LuaScriptInterface::~LuaScriptInterface() { closeState(); }
+LuaScriptInterface::~LuaScriptInterface()
+{
+	closeState();
+	cacheFiles.clear();
+}
 
 bool LuaScriptInterface::reInitState()
 {
@@ -271,6 +275,10 @@ bool LuaScriptInterface::reInitState()
 	g_luaEnvironment.clearAreaObjects(this);
 
 	closeState();
+
+	cacheFiles.clear();
+	runningEventId = EVENT_ID_USER;
+
 	return initState();
 }
 
