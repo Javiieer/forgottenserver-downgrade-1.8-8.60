@@ -2369,33 +2369,45 @@ void Player::death(Creature* lastHitCreature)
 			mana = manaMax;
 		}
 
-		auto it = conditions.begin(), end = conditions.end();
-		while (it != end) {
-			Condition* condition = *it;
-			if (condition->isPersistent() && !condition->isConstant()) {
-				it = conditions.erase(it);
+		{
+			std::vector<Condition*> toRemove;
+			for (Condition* condition : conditions) {
+				if (condition->isPersistent() && !condition->isConstant()) {
+					toRemove.push_back(condition);
+				}
+			}
+			for (Condition* condition : toRemove) {
+				auto it = std::find(conditions.begin(), conditions.end(), condition);
+				if (it == conditions.end()) {
+					continue;
+				}
+				conditions.erase(it);
 
 				condition->endCondition(this);
 				onEndCondition(condition->getType());
 				delete condition;
-			} else {
-				++it;
 			}
 		}
 	} else {
 		setSkillLoss(true);
 
-		auto it = conditions.begin(), end = conditions.end();
-		while (it != end) {
-			Condition* condition = *it;
-			if (condition->isPersistent() && !condition->isConstant()) {
-				it = conditions.erase(it);
-
+		// Same snapshot pattern for the second death-branch loop.
+		{
+			std::vector<Condition*> toRemove;
+			for (Condition* condition : conditions) {
+				if (condition->isPersistent() && !condition->isConstant()) {
+					toRemove.push_back(condition);
+				}
+			}
+			for (Condition* condition : toRemove) {
+				auto it = std::find(conditions.begin(), conditions.end(), condition);
+				if (it == conditions.end()) {
+					continue;
+				}
+				conditions.erase(it);
 				condition->endCondition(this);
 				onEndCondition(condition->getType());
 				delete condition;
-			} else {
-				++it;
 			}
 		}
 
