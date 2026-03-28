@@ -9,6 +9,7 @@
 #include "creatureevent.h"
 #include "game.h"
 #include "iologindata.h"
+#include "instance_utils.h"
 #include "outputmessage.h"
 #include "player.h"
 #include "protocolgame.h"
@@ -437,7 +438,7 @@ void ProtocolGame::logout(bool displayEffect, bool forced)
 		}
 
 		if (displayEffect && !player->isDead() && !player->isInGhostMode()) {
-			g_game.addMagicEffect(player->getPosition(), CONST_ME_POFF);
+			g_game.addMagicEffect(player->getPosition(), CONST_ME_POFF, player->getInstanceID());
 		}
 	}
 
@@ -894,6 +895,7 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 
 void ProtocolGame::GetTileDescription(const Tile* tile, NetworkMessage& msg)
 {
+	const uint32_t playerInstanceId = player->getInstanceID();
 	int32_t count;
 	Item* ground = tile->getGround();
 	if (ground) {
@@ -906,6 +908,9 @@ void ProtocolGame::GetTileDescription(const Tile* tile, NetworkMessage& msg)
 	const TileItemVector* items = tile->getItemList();
 	if (items) {
 		for (auto it = items->getBeginTopItem(), end = items->getEndTopItem(); it != end; ++it) {
+			if (!InstanceUtils::canSeeItemInInstance(playerInstanceId, *it)) {
+				continue;
+			}
 			msg.addItem(*it);
 			count++;
 			if (count == 9 && tile->getPosition() == player->getPosition()) {
@@ -948,6 +953,9 @@ void ProtocolGame::GetTileDescription(const Tile* tile, NetworkMessage& msg)
 
 	if (items && count < MAX_STACKPOS_THINGS) {
 		for (auto it = items->getBeginDownItem(), end = items->getEndDownItem(); it != end; ++it) {
+			if (!InstanceUtils::canSeeItemInInstance(playerInstanceId, *it)) {
+				continue;
+			}
 			msg.addItem(*it);
 			if (++count == MAX_STACKPOS_THINGS) {
 				return;
@@ -1044,6 +1052,10 @@ bool ProtocolGame::canSee(const Creature* c) const
 	}
 
 	if (!player->canSeeCreature(c)) {
+		return false;
+	}
+
+	if (c != player && !player->compareInstance(c->getInstanceID())) {
 		return false;
 	}
 
@@ -2307,9 +2319,19 @@ void ProtocolGame::sendMapDescription(const Position& pos)
 	writeToOutputBuffer(msg);
 }
 
+void ProtocolGame::refreshWorldView()
+{
+	knownCreatureSet.clear();
+	sendMapDescription(player->getPosition());
+}
+
 void ProtocolGame::sendAddTileItem(const Position& pos, uint32_t stackpos, const Item* item)
 {
 	if (stackpos >= MAX_STACKPOS_THINGS || !canSee(pos)) {
+		return;
+	}
+
+	if (!InstanceUtils::canSeeItemInInstance(player->getInstanceID(), item)) {
 		return;
 	}
 
@@ -2324,6 +2346,10 @@ void ProtocolGame::sendAddTileItem(const Position& pos, uint32_t stackpos, const
 void ProtocolGame::sendUpdateTileItem(const Position& pos, uint32_t stackpos, const Item* item)
 {
 	if (stackpos >= MAX_STACKPOS_THINGS || !canSee(pos)) {
+		return;
+	}
+
+	if (!InstanceUtils::canSeeItemInInstance(player->getInstanceID(), item)) {
 		return;
 	}
 

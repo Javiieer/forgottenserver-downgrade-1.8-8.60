@@ -656,6 +656,9 @@ uint32_t MoveEvent::StepInField(Creature* creature, Item* item, const Position&)
 {
 	MagicField* field = item->getMagicField();
 	if (field) {
+		if (item->getInstanceID() != creature->getInstanceID()) {
+			return 1;
+		}
 		field->onStepInField(creature);
 		return 1;
 	}
@@ -670,7 +673,11 @@ uint32_t MoveEvent::AddItemField(Item* item, Item*, const Position&)
 	if (MagicField* field = item->getMagicField()) {
 		Tile* tile = item->getTile();
 		if (CreatureVector* creatures = tile->getCreatures()) {
+			uint32_t fieldInstance = item->getInstanceID();
 			for (Creature* creature : *creatures) {
+				if (creature->getInstanceID() != fieldInstance) {
+					continue;
+				}
 				field->onStepInField(creature);
 			}
 		}

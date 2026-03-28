@@ -10,6 +10,7 @@
 #include "game.h"
 #include "monster.h"
 #include "scheduler.h"
+#include "instance_utils.h"
 
 #include <cstring>
 
@@ -66,6 +67,10 @@ bool Creature::canSee(const Position& pos) const
 
 bool Creature::canSeeCreature(const Creature* creature) const
 {
+	if (!compareInstance(creature->getInstanceID())) {
+		return false;
+	}
+
 	if (!canSeeGhostMode(creature) && creature->isInGhostMode()) {
 		return false;
 	}
@@ -667,7 +672,7 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 			}
 		}
 
-		g_game.addMagicEffect(getPosition(), CONST_ME_POFF);
+		InstanceUtils::sendMagicEffectToInstance(getPosition(), getInstanceID(), CONST_ME_POFF);
 	} else {
 		Item* splash;
 		switch (getRace()) {
@@ -687,6 +692,7 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 		Tile* tile = getTile();
 
 		if (splash) {
+			splash->setInstanceID(getInstanceID());
 			if (!tile || g_game.internalAddItem(tile, splash, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
 				g_game.ReleaseItem(splash);
 				splash = nullptr;
@@ -697,6 +703,7 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 
 		Item* corpse = getCorpse(lastHitCreature, mostDamageCreature);
 		if (corpse) {
+			corpse->setInstanceID(getInstanceID());
 			if (!tile || g_game.internalAddItem(tile, corpse, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
 				g_game.ReleaseItem(corpse);
 				corpse = nullptr;
@@ -1025,7 +1032,7 @@ void Creature::onTickCondition(ConditionType_t type, bool& bRemove)
 		return;
 	}
 
-	const MagicField* field = tile->getFieldItem();
+	const MagicField* field = tile->getFieldItem(getInstanceID());
 	if (!field) {
 		return;
 	}
@@ -1097,6 +1104,7 @@ void Creature::onGainExperience(uint64_t gainExp, Creature* target)
 
 	SpectatorVec spectators;
 	g_game.map.getSpectators(spectators, position, false, true);
+	spectators = InstanceUtils::filterByInstance(spectators, getInstanceID());
 	if (spectators.empty()) {
 		return;
 	}

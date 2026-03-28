@@ -858,7 +858,7 @@ void Monster::onThink(uint32_t interval)
 	}
 
 	if (!isInSpawnRange(position)) {
-		g_game.addMagicEffect(this->getPosition(), CONST_ME_POFF);
+		g_game.addMagicEffect(this->getPosition(), CONST_ME_POFF, getInstanceID());
 		if (getBoolean(ConfigManager::REMOVE_ON_DESPAWN)) {
 			g_game.removeCreature(this, false);
 		} else {
@@ -1188,12 +1188,13 @@ void Monster::onThinkDefense(uint32_t interval)
 
 			Monster* summon = Monster::createMonster(summonBlock.name);
 			if (summon) {
+				summon->setInstanceID(getInstanceID());
 				if (g_game.placeCreature(summon, getPosition(), false, summonBlock.force, summonBlock.effect)) {
 					summon->setDropLoot(false);
 					summon->setSkillLoss(false);
 					summon->setMaster(this);
 					if (summonBlock.masterEffect != CONST_ME_NONE) {
-						g_game.addMagicEffect(getPosition(), summonBlock.masterEffect);
+						g_game.addMagicEffect(getPosition(), summonBlock.masterEffect, getInstanceID());
 					}
 					++summonCounts[summonBlock.name];
 				} else {
@@ -1863,7 +1864,6 @@ void Monster::death(Creature*)
 				float adjustedChance =
 				    (lootBlock.chance * lootRate) * ConfigManager::getInteger(ConfigManager::RATE_LOOT);
 				if (lootBlock.unique && mostScoreContributor == playerId) {
-					// Ensure that the mostScoreContributor can receive multiple unique items
 					auto lootItem = Item::CreateItem(lootBlock.id, uniform_random(1, lootBlock.countmax));
 					if (!lootItem) {
 						continue;
@@ -1877,7 +1877,6 @@ void Monster::death(Creature*)
 					lootItem->decrementReferenceCounter();
 					hasLoot = true;
 				} else if (!lootBlock.unique) {
-					// Normal loot distribution for non-unique items
 					if (uniform_random(1, MAX_LOOTCHANCE) <= adjustedChance) {
 						auto lootItem = Item::CreateItem(lootBlock.id, uniform_random(1, lootBlock.countmax));
 						if (!lootItem) {

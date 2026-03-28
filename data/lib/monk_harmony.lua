@@ -91,8 +91,8 @@ function addHarmonyPoint(player)
 		onHarmonyFull(player)
 	else
 		local pos = player:getPosition()
-		pcall(Game.sendAnimatedText, "Harmony " .. newValue .. "/" .. HARMONY_MAX, pos, 18)
-		pos:sendMagicEffect(CONST_ME_MAGIC_GREEN)
+		pcall(Game.sendAnimatedText, "Harmony " .. newValue .. "/" .. HARMONY_MAX, pos, 18, {player})
+		pos:sendMagicEffect(CONST_ME_MAGIC_GREEN, {player})
 	end
 	return true
 end
@@ -186,8 +186,8 @@ function harmonyFullLoopTick(playerId)
 	end
 
 	local pos = player:getPosition()
-	pos:sendMagicEffect(CONST_ME_HOLYAREA)
-	pcall(Game.sendAnimatedText, "Full Harmony!", pos, HARMONY_LOOP_COLOR)
+	pos:sendMagicEffect(CONST_ME_HOLYAREA, {player})
+	pcall(Game.sendAnimatedText, "Full Harmony!", pos, HARMONY_LOOP_COLOR, {player})
 
 	addEvent(harmonyFullLoopTick, HARMONY_LOOP_INTERVAL, playerId)
 end

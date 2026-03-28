@@ -867,6 +867,31 @@ int luaItemOnStepInField(lua_State* L)
 	}
 	return 1;
 }
+
+int luaItemGetInstanceId(lua_State *L)
+{
+	// item:getInstanceId()
+	const Item *item = getUserdata<const Item>(L, 1);
+	if (item) {
+		lua_pushinteger(L, item->getInstanceID());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int luaItemSetInstanceId(lua_State *L)
+{
+	// item:setInstanceId(id)
+	Item *item = getUserdata<Item>(L, 1);
+	if (item) {
+		item->setInstanceID(getInteger<uint32_t>(L, 2));
+		lua_pushboolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
 } // namespace
 
 void LuaScriptInterface::registerItem()
@@ -931,6 +956,9 @@ void LuaScriptInterface::registerItem()
 	registerMethod("Item", "isMagicField", luaItemIsMagicField);
 	registerMethod("Item", "getMagicField", luaItemGetMagicField);
 	registerMethod("Item", "onStepInField", luaItemOnStepInField);
+
+	registerMethod("Item", "getInstanceId", luaItemGetInstanceId);
+	registerMethod("Item", "setInstanceId", luaItemSetInstanceId);
 
 	registerMethod("Item", "getImbuementSlots", LuaScriptInterface::luaItemGetImbuementSlots);
 	registerMethod("Item", "getFreeImbuementSlots", LuaScriptInterface::luaItemGetFreeImbuementSlots);

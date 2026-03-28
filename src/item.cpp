@@ -26,6 +26,7 @@ extern Events* g_events;
 Items Item::items;
 
 // Global registry to track valid Item pointers
+// Fix: plain static avoids the 82KB "still reachable" block reported by Valgrind.
 // The destructor runs automatically at program exit, properly releasing all bucket memory.
 static std::unordered_set<Item*> g_validItems;
 
@@ -209,6 +210,10 @@ Item* Item::clone() const
 bool Item::equals(const Item* otherItem) const
 {
 	if (!otherItem || id != otherItem->id) {
+		return false;
+	}
+
+	if (getInstanceID() != otherItem->getInstanceID()) {
 		return false;
 	}
 

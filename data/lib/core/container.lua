@@ -6,6 +6,7 @@ function Container:createLootItem(lootItem)
 	local itemCount = 0
 	local randvalue = getLootRandom()
 	local itemType = ItemType(lootItem.itemId)
+	local corpseInstanceId = self:getInstanceId()
 
 	if randvalue < lootItem.chance then
 		if itemType:isStackable() then
@@ -26,6 +27,10 @@ function Container:createLootItem(lootItem)
 
 		local tmpItem = Game.createItem(lootItem.itemId, subType)
 		if not tmpItem then return false end
+		
+		if corpseInstanceId and corpseInstanceId ~= 0 then
+			tmpItem:setInstanceId(corpseInstanceId)
+		end
 
 		local tmpContainer = tmpItem:getContainer()
 		if tmpContainer then

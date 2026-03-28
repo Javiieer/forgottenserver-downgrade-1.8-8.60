@@ -73,10 +73,19 @@ function message.onGainExperience(self, source, exp, rawExp, sendText)
                     end
 	
                     self:sendTextMessage(MESSAGE_STATUS_DEFAULT, message)
-                    Game.sendAnimatedText(tostring(expValue), self:getPosition(), 215)
-	
+
+                    local selfInstanceId = self:getInstanceId()
                     local spectators = Game.getSpectators(self:getPosition(), false, true)
+                    local filtered = {}
                     for _, spectator in ipairs(spectators) do
+                        if selfInstanceId == 0 or spectator:getInstanceId() == selfInstanceId then
+                            table.insert(filtered, spectator)
+                        end
+                    end
+
+                    Game.sendAnimatedText(tostring(expValue), self:getPosition(), 215, filtered)
+
+                    for _, spectator in ipairs(filtered) do
                         if spectator ~= self then
                             spectator:sendTextMessage(MESSAGE_STATUS_DEFAULT, self:getName() .. " gained " .. expString .. " for killing " .. (count > 1 and count .. " " or "") .. monsterName .. (count > 1 and "s" or "") .. ".")
                         end

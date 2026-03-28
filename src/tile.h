@@ -148,6 +148,7 @@ public:
 	virtual const HouseTile* getHouseTile() const { return nullptr; }
 
 	MagicField* getFieldItem() const;
+	MagicField* getFieldItem(uint32_t instanceID) const;
 	Teleport* getTeleportItem() const;
 	TrashHolder* getTrashHolder() const;
 	Mailbox* getMailbox() const;
@@ -179,6 +180,8 @@ public:
 
 	bool hasProperty(ITEMPROPERTY prop) const;
 	bool hasProperty(const Item* exclude, ITEMPROPERTY prop) const;
+	bool hasInstancedProperty(ITEMPROPERTY prop, uint32_t instanceID) const;
+	bool hasPropertyGlobal(const Item* exclude, ITEMPROPERTY prop) const;
 
 	bool hasFlag(uint32_t flag) const { return hasBitSet(flag, this->flags); }
 	void setFlag(uint32_t flag) { this->flags |= flag; }

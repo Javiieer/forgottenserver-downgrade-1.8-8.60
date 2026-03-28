@@ -82,6 +82,8 @@
     <ClCompile Include="..\src\inbox.cpp" />
     <ClCompile Include="..\src\mapcache.cpp" />
     <ClCompile Include="..\src\stats.cpp" />
+    <ClCompile Include="..\src\imbuement.h" />
+    <ClInclude Include="..\src\instance_utils.h" />
     <ClCompile Include="..\src\protocolspectator.cpp" />
     <ClCompile Include="..\src\save_manager.cpp" />
     <ClCompile Include="..\src\thread_pool.cpp" />

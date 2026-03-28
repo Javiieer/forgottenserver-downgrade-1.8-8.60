@@ -42,6 +42,13 @@ public:
 	virtual const Creature* getCreature() const { return nullptr; }
 
 	virtual bool isRemoved() const { return true; }
+
+	uint32_t getInstanceID() const { return instanceID; }
+	void setInstanceID(uint32_t id) { instanceID = id; }
+	bool compareInstance(uint32_t id) const { return instanceID == id; }
+
+private:
+	uint32_t instanceID = 0;
 };
 
 #endif

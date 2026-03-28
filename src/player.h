@@ -707,6 +707,13 @@ public:
 		}
 	}
 
+	void refreshWorldView()
+	{
+		if (client) {
+			client->refreshWorldView();
+		}
+	}
+
 	void sendChannelMessage(std::string_view author, std::string_view text, SpeakClasses type, uint16_t channel)
 	{
 		if (client) {

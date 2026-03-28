@@ -9,6 +9,7 @@
 #include "configmanager.h"
 #include "creature.h"
 #include "game.h"
+#include "instance_utils.h"
 #include "mailbox.h"
 #include "monster.h"
 #include "movement.h"
@@ -53,6 +54,41 @@ bool Tile::hasProperty(const Item* exclude, ITEMPROPERTY prop) const
 		}
 	}
 
+	return false;
+}
+
+bool Tile::hasInstancedProperty(ITEMPROPERTY prop, uint32_t instanceID) const
+{
+	if (instanceID == 0) {
+		return false;
+	}
+
+	if (const TileItemVector *items = getItemList()) {
+		for (const Item *item : *items) {
+			if (item->getInstanceID() == instanceID && item->hasProperty(prop)) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool Tile::hasPropertyGlobal(const Item* exclude, ITEMPROPERTY prop) const
+{
+	assert(exclude);
+
+	if (ground && exclude != ground.get() && ground->hasProperty(prop)) {
+		return true;
+	}
+
+	if (const TileItemVector *items = getItemList()) {
+		for (const Item *item : *items) {
+			if (item != exclude && item->getInstanceID() == 0 &&
+					item->hasProperty(prop)) {
+				return true;
+			}
+		}
+	}
 	return false;
 }
 
@@ -146,6 +182,28 @@ MagicField* Tile::getFieldItem() const
 		for (auto it = items->rbegin(), end = items->rend(); it != end; ++it) {
 			if ((*it)->getMagicField()) {
 				return (*it)->getMagicField();
+			}
+		}
+	}
+	return nullptr;
+}
+
+MagicField* Tile::getFieldItem(uint32_t instanceID) const
+{
+	if (!hasFlag(TILESTATE_MAGICFIELD)) {
+		return nullptr;
+	}
+
+	if (ground && ground->getMagicField()) {
+		return ground->getMagicField();
+	}
+
+	if (const TileItemVector *items = getItemList()) {
+		for (auto it = items->rbegin(), end = items->rend(); it != end; ++it) {
+			if ((*it)->getMagicField()) {
+				if ((*it)->getInstanceID() == instanceID) {
+					return (*it)->getMagicField();
+				}
 			}
 		}
 	}
@@ -355,7 +413,9 @@ void Tile::onAddTileItem(Item* item)
 	// send to client
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
-			tmpPlayer->sendAddTileItem(this, cylinderMapPos, item);
+			if (InstanceUtils::canSeeItemInInstance(tmpPlayer->getInstanceID(), item)) {
+				tmpPlayer->sendAddTileItem(this, cylinderMapPos, item);
+			}
 		}
 	}
 
@@ -377,7 +437,9 @@ void Tile::onUpdateTileItem(Item* oldItem, const ItemType& oldType, Item* newIte
 	// send to client
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
-			tmpPlayer->sendUpdateTileItem(this, cylinderMapPos, newItem);
+			if (InstanceUtils::canSeeItemInInstance(tmpPlayer->getInstanceID(), newItem)) {
+				tmpPlayer->sendUpdateTileItem(this, cylinderMapPos, newItem);
+			}
 		}
 	}
 
@@ -398,7 +460,10 @@ void Tile::onRemoveTileItem(const SpectatorVec& spectators, const std::vector<in
 	size_t i = 0;
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
-			tmpPlayer->sendRemoveTileThing(cylinderMapPos, oldStackPosVector[i++]);
+			if (InstanceUtils::canSeeItemInInstance(tmpPlayer->getInstanceID(), item)) {
+				tmpPlayer->sendRemoveTileThing(cylinderMapPos, oldStackPosVector[i]);
+			}
+			++i;
 		}
 	}
 
@@ -428,8 +493,10 @@ void Tile::onRemoveTileItem(const SpectatorVec& spectators, const std::vector<in
 	}
 }
 
-ReturnValue Tile::queryAdd(int32_t, const Thing& thing, uint32_t, uint32_t flags, Creature*) const
+ReturnValue Tile::queryAdd(int32_t, const Thing& thing, uint32_t, uint32_t flags, Creature* actor) const
 {
+	const uint32_t actorInstanceID = actor ? actor->getInstanceID() : 0;
+
 	if (const Creature* creature = thing.getCreature()) {
 		if (hasBitSet(FLAG_NOLIMIT, flags)) {
 			return RETURNVALUE_NOERROR;
@@ -458,6 +525,10 @@ ReturnValue Tile::queryAdd(int32_t, const Thing& thing, uint32_t, uint32_t flags
 							continue;
 						}
 
+						if (!monster->compareInstance(tileCreature->getInstanceID())) {
+							continue;
+						}
+
 						const Monster* creatureMonster = tileCreature->getMonster();
 						if (!creatureMonster || !tileCreature->isPushable() ||
 						    (creatureMonster->isSummon() && creatureMonster->getMaster()->getPlayer())) {
@@ -467,28 +538,30 @@ ReturnValue Tile::queryAdd(int32_t, const Thing& thing, uint32_t, uint32_t flags
 				}
 			} else if (creatures && !creatures->empty()) {
 				for (const Creature* tileCreature : *creatures) {
-					if (!tileCreature->isInGhostMode()) {
+					if (!tileCreature->isInGhostMode() && monster->compareInstance(tileCreature->getInstanceID())) {
 						return RETURNVALUE_NOTENOUGHROOM;
 					}
 				}
 			}
 
-			if (hasFlag(TILESTATE_IMMOVABLEBLOCKSOLID)) {
+			if (hasFlag(TILESTATE_IMMOVABLEBLOCKSOLID) || hasInstancedProperty(CONST_PROP_IMMOVABLEBLOCKSOLID, actorInstanceID)) {
 				return RETURNVALUE_NOTPOSSIBLE;
 			}
 
-			if (hasBitSet(FLAG_PATHFINDING, flags) && hasFlag(TILESTATE_IMMOVABLENOFIELDBLOCKPATH)) {
+			if (hasBitSet(FLAG_PATHFINDING, flags) && (hasFlag(TILESTATE_IMMOVABLENOFIELDBLOCKPATH) ||
+													   hasInstancedProperty(CONST_PROP_IMMOVABLENOFIELDBLOCKPATH, actorInstanceID))) {
 				return RETURNVALUE_NOTPOSSIBLE;
 			}
 
-			if (hasFlag(TILESTATE_BLOCKSOLID) ||
-			    (hasBitSet(FLAG_PATHFINDING, flags) && hasFlag(TILESTATE_NOFIELDBLOCKPATH))) {
+			if ((hasFlag(TILESTATE_BLOCKSOLID) || hasInstancedProperty(CONST_PROP_BLOCKSOLID, actorInstanceID)) ||
+			    (hasBitSet(FLAG_PATHFINDING, flags) && (hasFlag(TILESTATE_NOFIELDBLOCKPATH) ||
+														hasInstancedProperty(CONST_PROP_NOFIELDBLOCKPATH, actorInstanceID)))) {
 				if (!(monster->canPushItems() || hasBitSet(FLAG_IGNOREBLOCKITEM, flags))) {
 					return RETURNVALUE_NOTPOSSIBLE;
 				}
 			}
 
-			MagicField* field = getFieldItem();
+			MagicField* field = getFieldItem(actorInstanceID);
 			if (!field || field->isBlocking() || field->getDamage() == 0) {
 				return RETURNVALUE_NOERROR;
 			}
@@ -523,7 +596,7 @@ ReturnValue Tile::queryAdd(int32_t, const Thing& thing, uint32_t, uint32_t flags
 				}
 			}
 
-			if (MagicField* field = getFieldItem()) {
+			if (MagicField* field = getFieldItem(actorInstanceID)) {
 				if (field->getDamage() != 0 && hasBitSet(FLAG_PATHFINDING, flags) &&
 				    !hasBitSet(FLAG_IGNOREFIELDDAMAGE, flags)) {
 					return RETURNVALUE_NOTPOSSIBLE;
@@ -555,7 +628,8 @@ ReturnValue Tile::queryAdd(int32_t, const Thing& thing, uint32_t, uint32_t flags
 			}
 		} else if (creatures && !creatures->empty() && !hasBitSet(FLAG_IGNOREBLOCKCREATURE, flags)) {
 			for (const Creature* tileCreature : *creatures) {
-				if (!tileCreature->isInGhostMode()) {
+				if (!tileCreature->isInGhostMode() &&
+        			creature->compareInstance(tileCreature->getInstanceID())) {
 					return RETURNVALUE_NOTENOUGHROOM;
 				}
 			}
@@ -563,7 +637,7 @@ ReturnValue Tile::queryAdd(int32_t, const Thing& thing, uint32_t, uint32_t flags
 
 		if (!hasBitSet(FLAG_IGNOREBLOCKITEM, flags)) {
 			// If the FLAG_IGNOREBLOCKITEM bit isn't set we dont have to iterate every single item
-			if (hasFlag(TILESTATE_BLOCKSOLID)) {
+			if (hasFlag(TILESTATE_BLOCKSOLID) || hasInstancedProperty(CONST_PROP_BLOCKSOLID, actorInstanceID)) {
 				return RETURNVALUE_NOTENOUGHROOM;
 			}
 		} else {
@@ -577,6 +651,10 @@ ReturnValue Tile::queryAdd(int32_t, const Thing& thing, uint32_t, uint32_t flags
 
 			if (const auto items = getItemList()) {
 				for (const Item* item : *items) {
+					if (item->getInstanceID() != 0 &&
+							item->getInstanceID() != actorInstanceID) {
+						continue;
+					}
 					const ItemType& iiType = Item::items[item->getID()];
 					if (iiType.blockSolid && (!iiType.moveable || item->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID))) {
 						return RETURNVALUE_NOTPOSSIBLE;
@@ -590,12 +668,12 @@ ReturnValue Tile::queryAdd(int32_t, const Thing& thing, uint32_t, uint32_t flags
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 
-		if (items && items->size() >= TILE_MAX_ITEMS) {
-			return RETURNVALUE_CANNOTADDMOREITEMSONTILE;
-		}
-
 		if (hasBitSet(FLAG_NOLIMIT, flags)) {
 			return RETURNVALUE_NOERROR;
+		}
+
+		if (items && items->size() >= TILE_MAX_ITEMS) {
+			return RETURNVALUE_CANNOTADDMOREITEMSONTILE;
 		}
 
 		bool itemIsHangable = item->isHangable();
@@ -638,6 +716,10 @@ ReturnValue Tile::queryAdd(int32_t, const Thing& thing, uint32_t, uint32_t flags
 
 			if (items) {
 				for (const Item* tileItem : *items) {
+					if (tileItem->getInstanceID() != 0 &&
+							tileItem->getInstanceID() != actorInstanceID) {
+						continue;
+					}
 					const ItemType& iiType = Item::items[tileItem->getID()];
 					if (!iiType.blockSolid) {
 						continue;

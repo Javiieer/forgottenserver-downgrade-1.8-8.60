@@ -453,7 +453,7 @@ public:
 	void addAnimatedText(std::string_view message, const Position& pos, TextColor_t color);
 	static void addAnimatedText(const SpectatorVec& list, std::string_view message, const Position& pos,
 	                            TextColor_t color);
-	void addMagicEffect(const Position& pos, uint16_t effect);
+	void addMagicEffect(const Position& pos, uint16_t effect, uint32_t instanceId = 0);
 	static void addMagicEffect(const SpectatorVec& spectators, const Position& pos, uint16_t effect);
 	void addDistanceEffect(const Position& fromPos, const Position& toPos, uint16_t effect);
 	static void addDistanceEffect(const SpectatorVec& spectators, const Position& fromPos, const Position& toPos,

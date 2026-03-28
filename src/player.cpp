@@ -12,6 +12,7 @@
 #include "events.h"
 #include "game.h"
 #include "iologindata.h"
+#include "instance_utils.h"
 #include "inbox.h"
 #include "monster.h"
 #include "movement.h"
@@ -744,6 +745,10 @@ bool Player::canSeeCreature(const Creature* creature) const
 		return true;
 	}
 
+	if (!compareInstance(creature->getInstanceID())) {
+		return false;
+	}
+
 	if (creature->isInGhostMode() && !canSeeGhostMode(creature)) {
 		return false;
 	}
@@ -759,6 +764,10 @@ bool Player::canSeeGhostMode(const Creature*) const { return group->access; }
 bool Player::canWalkthrough(const Creature* creature) const
 {
 	if (group->access || creature->isInGhostMode()) {
+		return true;
+	}
+
+	if (!compareInstance(creature->getInstanceID())) {
 		return true;
 	}
 
@@ -799,6 +808,10 @@ bool Player::canWalkthrough(const Creature* creature) const
 bool Player::canWalkthroughEx(const Creature* creature) const
 {
 	if (group->access) {
+		return true;
+	}
+
+	if (!compareInstance(creature->getInstanceID())) {
 		return true;
 	}
 
@@ -1348,6 +1361,11 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 
 		if (isLogout) {
 			loginPosition = getPosition();
+
+			if (getInstanceID() != 0) {
+				loginPosition = town->getTemplePosition();
+				setInstanceID(0);
+			}
 		}
 
 		if (accountManager != ACCOUNT_MANAGER_NONE) {
@@ -2004,10 +2022,10 @@ void Player::removeExperience(uint64_t exp, bool sendText /* = false*/)
 		TextMessage message(MESSAGE_STATUS_DEFAULT, "You lost " + expString);
 		sendTextMessage(message);
 
-		g_game.addAnimatedText(std::to_string(lostExp), position, TEXTCOLOR_RED);
-
 		SpectatorVec spectators;
 		g_game.map.getSpectators(spectators, position, false, true);
+		spectators = InstanceUtils::filterByInstance(spectators, getInstanceID());
+		g_game.addAnimatedText(spectators, std::to_string(lostExp), position, TEXTCOLOR_RED);
 		spectators.erase(this);
 		if (!spectators.empty()) {
 			message.type = MESSAGE_STATUS_DEFAULT;
@@ -2265,6 +2283,7 @@ uint32_t Player::getIP() const
 void Player::death(Creature* lastHitCreature)
 {
 	loginPosition = town->getTemplePosition();
+	setInstanceID(0);
 
 	int32_t storedTotalReduceSkillLoss = totalReduceSkillLoss;
 
@@ -2383,6 +2402,7 @@ void Player::death(Creature* lastHitCreature)
 		health = healthMax;
 		g_game.internalTeleport(this, getTemplePosition(), true);
 		g_game.addCreatureHealth(this);
+		refreshWorldView();
 		onThink(EVENT_CREATURE_THINK_INTERVAL);
 		onIdleStatus();
 		sendStats();

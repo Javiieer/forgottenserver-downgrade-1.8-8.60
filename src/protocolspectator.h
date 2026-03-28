@@ -612,6 +612,16 @@ class ProtocolSpectator {
                 it->sendMapDescription(pos);
         }
 
+        void refreshWorldView()
+        {
+            auto o = owner.lock();
+            if (o)
+                o->refreshWorldView();
+    
+            for (auto &it : spectators)
+                it->refreshWorldView();
+        }
+
 
         void sendAddTileItem(const Position& pos, uint32_t stackpos, const Item* item) {
             auto o = owner.lock();

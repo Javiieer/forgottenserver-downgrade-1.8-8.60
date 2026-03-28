@@ -327,7 +327,7 @@ int luaCombatExecute(lua_State* L)
 				combat->doCombat(creature, variant.getTargetPosition());
 			} else {
 				combat->postCombatEffects(creature, variant.getTargetPosition());
-				g_game.addMagicEffect(variant.getTargetPosition(), CONST_ME_POFF);
+				g_game.addMagicEffect(variant.getTargetPosition(), CONST_ME_POFF, creature ? creature->getInstanceID() : 0);
 			}
 			break;
 		}

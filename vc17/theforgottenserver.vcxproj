@@ -340,6 +340,7 @@
     <ClInclude Include="..\src\logger.h" />
     <ClInclude Include="..\src\items.h" />
     <ClInclude Include="..\src\imbuement.h" />
+    <ClInclude Include="..\src\instance_utils.h" />
     <ClInclude Include="..\src\lockfree.h" />
     <ClInclude Include="..\src\luascript.h" />
     <ClInclude Include="..\src\mailbox.h" />

@@ -7,6 +7,7 @@
 
 #include "configmanager.h"
 #include "game.h"
+#include "instance_utils.h"
 
 extern Game g_game;
 
@@ -1028,11 +1029,12 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int32_t interva
 				TextMessage message(MESSAGE_STATUS_DEFAULT, "You were healed for " + healString);
 				player->sendTextMessage(message);
 
-				g_game.addAnimatedText(fmt::format("{:+d}", realHealthGain), player->getPosition(),
-				                       static_cast<TextColor_t>(getInteger(ConfigManager::HEALTH_GAIN_COLOUR)));
-
 				SpectatorVec spectators;
 				g_game.map.getSpectators(spectators, player->getPosition(), false, true);
+				spectators = InstanceUtils::filterByInstance(spectators, player->getInstanceID());
+				g_game.addAnimatedText(spectators, fmt::format("{:+d}", realHealthGain), player->getPosition(),
+                                    		   static_cast<TextColor_t>(getInteger(ConfigManager::HEALTH_GAIN_COLOUR)));
+
 				spectators.erase(player);
 				if (!spectators.empty()) {
 					message.type = MESSAGE_STATUS_DEFAULT;
@@ -1066,11 +1068,12 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int32_t interva
 				TextMessage message(MESSAGE_STATUS_DEFAULT, "You gained " + manaGainString + " mana.");
 				player->sendTextMessage(message);
 
-				g_game.addAnimatedText(fmt::format("{:+d}", realManaGain), player->getPosition(),
-				                       static_cast<TextColor_t>(getInteger(ConfigManager::MANA_GAIN_COLOUR)));
-
 				SpectatorVec spectators;
 				g_game.map.getSpectators(spectators, player->getPosition(), false, true);
+				spectators = InstanceUtils::filterByInstance(spectators, player->getInstanceID());
+				g_game.addAnimatedText(spectators, fmt::format("{:+d}", realManaGain), player->getPosition(),
+                                       static_cast<TextColor_t>(getInteger(ConfigManager::MANA_GAIN_COLOUR)));
+
 				spectators.erase(player);
 				if (!spectators.empty()) {
 					message.type = MESSAGE_STATUS_DEFAULT;
@@ -1521,7 +1524,10 @@ bool ConditionDamage::doDamage(Creature* creature, int32_t healthChange)
 
 	if (!creature->isAttackable() || Combat::canDoCombat(attacker, creature) != RETURNVALUE_NOERROR) {
 		if (!creature->isInGhostMode()) {
-			g_game.addMagicEffect(creature->getPosition(), CONST_ME_POFF);
+			const Position &creaturePos = creature->getPosition();
+			SpectatorVec spectators;
+			g_game.map.getSpectators(spectators, creaturePos, true, true);
+			InstanceUtils::sendMagicEffectToInstance(spectators, creaturePos, CONST_ME_POFF, creature->getInstanceID());
 		}
 		return false;
 	}

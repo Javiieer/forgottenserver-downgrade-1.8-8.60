@@ -8,6 +8,7 @@
 #include "configmanager.h"
 #include "events.h"
 #include "game.h"
+#include "instance_utils.h"
 #include "matrixarea.h"
 #include "weapons.h"
 
@@ -292,6 +293,10 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target)
 {
 	if (!attacker) {
 		return g_events->eventCreatureOnTargetCombat(attacker, target);
+	}
+
+	if (!InstanceUtils::canInteract(attacker, target)) {
+		return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 	}
 
 	// protection time
@@ -606,6 +611,7 @@ void Combat::combatTileEffects(const SpectatorVec& spectators, Creature* caster,
 		Item* item = Item::CreateItem(itemId);
 		if (caster) {
 			item->setOwner(caster->getID());
+			item->setInstanceID(caster->getInstanceID());
 		}
 
 		ReturnValue ret = g_game.internalAddItem(tile, item);
@@ -621,8 +627,20 @@ void Combat::combatTileEffects(const SpectatorVec& spectators, Creature* caster,
 	}
 
 	if (params.impactEffect != CONST_ME_NONE) {
-		Game::addMagicEffect(spectators, tile->getPosition(), params.impactEffect);
-	}
+		if (caster) {
+			SpectatorVec filtered;
+			for (Creature *s : spectators) {
+				if (Player *p = s->getPlayer()) {
+					if (p->compareInstance(caster->getInstanceID())) {
+						filtered.emplace_back(s);
+					}
+				}
+			}
+			Game::addMagicEffect(filtered, tile->getPosition(), params.impactEffect);
+		} else {
+			Game::addMagicEffect(spectators, tile->getPosition(), params.impactEffect);
+        }
+    }
 }
 
 void Combat::postCombatEffects(Creature* caster, const Position& pos, const CombatParams& params)
@@ -664,8 +682,24 @@ void Combat::addDistanceEffect(Creature* caster, const Position& fromPos, const 
 	}
 
 	if (effect != CONST_ANI_NONE) {
-		g_game.addDistanceEffect(fromPos, toPos, effect);
-	}
+		if (caster) {
+			SpectatorVec spectators, toPosSpectators;
+			g_game.map.getSpectators(spectators, fromPos, true, true);
+			g_game.map.getSpectators(toPosSpectators, toPos, true, true);
+			spectators.addSpectators(toPosSpectators);
+			SpectatorVec filtered;
+			for (Creature *s : spectators) {
+				if (Player *p = s->getPlayer()) {
+					if (p->compareInstance(caster->getInstanceID())) {
+						filtered.emplace_back(s);
+					}
+				}
+			}
+			g_game.addDistanceEffect(filtered, fromPos, toPos, effect);
+		} else {
+			g_game.addDistanceEffect(fromPos, toPos, effect);
+        }
+    }
 }
 
 void Combat::doCombat(Creature* caster, Creature* target) const
@@ -677,8 +711,18 @@ void Combat::doCombat(Creature* caster, Creature* target) const
 		bool canCombat =
 		    !params.aggressive || (caster != target && Combat::canDoCombat(caster, target) == RETURNVALUE_NOERROR);
 		if ((caster == target || canCombat) && params.impactEffect != CONST_ME_NONE) {
-			g_game.addMagicEffect(target->getPosition(), params.impactEffect);
-		}
+			SpectatorVec spectators;
+			g_game.map.getSpectators(spectators, target->getPosition(), true, true);
+			SpectatorVec filtered;
+			for (Creature *s : spectators) {
+				if (Player *p = s->getPlayer()) {
+					if (p->compareInstance(target->getInstanceID())) {
+						filtered.emplace_back(s);
+					}
+				}
+			}
+			Game::addMagicEffect(filtered, target->getPosition(), params.impactEffect);
+        }
 
 		if (canCombat) {
 			doTargetCombat(caster, target, damage, params);
@@ -865,7 +909,10 @@ void Combat::doTargetCombat(Creature* caster, Creature* target, CombatDamage& da
 		}
 
 		if (damage.critical && target) {
-			g_game.addMagicEffect(target->getPosition(), CONST_ME_CRITICAL_HIT);
+			SpectatorVec critSpectators;
+			g_game.map.getSpectators(critSpectators, target->getPosition(), true, true);
+			InstanceUtils::sendMagicEffectToInstance(
+				critSpectators, target->getPosition(), CONST_ME_CRITICAL_HIT, target->getInstanceID());
 		}
 
 		if (!damage.leeched && damage.primary.type != COMBAT_HEALING && casterPlayer && target != caster &&
@@ -1007,8 +1054,11 @@ void Combat::doAreaCombat(Creature* caster, const Position& position, const Area
 		if (damageCopy.critical) {
 			damageCopy.primary.value += playerCombatReduced ? criticalPrimary / 2 : criticalPrimary;
 			damageCopy.secondary.value += playerCombatReduced ? criticalSecondary / 2 : criticalSecondary;
-			g_game.addMagicEffect(creature->getPosition(), CONST_ME_CRITICAL_HIT);
-		}
+			SpectatorVec critSpectators;
+			g_game.map.getSpectators(critSpectators, creature->getPosition(), true, true);
+			InstanceUtils::sendMagicEffectToInstance(
+				critSpectators, creature->getPosition(), CONST_ME_CRITICAL_HIT, creature->getInstanceID());
+			  }
 
 		bool success = false;
 		if (damageCopy.primary.type != COMBAT_MANADRAIN) {

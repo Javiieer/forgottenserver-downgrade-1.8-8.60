@@ -155,6 +155,7 @@ set(tfs_HDR
 	${CMAKE_CURRENT_LIST_DIR}/housetile.h
 	${CMAKE_CURRENT_LIST_DIR}/iologindata.h
 	${CMAKE_CURRENT_LIST_DIR}/imbuement.h
+	${CMAKE_CURRENT_LIST_DIR}/instance_utils.h
 	${CMAKE_CURRENT_LIST_DIR}/iomap.h
 	${CMAKE_CURRENT_LIST_DIR}/iomapserialize.h
 	${CMAKE_CURRENT_LIST_DIR}/item.h

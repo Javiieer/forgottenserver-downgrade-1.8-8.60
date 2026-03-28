@@ -583,7 +583,7 @@ bool Actions::useItemEx(Player* player, const Position& fromPos, const Position&
 	if (isPotion) {
 		if (player->hasCondition(CONDITION_EXHAUST_WEAPON, EXHAUST_POTION)) {
 			player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
-			g_game.addMagicEffect(player->getPosition(), CONST_ME_POFF);
+			g_game.addMagicEffect(player->getPosition(), CONST_ME_POFF, player->getInstanceID());
 			return false;
 		}
 		if (getBoolean(ConfigManager::POTION_CAN_EXHAUST_ITEM) && player->hasCondition(CONDITION_EXHAUST_WEAPON, EXHAUST_USEITEM)) {

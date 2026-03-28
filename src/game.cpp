@@ -13,6 +13,7 @@
 #include "databasetasks.h"
 #include "events.h"
 #include "globalevent.h"
+#include "instance_utils.h"
 #include "iologindata.h"
 #include "items.h"
 #include "monster.h"
@@ -526,12 +527,18 @@ bool Game::placeCreature(Creature* creature, const Position& pos, bool extendedP
 	map.getSpectators(spectators, creature->getPosition(), true);
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
-			tmpPlayer->sendCreatureAppear(creature, creature->getPosition(), magicEffect);
+			if (tmpPlayer->canSeeCreature(creature)) {
+				tmpPlayer->sendCreatureAppear(creature, creature->getPosition(), magicEffect);
+			}
 		}
 	}
 
-	for (Creature* spectator : spectators) {
-		spectator->onCreatureAppear(creature, true);
+	for (Creature *spectator : spectators) {
+		if (spectator->compareInstance(creature->getInstanceID())) {
+			spectator->incrementReferenceCounter();
+			spectator->onCreatureAppear(creature, true);
+			spectator->decrementReferenceCounter();
+		}
 	}
 
 	creature->getParent()->postAddNotification(creature, nullptr, 0);
@@ -569,8 +576,9 @@ bool Game::removeCreature(Creature* creature, bool isLogout /* = true*/)
 	for (Creature* spectator : spectators) {
 		if (Player* player = spectator->getPlayer()) {
 			if (player->canSeeCreature(creature)) {
-				player->sendRemoveTileThing(tilePosition, oldStackPosVector[i++]);
+				player->sendRemoveTileThing(tilePosition, oldStackPosVector[i]);
 			}
+			++i;
 		}
 	}
 
@@ -767,7 +775,7 @@ void Game::playerMoveCreature(Player* player, Creature* movingCreature, const Po
 		} else {
 			if (CreatureVector* tileCreatures = toTile->getCreatures()) {
 				for (Creature* tileCreature : *tileCreatures) {
-					if (!tileCreature->isInGhostMode()) {
+					if (!tileCreature->isInGhostMode() && movingCreature->compareInstance(tileCreature->getInstanceID())) {
 						player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 						return;
 					}
@@ -1230,7 +1238,7 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 				const uint16_t groundId = ground->getID();
 				if (std::find(blockedIds.begin(), blockedIds.end(), groundId) != blockedIds.end()) {
 					actorPlayer->sendCancelMessage(RETURNVALUE_CANNOTTHROWONTELEPORT);
-					addMagicEffect(*toPos, CONST_ME_POFF);
+					InstanceUtils::sendMagicEffectToInstance(*toPos, actorPlayer->getInstanceID(), CONST_ME_POFF);
 					return RETURNVALUE_CANNOTTHROWONTELEPORT;
 				}
 			}
@@ -1243,7 +1251,7 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 						const uint16_t itemId = tileItem->getID();
 						if (std::find(blockedIds.begin(), blockedIds.end(), itemId) != blockedIds.end()) {
 							actorPlayer->sendCancelMessage(RETURNVALUE_CANNOTTHROWONTELEPORT);
-							addMagicEffect(*toPos, CONST_ME_POFF);
+							InstanceUtils::sendMagicEffectToInstance(*toPos, actorPlayer->getInstanceID(), CONST_ME_POFF);
 							return RETURNVALUE_CANNOTTHROWONTELEPORT;
 						}
 					}
@@ -1390,6 +1398,9 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 
 		if (item->equals(toItem)) {
 			n = std::min<uint32_t>(toItem->getStackSize() - toItem->getItemCount(), m);
+			if (actorPlayer && toCylinder->getTile()) {
+				toItem->setInstanceID(actorPlayer->getInstanceID());
+			}
 			toCylinder->updateThing(toItem, toItem->getID(), toItem->getItemCount() + n);
 			updateItem = toItem;
 		} else {
@@ -1412,6 +1423,9 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 
 	// add item
 	if (moveItem /*m - n > 0*/) {
+		if (actorPlayer && toCylinder->getTile()) {
+			moveItem->setInstanceID(actorPlayer->getInstanceID());
+		}
 		toCylinder->addThing(index, moveItem);
 	}
 
@@ -1897,6 +1911,18 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 			cylinder->updateThing(item, itemId, count);
 			cylinder->postAddNotification(item, cylinder, itemIndex);
 			if (!item->isRemoved()) {
+				// For Container items, postRemoveNotification and postAddNotification
+				// fire Lua scripts (g_moveEvents->onItemMove) that can remove items
+				// from inside the container (auto-loot etc.), causing itemlist's
+				// std::deque to reallocate and free its old internal chunk array.
+				// Container::startDecaying() then iterates with a dangling end()
+				// iterator → SIGSEGV.
+				//
+				// g_game.startDecay(item) is correct and sufficient: it restarts
+				// only the container's own decay timer with the new item type's
+				// duration. Children's timers are already registered individually
+				// from when the container was first placed — re-registering them
+				// via startDecaying() would also incorrectly reset their timers.
 				if (item->getContainer()) {
 					g_game.startDecay(item);
 				} else {
@@ -1927,6 +1953,10 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 	item->stopDecaying();
 	ReleaseItem(item);
 
+	// replaceThing() may reject newItem (e.g. the cylinder is full or the
+	// tile rejects the item type).  When that happens getThingIndex() returns
+	// -1, meaning newItem was never adopted by the cylinder and has no owner.
+	// Without this guard the allocation leaks — Valgrid loss record 2,117.
 	if (cylinder->getThingIndex(newItem) != -1) {
 		if (!newItem->isRemoved()) {
 			if (newItem->getContainer()) {
@@ -2427,6 +2457,11 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position& fromPos, uin
 		return;
 	}
 
+	if (!InstanceUtils::canInteract(player, creature)) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
 	if (!creature->getPosition().isInRange(player->getPosition(), Map::maxClientViewportX - 1,
 	                                       Map::maxClientViewportY - 1, 0)) {
 		return;
@@ -2721,6 +2756,11 @@ void Game::playerRequestTrade(uint32_t playerId, const Position& pos, uint8_t st
 		return;
 	}
 
+	if (!InstanceUtils::canInteract(player, tradePartner)) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
 	if (!tradePartner->getPosition().isInRange(player->getPosition(), 2, 2, 0)) {
 		player->sendCancelMessage(RETURNVALUE_DESTINATIONOUTOFREACH);
 		return;
@@ -2877,6 +2917,13 @@ void Game::playerAcceptTrade(uint32_t playerId)
 	if (!tradePartner) {
 		return;
 	}
+
+    if (!InstanceUtils::canInteract(player, tradePartner)) {
+        internalCloseTrade(player, false);
+        player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+        tradePartner->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+        return;
+    }
 
 	player->setTradeState(TRADE_ACCEPT);
 
@@ -3327,6 +3374,13 @@ void Game::playerSetAttackedCreature(uint32_t playerId, uint32_t creatureId)
 		return;
 	}
 
+	if (!InstanceUtils::canInteract(player, attackCreature)) {
+		player->sendCancelMessage(RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE);
+		player->sendCancelTarget();
+		player->setAttackedCreature(nullptr);
+		return;
+	}
+
 	ReturnValue ret = Combat::canTargetCreature(player, attackCreature);
 	if (ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
@@ -3346,9 +3400,16 @@ void Game::playerFollowCreature(uint32_t playerId, uint32_t creatureId)
 		return;
 	}
 
+	Creature *followCreature = getCreatureByID(creatureId);
+	if (followCreature && !InstanceUtils::canInteract(player, followCreature)) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		player->sendCancelTarget();
+		return;
+	}
+
 	player->setAttackedCreature(nullptr);
 	g_dispatcher.addTask([this, id = player->getID()]() { updateCreatureWalk(id); });
-	player->setFollowCreature(getCreatureByID(creatureId));
+	player->setFollowCreature(followCreature);
 }
 
 void Game::playerSetFightModes(uint32_t playerId, fightMode_t fightMode, bool chaseMode, bool secureMode)
@@ -3638,6 +3699,9 @@ void Game::playerWhisper(Player* player, std::string_view text)
 	// send to client
 	for (Creature* spectator : spectators) {
 		if (Player* spectatorPlayer = spectator->getPlayer()) {
+			if (!spectatorPlayer->compareInstance(player->getInstanceID())) {
+				continue;
+			}
 			if (!player->getPosition().isInRange(spectatorPlayer->getPosition(), 1, 1)) {
 				spectatorPlayer->sendCreatureSay(player, TALKTYPE_WHISPER, "pspsps");
 			} else {
@@ -3648,6 +3712,9 @@ void Game::playerWhisper(Player* player, std::string_view text)
 
 	// event method
 	for (Creature* spectator : spectators) {
+		if (!spectator->compareInstance(player->getInstanceID())) {
+			continue;
+		}
 		spectator->onCreatureSay(player, TALKTYPE_WHISPER, text);
 	}
 }
@@ -3738,7 +3805,7 @@ void Game::playerSpeakToNpc(Player* player, std::string_view text)
 	SpectatorVec spectators;
 	map.getSpectators(spectators, player->getPosition());
 	for (Creature* spectator : spectators) {
-		if (spectator->getNpc()) {
+		if (spectator->getNpc() && spectator->compareInstance(player->getInstanceID())) {
 			spectator->onCreatureSay(player, TALKTYPE_PRIVATE_PN, text);
 		}
 	}
@@ -3809,6 +3876,9 @@ bool Game::internalCreatureSay(Creature* creature, SpeakClasses type, std::strin
 	// send to client
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
+			if (!tmpPlayer->compareInstance(creature->getInstanceID())) {
+				continue;
+			}
 			if (!ghostMode || tmpPlayer->canSeeCreature(creature)) {
 				tmpPlayer->sendCreatureSay(creature, type, text, pos);
 			}
@@ -3818,6 +3888,9 @@ bool Game::internalCreatureSay(Creature* creature, SpeakClasses type, std::strin
 	// event method
 	if (!echo) {
 		for (Creature* spectator : spectators) {
+			if (!spectator->compareInstance(creature->getInstanceID())) {
+				continue;
+			}
 			spectator->onCreatureSay(creature, type, text);
 			if (creature != spectator) {
 				g_events->eventCreatureOnHear(spectator, creature, text, type);
@@ -4054,12 +4127,17 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 		return true;
 	}
 
-	static const auto sendBlockEffect = [this](BlockType_t blockType, CombatType_t combatType,
+	if (attacker && !attacker->compareInstance(target->getInstanceID())) {
+		return true;
+	  }
+	
+	  uint32_t targetInstanceId = target->getInstanceID();
+	  const auto sendBlockEffect = [targetInstanceId](BlockType_t blockType, CombatType_t combatType,
 	                                           const Position& targetPos) {
 		if (blockType == BLOCK_DEFENSE) {
-			addMagicEffect(targetPos, CONST_ME_POFF);
+			InstanceUtils::sendMagicEffectToInstance(targetPos, targetInstanceId, CONST_ME_POFF);
 		} else if (blockType == BLOCK_ARMOR) {
-			addMagicEffect(targetPos, CONST_ME_BLOCKHIT);
+			InstanceUtils::sendMagicEffectToInstance(targetPos, targetInstanceId, CONST_ME_BLOCKHIT);
 		} else if (blockType == BLOCK_IMMUNITY) {
 			uint8_t hitEffect = 0;
 			switch (combatType) {
@@ -4087,7 +4165,7 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 					break;
 				}
 			}
-			addMagicEffect(targetPos, hitEffect);
+			InstanceUtils::sendMagicEffectToInstance(targetPos, targetInstanceId, hitEffect);
 		}
 	};
 
@@ -4164,6 +4242,7 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 			}
 
 			if (splash) {
+				splash->setInstanceID(target->getInstanceID());
 				// targetTile is captured once and reused — same tile where the
 				// PZ check was made; splash is only created when tile != nullptr.
 				if (internalAddItem(targetTile, splash, INDEX_WHEREEVER, FLAG_NOLIMIT) == RETURNVALUE_NOERROR) {
@@ -4232,6 +4311,10 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		return false;
 	}
 
+	if (attacker && !attacker->compareInstance(target->getInstanceID())) {
+		return false;
+	}
+
 	const Position& targetPos = target->getPosition();
 	if (damage.primary.value > 0) {
 
@@ -4285,11 +4368,13 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			std::string spectatorMessage;
 
 			TextMessage message;
-			addAnimatedText(fmt::format("{:+d}", realHealthChange), targetPos,
-			                static_cast<TextColor_t>(getInteger(ConfigManager::HEALTH_GAIN_COLOUR)));
 
 			SpectatorVec spectators;
 			map.getSpectators(spectators, targetPos, false, true);
+			spectators = InstanceUtils::filterByInstance(spectators, target->getInstanceID());
+
+			addAnimatedText(spectators, fmt::format("{:+d}", realHealthChange), targetPos,
+                      		static_cast<TextColor_t>(getInteger(ConfigManager::HEALTH_GAIN_COLOUR)));
 			for (Creature* spectator : spectators) {
 				assert(dynamic_cast<Player*>(spectator) != nullptr);
 				Player* tmpPlayer = static_cast<Player*>(spectator);
@@ -4331,7 +4416,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 	} else if (damage.primary.type != COMBAT_HEALING) {
 		if (!target->isAttackable()) {
 			if (!target->isInGhostMode()) {
-				addMagicEffect(targetPos, CONST_ME_POFF);
+				InstanceUtils::sendMagicEffectToInstance(targetPos, target->getInstanceID(), CONST_ME_POFF);
 			}
 			return true;
 		}
@@ -4386,11 +4471,12 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				targetPlayer->drainMana(attacker, manaDamage);
 
 				map.getSpectators(spectators, targetPos, true, true);
+				spectators = InstanceUtils::filterByInstance(spectators, target->getInstanceID());
 				addMagicEffect(spectators, targetPos, CONST_ME_LOSEENERGY);
 
 				std::string spectatorMessage;
 
-				addAnimatedText(fmt::format("{:+d}", -manaDamage), targetPos,
+				addAnimatedText(spectators, fmt::format("{:+d}", -manaDamage), targetPos,
 				                static_cast<TextColor_t>(getInteger(ConfigManager::MANA_GAIN_COLOUR)));
 
 				for (Creature* spectator : spectators) {
@@ -4477,6 +4563,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 
 		if (spectators.empty()) {
 			map.getSpectators(spectators, targetPos, true, true);
+			spectators = InstanceUtils::filterByInstance(spectators, target->getInstanceID());
 		}
 
 		message.primary.value = damage.primary.value;
@@ -4501,7 +4588,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			}
 
 			if (message.secondary.color != TEXTCOLOR_NONE) {
-				addAnimatedText(fmt::format("{:+d}", -message.secondary.value), targetPos, message.secondary.color);
+				addAnimatedText(spectators, fmt::format("{:+d}", -message.secondary.value), targetPos, message.secondary.color);
 			}
 		}
 
@@ -4601,6 +4688,10 @@ bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage& 
 		return true;
 	}
 
+	if (attacker && !attacker->compareInstance(target->getInstanceID())) {
+		return false;
+	}
+
 	int32_t manaChange = damage.primary.value + damage.secondary.value;
 	if (manaChange > 0) {
 		if (attacker) {
@@ -4629,7 +4720,7 @@ bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage& 
 		const Position& targetPos = target->getPosition();
 		if (!target->isAttackable()) {
 			if (!target->isInGhostMode()) {
-				addMagicEffect(targetPos, CONST_ME_POFF);
+				InstanceUtils::sendMagicEffectToInstance(targetPos, target->getInstanceID(), CONST_ME_POFF);
 			}
 			return false;
 		}
@@ -4649,7 +4740,7 @@ bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage& 
 		int32_t manaLoss = std::min<int32_t>(targetPlayer->getMana(), -manaChange);
 		BlockType_t blockType = target->blockHit(attacker, COMBAT_MANADRAIN, manaLoss);
 		if (blockType != BLOCK_NONE) {
-			addMagicEffect(targetPos, CONST_ME_POFF);
+			InstanceUtils::sendMagicEffectToInstance(targetPos, target->getInstanceID(), CONST_ME_POFF);
 			return false;
 		}
 
@@ -4673,11 +4764,14 @@ bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage& 
 		std::string spectatorMessage;
 
 		TextMessage message;
-		addAnimatedText(fmt::format("{:+d}", manaLoss), targetPos,
-		                static_cast<TextColor_t>(getInteger(ConfigManager::MANA_LOSS_COLOUR)));
 
 		SpectatorVec spectators;
 		map.getSpectators(spectators, targetPos, false, true);
+		spectators = InstanceUtils::filterByInstance(spectators, target->getInstanceID());
+
+		addAnimatedText(spectators, fmt::format("{:+d}", manaLoss), targetPos,
+				static_cast<TextColor_t>(getInteger(ConfigManager::MANA_LOSS_COLOUR)));
+
 		for (Creature* spectator : spectators) {
 			assert(dynamic_cast<Player*>(spectator) != nullptr);
 			Player* tmpPlayer = static_cast<Player*>(spectator);
@@ -4724,6 +4818,7 @@ void Game::addCreatureHealth(const Creature* target)
 {
 	SpectatorVec spectators;
 	map.getSpectators(spectators, target->getPosition(), true, true);
+	spectators = InstanceUtils::filterByInstance(spectators, target->getInstanceID());
 	addCreatureHealth(spectators, target);
 }
 
@@ -4755,10 +4850,13 @@ void Game::addAnimatedText(const SpectatorVec& spectators, std::string_view mess
 	}
 }
 
-void Game::addMagicEffect(const Position& pos, uint16_t effect)
+void Game::addMagicEffect(const Position& pos, uint16_t effect, uint32_t instanceId)
 {
 	SpectatorVec spectators;
 	map.getSpectators(spectators, pos, true, true);
+	if (instanceId != 0) {
+		spectators = InstanceUtils::filterByInstance(spectators, instanceId);
+	}
 	addMagicEffect(spectators, pos, effect);
 }
 
@@ -4768,6 +4866,13 @@ void Game::addMagicEffect(const SpectatorVec& spectators, const Position& pos, u
 		assert(dynamic_cast<Player*>(spectator) != nullptr);
 		static_cast<Player*>(spectator)->sendMagicEffect(pos, effect);
 	}
+}
+
+void InstanceUtils::sendMagicEffectToInstance(const Position &pos, uint32_t instanceId, uint8_t effect)
+{
+	SpectatorVec spectators;
+	g_game.map.getSpectators(spectators, pos, true, true);
+	sendMagicEffectToInstance(spectators, pos, effect, instanceId);
 }
 
 void Game::addDistanceEffect(const Position& fromPos, const Position& toPos, uint16_t effect)

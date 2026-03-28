@@ -1124,6 +1124,60 @@ int luaCreatureSendCreatureSquare(lua_State* L)
 	}
 	return 1;
 }
+
+int luaCreatureGetInstanceId(lua_State *L)
+{
+	// creature:getInstanceId()
+	const Creature *creature = getUserdata<const Creature>(L, 1);
+	if (creature) {
+		lua_pushinteger(L, creature->getInstanceID());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int luaCreatureSetInstanceId(lua_State *L)
+{
+	// creature:setInstanceId(id)
+	Creature *creature = getUserdata<Creature>(L, 1);
+	if (!creature) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	uint32_t instanceId = getInteger<uint32_t>(L, 2);
+
+	SpectatorVec oldSpectators;
+	g_game.map.getSpectators(oldSpectators, creature->getPosition(), true, true);
+	for (Creature *spectator : oldSpectators) {
+		Player *p = spectator->getPlayer();
+		if (p && p != creature && p->canSeeCreature(creature)) {
+			int32_t stackpos = creature->getTile()->getClientIndexOfCreature(p, creature);
+			if (stackpos != -1) {
+				p->sendRemoveTileThing(creature->getPosition(), stackpos);
+			}
+		}
+	}
+
+	creature->setInstanceID(instanceId);
+
+	SpectatorVec newSpectators;
+	g_game.map.getSpectators(newSpectators, creature->getPosition(), true, true);
+	for (Creature *spectator : newSpectators) {
+		Player *p = spectator->getPlayer();
+		if (p && p != creature && p->canSeeCreature(creature)) {
+			p->sendCreatureAppear(creature, creature->getPosition());
+		}
+	}
+
+	if (Player *player = creature->getPlayer()) {
+		player->refreshWorldView();
+	}
+
+	lua_pushboolean(L, true);
+	return 1;
+}
 } // namespace
 
 void LuaScriptInterface::registerCreature()
@@ -1218,4 +1272,7 @@ void LuaScriptInterface::registerCreature()
 	registerMethod("Creature", "setStorageValue", luaCreatureSetStorageValue);
 
 	registerMethod("Creature", "sendCreatureSquare", luaCreatureSendCreatureSquare);
+
+	registerMethod("Creature", "getInstanceId", luaCreatureGetInstanceId);
+	registerMethod("Creature", "setInstanceId", luaCreatureSetInstanceId);
 }

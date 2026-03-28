@@ -2944,6 +2944,19 @@ int luaPlayerAvatarTimer(lua_State* L)
 	return 1;
 }
 
+int luaPlayerRefreshWorldView(lua_State *L)
+{
+	// player:refreshWorldView()
+	Player *player = getUserdata<Player>(L, 1);
+	if (player) {
+		player->refreshWorldView();
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 } // namespace
 
 int LuaScriptInterface::luaPlayerSendAutoLootWindow(lua_State* L)
@@ -3461,6 +3474,9 @@ void LuaScriptInterface::registerPlayer()
 	registerMethod("Player", "revelationStageWOD", luaPlayerRevelationStageWOD);
 	registerMethod("Player", "reloadData", luaPlayerReloadData);
 	registerMethod("Player", "avatarTimer", luaPlayerAvatarTimer);
+
+	// Instance system
+	registerMethod("Player", "refreshWorldView", luaPlayerRefreshWorldView);
 
 	// OfflinePlayer
 	registerClass("OfflinePlayer", "Player", luaOfflinePlayerCreate);
