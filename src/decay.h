@@ -29,6 +29,7 @@ class Decay
 
 		void startDecay(Item* item, int32_t duration);
 		void stopDecay(Item* item, int64_t timestamp) noexcept;
+		void clear() noexcept;
 
 		[[nodiscard]] bool hasDecayingItems() const noexcept { return !decayMap.empty(); }
 

@@ -1857,11 +1857,17 @@ void Monster::death(Creature*)
 			rewardContainer->setIntAttr(ITEM_ATTRIBUTE_REWARDID, getMonster()->getID());
 			bool hasLoot = false;
 			for (const auto& lootBlock : creatureLoot) {
+				if (lootBlock.id == 0) {
+					continue;
+				}
 				float adjustedChance =
 				    (lootBlock.chance * lootRate) * ConfigManager::getInteger(ConfigManager::RATE_LOOT);
 				if (lootBlock.unique && mostScoreContributor == playerId) {
 					// Ensure that the mostScoreContributor can receive multiple unique items
 					auto lootItem = Item::CreateItem(lootBlock.id, uniform_random(1, lootBlock.countmax));
+					if (!lootItem) {
+						continue;
+					}
 					const ItemType& itemType = Item::items[lootBlock.id];
 					if (!itemType.stackable) {
 						lootItem->setIntAttr(ITEM_ATTRIBUTE_DATE, currentTime);
@@ -1873,6 +1879,9 @@ void Monster::death(Creature*)
 					// Normal loot distribution for non-unique items
 					if (uniform_random(1, MAX_LOOTCHANCE) <= adjustedChance) {
 						auto lootItem = Item::CreateItem(lootBlock.id, uniform_random(1, lootBlock.countmax));
+						if (!lootItem) {
+							continue;
+						}
 						const ItemType& itemType = Item::items[lootBlock.id];
 						if (!itemType.stackable) {
 							lootItem->setIntAttr(ITEM_ATTRIBUTE_DATE, currentTime);
@@ -1908,9 +1917,13 @@ void Monster::death(Creature*)
 						itemList.emplace_back(currentPid, subItem);
 					}
 					IOLoginData::addRewardItems(playerId, itemList, rewardQuery, propWriteStream);
+					rewardContainer->decrementReferenceCounter();
 				}
-			} else if (player) {
-				player->sendTextMessage(MESSAGE_STATUS_DEFAULT, "You did not receive any loot.");
+			} else {
+				rewardContainer->decrementReferenceCounter();
+				if (player) {
+					player->sendTextMessage(MESSAGE_STATUS_DEFAULT, "You did not receive any loot.");
+				}
 			}
 		}
 		g_game.resetDamageTracking(monsterId);
@@ -2027,6 +2040,7 @@ void Monster::dropLoot(Container* corpse, Creature*)
 		rewardContainer->setIntAttr(ITEM_ATTRIBUTE_DATE, currentTime);
 		rewardContainer->setIntAttr(ITEM_ATTRIBUTE_REWARDID, getMonster()->getID());
 		corpse->internalAddThing(rewardContainer);
+		rewardContainer->decrementReferenceCounter();
 	} else if (lootDrop) {
 		g_events->eventMonsterOnDropLoot(this, corpse);
 	}

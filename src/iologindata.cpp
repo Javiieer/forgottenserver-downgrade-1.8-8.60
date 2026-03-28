@@ -849,15 +849,12 @@ bool IOLoginData::addRewardItems(uint32_t playerId, const ItemBlockList& itemLis
     using ContainerBlock = std::pair<Container*, int32_t>;
     std::list<ContainerBlock> queue;
     Database& db = Database::getInstance();
-    DBResult_ptr result = db.storeQuery(fmt::format("SELECT MAX(pid) as max_pid FROM `player_rewarditems` WHERE `player_id` = {:d}", playerId));
+    if (!db.executeQuery(fmt::format("DELETE FROM `player_rewarditems` WHERE `player_id` = {:d}", playerId))) {
+        return false;
+    }
+
     int32_t runningId = 1;
     int32_t pidCounter = 1;
-    if (result) {
-        int32_t maxPid = result->getNumber<int32_t>("max_pid");
-        if (maxPid > 0) {
-            pidCounter = maxPid + 1; 
-        }
-    }
     int32_t parentPid = pidCounter;
     for (const auto& it : itemList) {
         Item* item = it.second;
@@ -1171,10 +1168,20 @@ bool IOLoginData::savePlayer(Player* player)
 
 		int32_t pidCounter = 1;
 
-		for (Item* item : player->getRewardChest().getItemList()) {
+		// Snapshot before iterating: Lua scripts fired during logout
+		// (auto-loot, reward events) can modify the reward chest's
+		// itemlist deque, invalidating the range-for end() iterator
+		// and causing SIGSEGV (__for_end points to freed memory).
+		const std::deque<Item*>& rewardItems = player->getRewardChest().getItemList();
+		const std::vector<Item*> rewardSnapshot(rewardItems.begin(), rewardItems.end());
+
+		for (Item* item : rewardSnapshot) {
 			if (Container* container = item->getContainer()) {
 				int32_t currentPid = pidCounter++;
-				for (Item* subItem : container->getItemList()) {
+				// Snapshot inner container — same re-entrancy risk.
+				const std::deque<Item*>& subItems = container->getItemList();
+				const std::vector<Item*> subSnapshot(subItems.begin(), subItems.end());
+				for (Item* subItem : subSnapshot) {
 					itemList.emplace_back(currentPid, subItem);
 				}
 			}
