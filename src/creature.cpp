@@ -34,6 +34,9 @@ Creature::~Creature()
 
 	// clear damage for prevent memory leak
 	damageMap.clear();
+
+	// clear events list to prevent memory leak
+	eventsList.clear();
 }
 
 bool Creature::canSee(const Position& myPos, const Position& pos, int32_t viewRangeX, int32_t viewRangeY)

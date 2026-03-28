@@ -719,6 +719,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
 			// Skip items older than 7 days
 			if (rewardDate < static_cast<int64_t>(seven_days_ago)) {
+				delete item; // Fix: Delete the item if it is ignored, because loadItems allocated memory for it
 				continue;
 			}
 

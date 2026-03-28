@@ -62,6 +62,12 @@ Player::~Player()
 
 	setWriteItem(nullptr);
 	setEditHouse(nullptr);
+
+	// clear stored conditions to prevent memory leak from IOLoginData::loadPlayer
+	for (Condition* condition : storedConditionList) {
+		delete condition;
+	}
+	storedConditionList.clear();
 }
 
 bool Player::setVocation(uint16_t vocId)
