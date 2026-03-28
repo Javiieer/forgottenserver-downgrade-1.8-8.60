@@ -23,13 +23,13 @@ int32_t Monster::despawnRadius;
 
 uint32_t Monster::monsterAutoID = 0x40000000;
 
-Monster* Monster::createMonster(const std::string& name)
+std::unique_ptr<Monster> Monster::createMonster(const std::string& name)
 {
 	MonsterType* mType = g_monsters.getMonsterType(name);
 	if (!mType) {
 		return nullptr;
 	}
-	return new Monster(mType);
+	return std::make_unique<Monster>(mType);
 }
 
 Monster::Monster(MonsterType* mType) : Creature(), nameDescription(mType->nameDescription), mType(mType)
@@ -1180,19 +1180,18 @@ void Monster::onThinkDefense(uint32_t interval)
 				continue;
 			}
 
-			Monster* summon = Monster::createMonster(summonBlock.name);
+			auto summon = Monster::createMonster(summonBlock.name);
 			if (summon) {
 				summon->setInstanceID(getInstanceID());
-				if (g_game.placeCreature(summon, getPosition(), false, summonBlock.force, summonBlock.effect)) {
-					summon->setDropLoot(false);
-					summon->setSkillLoss(false);
-					summon->setMaster(this);
+				if (g_game.placeCreature(summon.get(), getPosition(), false, summonBlock.force, summonBlock.effect)) {
+					Monster* rawSummon = summon.release();
+					rawSummon->setDropLoot(false);
+					rawSummon->setSkillLoss(false);
+					rawSummon->setMaster(this);
 					if (summonBlock.masterEffect != CONST_ME_NONE) {
 						g_game.addMagicEffect(getPosition(), summonBlock.masterEffect, getInstanceID());
 					}
 					++summonCounts[summonBlock.name];
-				} else {
-					delete summon;
 				}
 			}
 		}

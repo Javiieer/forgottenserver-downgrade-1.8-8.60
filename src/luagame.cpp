@@ -490,7 +490,7 @@ int luaGameCreateMonster(lua_State* L)
 {
 	// Game.createMonster(monsterName, position[, extended = false[, force = false[, magicEffect =
 	// CONST_ME_TELEPORT]]])
-	Monster* monster = Monster::createMonster(getString(L, 1));
+	auto monster = Monster::createMonster(getString(L, 1));
 	if (!monster) {
 		lua_pushnil(L);
 		return 1;
@@ -500,16 +500,15 @@ int luaGameCreateMonster(lua_State* L)
 	bool extended = getBoolean(L, 3, false);
 	bool force = getBoolean(L, 4, false);
 	MagicEffectClasses magicEffect = getInteger<MagicEffectClasses>(L, 5, CONST_ME_TELEPORT);
-	if (g_events->eventMonsterOnSpawn(monster, position, false, true) || force) {
-		if (g_game.placeCreature(monster, position, extended, force, magicEffect)) {
-			pushUserdata<Monster>(L, monster);
-			setCreatureMetatable(L, -1, monster);
+	if (g_events->eventMonsterOnSpawn(monster.get(), position, false, true) || force) {
+		if (g_game.placeCreature(monster.get(), position, extended, force, magicEffect)) {
+			pushUserdata<Monster>(L, monster.get());
+			setCreatureMetatable(L, -1, monster.get());
+			monster.release();
 		} else {
-			delete monster;
 			lua_pushnil(L);
 		}
 	} else {
-		delete monster;
 		lua_pushnil(L);
 	}
 	return 1;

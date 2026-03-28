@@ -25,7 +25,7 @@ enum TargetSearchType_t
 class Monster final : public Creature
 {
 public:
-	static Monster* createMonster(const std::string& name);
+	static std::unique_ptr<Monster> createMonster(const std::string& name);
 	static int32_t despawnRange;
 	static int32_t despawnRadius;
 
