@@ -3934,6 +3934,10 @@ void Game::checkCreatureAttack(uint32_t creatureId)
 
 void Game::addCreatureCheck(Creature* creature)
 {
+	if (!creature) {
+		return;
+	}
+
 	creature->creatureCheck = true;
 
 	if (creature->inCheckCreaturesVector) {
@@ -3948,6 +3952,10 @@ void Game::addCreatureCheck(Creature* creature)
 
 void Game::removeCreatureCheck(Creature* creature)
 {
+	if (!creature) {
+		return;
+	}
+
 	if (creature->inCheckCreaturesVector) {
 		creature->creatureCheck = false;
 	}
@@ -3956,21 +3964,32 @@ void Game::removeCreatureCheck(Creature* creature)
 void Game::checkCreatures(size_t index)
 {
 	g_scheduler.addEvent(createSchedulerTask(EVENT_CHECK_CREATURE_INTERVAL,
-	                                         ([=, this]() { checkCreatures((index + 1) % EVENT_CREATURECOUNT); })));
+	                                         [index]() { g_game.checkCreatures((index + 1) % EVENT_CREATURECOUNT); }));
 
 	auto& checkCreatureList = checkCreatureLists[index];
 	size_t i = 0;
+
 	while (i < checkCreatureList.size()) {
 		Creature* creature = checkCreatureList[i];
+
+		if (!creature) {
+			checkCreatureList[i] = checkCreatureList.back();
+			checkCreatureList.pop_back();
+			continue;
+		}
+
 		if (creature->creatureCheck) {
 			if (!creature->isDead() && !creature->isRemoved()) {
 				creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
 
-				if (!creature->isDead() && creature->getAttackedCreature()) {
-					creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
+				if (!creature->isDead() && !creature->isRemoved()) {
+					Creature* attacked = creature->getAttackedCreature();
+					if (attacked) {
+						creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
+					}
 				}
 
-				if (!creature->isDead()) {
+				if (!creature->isDead() && !creature->isRemoved()) {
 					creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
 				}
 			}
