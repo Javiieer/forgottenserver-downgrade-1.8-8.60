@@ -1646,6 +1646,11 @@ uint32_t ConditionDamage::getIcons() const
 	return icons;
 }
 
+ConditionDamage::~ConditionDamage()
+{
+	damageList.clear();
+}
+
 void ConditionDamage::generateDamageList(int32_t amount, int32_t start, std::list<int32_t>& list)
 {
 	amount = std::abs(amount);

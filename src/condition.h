@@ -269,6 +269,7 @@ public:
 	                bool aggressive = true) :
 	    Condition(id, type, 0, buff, subId, aggressive)
 	{}
+	~ConditionDamage();
 
 	static void generateDamageList(int32_t amount, int32_t start, std::list<int32_t>& list);
 
