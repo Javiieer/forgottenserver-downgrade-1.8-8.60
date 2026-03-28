@@ -575,7 +575,8 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 		return false;
 	}
 
-	std::list<Creature*> resultList;
+	std::vector<Creature*> resultList;
+	resultList.reserve(targetList.size());
 	const Position& myPos = getPosition();
 
 	for (Creature* creature : targetList) {
@@ -643,9 +644,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 		case TARGETSEARCH_RANDOM:
 		default: {
 			if (!resultList.empty()) {
-				auto it = resultList.begin();
-				std::advance(it, uniform_random(0, resultList.size() - 1));
-				return selectTarget(*it);
+				return selectTarget(resultList[uniform_random(0, resultList.size() - 1)]);
 			}
 
 			if (searchType == TARGETSEARCH_ATTACKRANGE) {
@@ -662,7 +661,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 			continue;
 		}
 
-		if (followCreature != target && selectTarget(target)) {
+		if (followCreature != target && isTarget(target) && selectTarget(target)) {
 			return true;
 		}
 	}
@@ -1159,6 +1158,11 @@ void Monster::onThinkDefense(uint32_t interval)
 	}
 
 	if (!isSummon() && summons.size() < mType->info.maxSummons && hasFollowPath) {
+		std::unordered_map<std::string, uint32_t> summonCounts;
+		for (Creature* summon : summons) {
+			++summonCounts[summon->getName()];
+		}
+
 		for (const summonBlock_t& summonBlock : mType->info.summons) {
 			if (summonBlock.speed > defenseTicks) {
 				resetTicks = false;
@@ -1174,14 +1178,7 @@ void Monster::onThinkDefense(uint32_t interval)
 				continue;
 			}
 
-			uint32_t summonCount = 0;
-			for (Creature* summon : summons) {
-				if (summon->getName() == summonBlock.name) {
-					++summonCount;
-				}
-			}
-
-			if (summonCount >= summonBlock.max) {
+			if (summonCounts[summonBlock.name] >= summonBlock.max) {
 				continue;
 			}
 
@@ -1198,6 +1195,7 @@ void Monster::onThinkDefense(uint32_t interval)
 					if (summonBlock.masterEffect != CONST_ME_NONE) {
 						g_game.addMagicEffect(getPosition(), summonBlock.masterEffect);
 					}
+					++summonCounts[summonBlock.name];
 				} else {
 					delete summon;
 				}

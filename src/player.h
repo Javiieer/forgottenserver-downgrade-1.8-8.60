@@ -93,7 +93,7 @@ struct AutoLootConfig
 {
 	AutoLootMap itemList;
 	bool lootAnything = false;
-	bool enabled = true;
+	bool enabled = false;
 	bool goldEnabled = false;
 	std::string text;
 };
