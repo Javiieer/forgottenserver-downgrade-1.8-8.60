@@ -261,14 +261,7 @@ std::string_view LuaScriptInterface::getErrorDesc(LuaErrorCode code)
 ScriptEnvironment LuaScriptInterface::scriptEnv[16];
 int32_t LuaScriptInterface::scriptEnvIndex = -1;
 
-LuaScriptInterface::LuaScriptInterface(std::string_view interfaceName) : interfaceName{interfaceName}
-{
-	// Don't initialize g_luaEnvironment here if we ARE g_luaEnvironment
-	// This prevents infinite recursion during static initialization
-	if (this != &g_luaEnvironment && !g_luaEnvironment.getLuaState()) {
-		g_luaEnvironment.initState();
-	}
-}
+LuaScriptInterface::LuaScriptInterface(std::string_view interfaceName) : interfaceName{interfaceName} {}
 
 LuaScriptInterface::~LuaScriptInterface() { closeState(); }
 

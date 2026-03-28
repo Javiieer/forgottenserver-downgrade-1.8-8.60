@@ -15,7 +15,7 @@
 
 extern Game g_game;
 
-Raids::Raids() { scriptInterface.initState(); }
+Raids::Raids() { }
 
 Raids::~Raids()
 {

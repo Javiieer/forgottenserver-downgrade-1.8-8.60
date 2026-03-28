@@ -190,6 +190,8 @@ void mainLoader(ServiceManager* services)
 		return;
 	}
 
+	g_game.raids.getScriptInterface().initState();
+
 	LOG_INFO(">> Loading spells");
 	if (!g_scripts->loadScripts("scripts/spells", false, false)) {
 		startupErrorMessage("Failed to load spell scripts");
