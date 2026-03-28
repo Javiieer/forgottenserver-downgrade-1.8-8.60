@@ -108,8 +108,14 @@ void Game::setGameState(GameState_t newState)
 			}
 			LOG_INFO(">> All players kicked.");
 
-			// Clear all spawns and release monster memory
-			map.spawns.clear();
+			// Stop spawn scheduler events to prevent new spawns during shutdown.
+			// Actual spawn cleanup (refcount decrements) is deferred to
+			// Game::shutdown() where it runs AFTER all creatures are removed,
+			// avoiding a race where scheduler-dispatched checkSpawn tasks
+			// could access destroyed Spawn objects.
+			for (Spawn& spawn : map.spawns.getSpawnList()) {
+				spawn.stopEvent();
+			}
 
 			saveMotdNum();
 			saveGameState();
@@ -584,12 +590,26 @@ bool Game::removeCreature(Creature* creature, bool isLogout /* = true*/)
 
 	creature->removeList();
 	creature->setRemoved();
+
+	// Eagerly release internal structures while the creature still exists.
+	// These would be cleaned by the destructor eventually, but releasing now
+	// prevents the allocations from being reported as leaked if the
+	// destructor runs late due to refcount chain dependencies.
+	creature->damageMap.clear();
+
 	ReleaseCreature(creature);
 
 	removeCreatureCheck(creature);
 
+	// Explicitly clear master ref on each summon BEFORE recursive removal.
+	// removeCreature(summon) would skip setMaster(nullptr) because 'creature'
+	// is already marked removed. Clearing here avoids relying on destructor
+	// ordering for the master ref decrement.
 	for (Creature* summon : creature->summons) {
 		summon->setSkillLoss(false);
+		if (summon->getMaster() == creature) {
+			summon->removeMaster();
+		}
 		removeCreature(summon);
 	}
 	return true;

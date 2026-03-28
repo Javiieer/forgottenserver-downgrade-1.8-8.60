@@ -387,7 +387,12 @@ bool Spawn::spawnMonster(uint32_t spawnId, MonsterType* mType, const Position& p
 	monster->setMasterPos(finalPos);
 	monster->incrementReferenceCounter();
 
-	spawnedMap.insert({spawnId, monster});
+	auto [it, inserted] = spawnedMap.insert({spawnId, monster});
+	if (!inserted) {
+		// spawnId already occupied — roll back the spawn reference to prevent leak
+		monster->setSpawn(nullptr);
+		monster->decrementReferenceCounter();
+	}
 	spawnMap[spawnId].lastSpawn = OTSYS_TIME();
 	return true;
 }

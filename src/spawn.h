@@ -88,6 +88,8 @@ public:
 
 	bool isStarted() const { return started; }
 
+	std::forward_list<Spawn>& getSpawnList() { return spawnList; }
+
 	size_t getNpcCount() const { return std::distance(npcList.begin(), npcList.end()); }
 	size_t getMonsterCount() const {
 		size_t count = 0;
