@@ -28,7 +28,6 @@ Creature::~Creature()
 	}
 
 	for (Condition* condition : conditions) {
-		condition->endCondition(this);
 		delete condition;
 	}
 	conditions.clear();
@@ -319,13 +318,11 @@ void Creature::addEventWalk(bool firstStep)
 		return;
 	}
 
-	// Take first step right away, but still queue the next
-	if (ticks == 1) {
-		g_game.checkCreatureWalk(getID());
-	}
+	const uint32_t safeTicks = static_cast<uint32_t>(std::max<int64_t>(1, ticks));
+	const uint32_t cid = getID();
 
-	eventWalk = g_scheduler.addEvent(createSchedulerTask(ticks,
-	                                                     [id = getID()]() { g_game.checkCreatureWalk(id); }));
+	eventWalk = g_scheduler.addEvent(createSchedulerTask(safeTicks,
+	                                                     [cid]() { g_game.checkCreatureWalk(cid); }));
 }
 
 void Creature::stopEventWalk()
@@ -1316,9 +1313,10 @@ void Creature::executeConditions(uint32_t interval)
 		if (!condition->executeCondition(this, interval)) {
 			it = std::find(conditions.begin(), conditions.end(), condition);
 			if (it != conditions.end()) {
+				const ConditionType_t condType = condition->getType();
 				conditions.erase(it);
 				condition->endCondition(this);
-				onEndCondition(condition->getType());
+				onEndCondition(condType);      // callback before delete: same rationale
 				delete condition;
 			}
 		}
