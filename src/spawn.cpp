@@ -23,7 +23,12 @@ inline constexpr int32_t MAXSPAWN_INTERVAL = 24 * 60 * 60 * 1000; // 1 day
 
 Spawns::~Spawns()
 {
-	clear();
+	for (Npc* npc : npcList) {
+		delete npc;
+	}
+	npcList.clear();
+
+	spawnList.clear();
 }
 
 bool Spawns::loadFromXml(std::string_view filename)
