@@ -2263,6 +2263,7 @@
 		<attribute key="armor" value="2" />
 		<attribute key="weight" value="750" />
 		<attribute key="imbuementslot" value="1">
+			<attribute key="increase speed" value="3" />
 			<attribute key="paralysis removal" value="3" />
 		</attribute>
 		<attribute key="script" value="moveevent">
@@ -2340,6 +2341,7 @@
 		<attribute key="armor" value="2" />
 		<attribute key="weight" value="750" />
 		<attribute key="imbuementslot" value="1">
+			<attribute key="increase speed" value="3" />
 			<attribute key="paralysis removal" value="3" />
 		</attribute>
 		<attribute key="script" value="moveevent">
@@ -6052,6 +6054,7 @@
 		<attribute key="weight" value="750" />
 		<attribute key="imbuementslot" value="1">
 			<attribute key="paralysis removal" value="3" />
+			<attribute key="increase speed" value="3" />
 		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="feet" />
@@ -10483,6 +10486,7 @@
 		<attribute key="armor" value="3" />
 		<attribute key="weight" value="2500" />
 		<attribute key="imbuementslot" value="1">
+			<attribute key="increase speed" value="3" />
 			<attribute key="paralysis removal" value="3" />
 		</attribute>
 		<attribute key="script" value="moveevent">
@@ -18279,6 +18283,7 @@
 		<attribute key="armor" value="2" />
 		<attribute key="weight" value="1200" />
 		<attribute key="imbuementslot" value="1">
+			<attribute key="increase speed" value="3" />
 			<attribute key="paralysis removal" value="3" />
 		</attribute>
 		<attribute key="script" value="moveevent">
@@ -23890,6 +23895,7 @@
 		<attribute key="armor" value="3" />
 		<attribute key="weight" value="2250" />
 		<attribute key="imbuementslot" value="1">
+			<attribute key="increase speed" value="3" />
 			<attribute key="paralysis removal" value="3" />
 		</attribute>
 		<attribute key="script" value="moveevent">
@@ -24167,6 +24173,7 @@
 		<attribute key="armor" value="1" />
 		<attribute key="weight" value="700" />
 		<attribute key="imbuementslot" value="1">
+			<attribute key="increase speed" value="3" />
 			<attribute key="paralysis removal" value="3" />
 		</attribute>
 		<attribute key="script" value="moveevent">
@@ -28472,7 +28479,10 @@
 		<attribute key="speed" value="-5" />
 		<attribute key="armor" value="3" />
 		<attribute key="weight" value="3700" />
-		<attribute key="imbuementslot" value="1" />
+		<attribute key="imbuementslot" value="1">
+			<attribute key="increase speed" value="3" />
+			<attribute key="paralysis removal" value="3" />
+		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="level" value="150" />
 			<attribute key="slot" value="feet" />
@@ -38898,6 +38908,7 @@
 		<attribute key="armor" value="2" />
 		<attribute key="weight" value="500" />
 		<attribute key="imbuementslot" value="1">
+			<attribute key="increase speed" value="3" />
 			<attribute key="paralysis removal" value="3" />
 		</attribute>
 		<attribute key="script" value="moveevent">
@@ -51018,6 +51029,7 @@
 		<attribute key="armor" value="3" />
 		<attribute key="weight" value="900" />
 		<attribute key="imbuementslot" value="1">
+			<attribute key="increase speed" value="3" />
 			<attribute key="paralysis removal" value="3" />
 		</attribute>
 		<attribute key="script" value="moveevent">
@@ -66836,7 +66848,7 @@
 		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="level" value="250" />
-			<attribute key="slot" value="feet" />
+			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
 	</item>
@@ -66900,6 +66912,7 @@
 		<attribute key="weight" value="1500" />
 		<attribute key="imbuementslot" value="1">
 			<attribute key="increase speed" value="10" />
+			<attribute key="paralysis removal" value="3" />
 		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="level" value="250" />
@@ -66914,6 +66927,7 @@
 		<attribute key="weight" value="900" />
 		<attribute key="imbuementslot" value="1">
 			<attribute key="increase speed" value="10" />
+			<attribute key="paralysis removal" value="3" />
 		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="level" value="250" />
@@ -73694,6 +73708,7 @@
 		<attribute key="absorbpercentphysical" value="5" />
 		<attribute key="imbuementslot" value="1">
 			<attribute key="increase speed" value="3" />
+			<attribute key="paralysis removal" value="3" />
 		</attribute>
 		<attribute key="armor" value="3" />
 		<attribute key="weight" value="12500" />
