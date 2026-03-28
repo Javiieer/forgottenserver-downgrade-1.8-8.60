@@ -140,7 +140,7 @@ Connection::~Connection() { closeSocket(); }
 void Connection::accept(Protocol_ptr protocol)
 {
 	this->protocol = protocol;
-	g_dispatcher.addTask([=]() { protocol->onConnect(); });
+	g_dispatcher.addTask([protocol]() { protocol->onConnect(); });
 
 	accept();
 }

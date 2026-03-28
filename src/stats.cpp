@@ -240,7 +240,7 @@ void Stats::writeStats(const std::string& file, const statsMap& stats, const std
 	for (auto& it : stats)
 		pairs.emplace_back(it);
 
-	sort(pairs.begin(), pairs.end(), [=](const std::pair<std::string, statsData>& a, const std::pair<std::string, statsData>& b) {
+	sort(pairs.begin(), pairs.end(), [](const std::pair<std::string, statsData>& a, const std::pair<std::string, statsData>& b) {
 		return a.second.executionTime > b.second.executionTime;
 	});
 
