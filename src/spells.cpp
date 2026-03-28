@@ -83,6 +83,7 @@ void Spells::clearMaps(bool fromLua)
 {
 	for (auto instant = instants.begin(); instant != instants.end();) {
 		if (fromLua == instant->second.fromLua) {
+			instantsByName.erase(std::string(instant->second.getName()));
 			instant = instants.erase(instant);
 		} else {
 			++instant;
@@ -91,6 +92,7 @@ void Spells::clearMaps(bool fromLua)
 
 	for (auto rune = runes.begin(); rune != runes.end();) {
 		if (fromLua == rune->second.fromLua) {
+			runesByName.erase(std::string(rune->second.getName()));
 			rune = runes.erase(rune);
 		} else {
 			++rune;
@@ -117,6 +119,8 @@ bool Spells::registerInstantLuaEvent(InstantSpell* event)
 		auto result = instants.emplace(words, std::move(*instant));
 		if (!result.second) {
 			LOG_WARN(fmt::format("[Warning - Spells::registerInstantLuaEvent] Duplicate registered instant spell with words: {}", words));
+		} else {
+			instantsByName.emplace(std::string(result.first->second.getName()), &result.first->second);
 		}
 		return result.second;
 	}
@@ -132,6 +136,8 @@ bool Spells::registerRuneLuaEvent(RuneSpell* event)
 		auto result = runes.emplace(id, std::move(*rune));
 		if (!result.second) {
 			LOG_WARN(fmt::format("[Warning - Spells::registerRuneLuaEvent] Duplicate registered rune with id: {}", id));
+		} else {
+			runesByName.emplace(std::string(result.first->second.getName()), &result.first->second);
 		}
 		return result.second;
 	}
@@ -164,10 +170,9 @@ RuneSpell* Spells::getRuneSpell(uint32_t id)
 
 RuneSpell* Spells::getRuneSpellByName(std::string_view name)
 {
-	for (auto& it : runes) {
-		if (caseInsensitiveEqual(it.second.getName(), name)) {
-			return &it.second;
-		}
+	auto it = runesByName.find(std::string(name));
+	if (it != runesByName.end()) {
+		return it->second;
 	}
 	return nullptr;
 }
@@ -209,10 +214,9 @@ InstantSpell* Spells::getInstantSpell(std::string_view words)
 
 InstantSpell* Spells::getInstantSpellByName(std::string_view name)
 {
-	for (auto& it : instants) {
-		if (caseInsensitiveEqual(it.second.getName(), name)) {
-			return &it.second;
-		}
+	auto it = instantsByName.find(std::string(name));
+	if (it != instantsByName.end()) {
+		return it->second;
 	}
 	return nullptr;
 }

@@ -70,7 +70,7 @@ bool acceptConnection(const uint32_t clientIP)
 	int64_t timeDiff = currentTime - connectBlock.lastAttempt;
 	connectBlock.lastAttempt = currentTime;
 	if (timeDiff <= 5000) {
-		if (++connectBlock.count > 5) {
+		if (++connectBlock.count > static_cast<uint32_t>(getInteger(ConfigManager::CONNECTION_RATE_LIMIT_ALLOWED))) {
 			connectBlock.count = 0;
 			connectBlock.totalBlocks++;
 
@@ -84,7 +84,7 @@ bool acceptConnection(const uint32_t clientIP)
 				blockDuration = 15000;  // 15 seconds
 			}
 
-			if (timeDiff <= 500) {
+			if (timeDiff <= getInteger(ConfigManager::CONNECTION_RATE_LIMIT_MS)) {
 				connectBlock.blockTime = currentTime + blockDuration;
 				return false;
 			}

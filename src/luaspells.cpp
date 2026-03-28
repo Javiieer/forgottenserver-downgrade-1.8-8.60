@@ -218,7 +218,7 @@ int luaSpellGroup(lua_State* L)
 		} else if (lua_gettop(L) == 2) {
 			SpellGroup_t group = SPELLGROUP_NONE;
 			if (isString(L, 2)) {
-				group = stringToSpellGroup(getString(L, 2));
+				group = stringToSpellGroup(getStringView(L, 2));
 			} else {
 				group = getInteger<SpellGroup_t>(L, 2);
 			}
@@ -227,7 +227,7 @@ int luaSpellGroup(lua_State* L)
 				spell->setGroup(group);
 				pushBoolean(L, true);
 			} else {
-				LOG_WARN(fmt::format("[Warning - Spell::group] Unknown group: {}", getString(L, 2)));
+				LOG_WARN(fmt::format("[Warning - Spell::group] Unknown group: {}", getStringView(L, 2)));
 				pushBoolean(L, false);
 				return 1;
 			}
@@ -236,13 +236,13 @@ int luaSpellGroup(lua_State* L)
 			SpellGroup_t secondaryGroup = SPELLGROUP_NONE;
 			
 			if (isString(L, 2)) {
-				primaryGroup = stringToSpellGroup(getString(L, 2));
+				primaryGroup = stringToSpellGroup(getStringView(L, 2));
 			} else {
 				primaryGroup = getInteger<SpellGroup_t>(L, 2);
 			}
 			
 			if (isString(L, 3)) {
-				secondaryGroup = stringToSpellGroup(getString(L, 3));
+				secondaryGroup = stringToSpellGroup(getStringView(L, 3));
 			} else {
 				secondaryGroup = getInteger<SpellGroup_t>(L, 3);
 			}

@@ -22,6 +22,17 @@ std::string generateRecoveryKey(int32_t fieldCount, int32_t fieldLength, bool mi
 std::string generateSecurePassword(int32_t length = 12);
 bool validateAndFormatPlayerName(std::string& name);
 
+// case-insensitive comparator for std::map (O(log n) lookups)
+struct CILess
+{
+	bool operator()(const std::string& a, const std::string& b) const
+	{
+		return std::lexicographical_compare(
+				a.begin(), a.end(), b.begin(), b.end(),
+				[](char x, char y) { return std::tolower(static_cast<unsigned char>(x)) < std::tolower(static_cast<unsigned char>(y)); });
+	}
+};
+
 // checks that str1 is equivalent to str2 ignoring letter case
 bool caseInsensitiveEqual(std::string_view str1, std::string_view str2);
 

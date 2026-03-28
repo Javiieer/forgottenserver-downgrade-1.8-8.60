@@ -82,6 +82,16 @@ statusCountMaxPlayersPerIp = 0
 replaceKickOnLogin = true
 maxPacketsPerSecond = 25
 
+-- Connection Limits Config
+-- NOTE: maxConnections: maximum total concurrent connections (0 = no limit)
+-- NOTE: maxConnectionsPerIP: maximum concurrent connections per IP (0 = no limit)
+-- NOTE: connectionRateLimitAllowed: how many connections allowed within the rate window before blocking
+-- NOTE: connectionRateLimitMS: minimum interval between connections from the same IP (in ms)
+maxConnections = 2000
+maxConnectionsPerIP = 10
+connectionRateLimitAllowed = 10
+connectionRateLimitMS = 500
+
 -- Deaths
 -- NOTE: Leave deathLosePercent as -1 if you want to use the default
 -- death penalty formula. For the old formula, set it to 10. For

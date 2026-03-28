@@ -37,7 +37,7 @@ int luaPlayerCreate(lua_State* L)
 			player = g_game.getPlayerByGUID(id);
 		}
 	} else if (isString(L, 2)) {
-		ReturnValue ret = g_game.getPlayerByNameWildcard(getString(L, 2), player);
+		ReturnValue ret = g_game.getPlayerByNameWildcard(getStringView(L, 2), player);
 		if (ret != RETURNVALUE_NOERROR) {
 			lua_pushnil(L);
 			lua_pushinteger(L, ret);
@@ -756,7 +756,7 @@ int luaPlayerSetVocation(lua_State* L)
 	if (isInteger(L, 2)) {
 		vocation = g_vocations.getVocation(getInteger<uint16_t>(L, 2));
 	} else if (isString(L, 2)) {
-		if (auto id = g_vocations.getVocationId(getString(L, 2))) {
+		if (auto id = g_vocations.getVocationId(getStringView(L, 2))) {
 			vocation = g_vocations.getVocation(id.value());
 		} else {
 			vocation = nullptr;
@@ -1780,7 +1780,7 @@ int luaPlayerAddMount(lua_State* L)
 	if (isInteger(L, 2)) {
 		mountId = getInteger<uint16_t>(L, 2);
 	} else {
-		Mount* mount = g_game.mounts.getMountByName(getString(L, 2));
+		Mount* mount = g_game.mounts.getMountByName(getStringView(L, 2));
 		if (!mount) {
 			lua_pushnil(L);
 			return 1;
@@ -1805,7 +1805,7 @@ int luaPlayerRemoveMount(lua_State* L)
 	if (isInteger(L, 2)) {
 		mountId = getInteger<uint16_t>(L, 2);
 	} else {
-		Mount* mount = g_game.mounts.getMountByName(getString(L, 2));
+		Mount* mount = g_game.mounts.getMountByName(getStringView(L, 2));
 		if (!mount) {
 			lua_pushnil(L);
 			return 1;

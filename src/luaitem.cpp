@@ -380,7 +380,7 @@ int luaItemHasAttribute(lua_State* L)
 	if (isInteger(L, 2)) {
 		attribute = getInteger<itemAttrTypes>(L, 2);
 	} else if (isString(L, 2)) {
-		attribute = stringToItemAttribute(getString(L, 2));
+		attribute = stringToItemAttribute(getStringView(L, 2));
 	} else {
 		attribute = ITEM_ATTRIBUTE_NONE;
 	}
@@ -402,7 +402,7 @@ int luaItemGetAttribute(lua_State* L)
 	if (isInteger(L, 2)) {
 		attribute = getInteger<itemAttrTypes>(L, 2);
 	} else if (isString(L, 2)) {
-		attribute = stringToItemAttribute(getString(L, 2));
+		attribute = stringToItemAttribute(getStringView(L, 2));
 	} else {
 		attribute = ITEM_ATTRIBUTE_NONE;
 	}
@@ -434,7 +434,7 @@ int luaItemSetAttribute(lua_State* L)
 	if (isInteger(L, 2)) {
 		attribute = getInteger<itemAttrTypes>(L, 2);
 	} else if (isString(L, 2)) {
-		attribute = stringToItemAttribute(getString(L, 2));
+		attribute = stringToItemAttribute(getStringView(L, 2));
 	} else {
 		attribute = ITEM_ATTRIBUTE_NONE;
 	}
@@ -595,7 +595,7 @@ int luaItemRemoveCustomAttribute(lua_State* L)
 	if (isInteger(L, 2)) {
 		pushBoolean(L, item->removeCustomAttribute(getInteger<int64_t>(L, 2)));
 	} else if (isString(L, 2)) {
-		pushBoolean(L, item->removeCustomAttribute(getString(L, 2)));
+		pushBoolean(L, item->removeCustomAttribute(getStringView(L, 2)));
 	} else {
 		lua_pushnil(L);
 	}

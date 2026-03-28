@@ -8,6 +8,7 @@
 #include "baseevents.h"
 #include "player.h"
 #include "talkaction.h"
+#include "tools.h"
 #include "vocation.h"
 
 class InstantSpell;
@@ -54,6 +55,10 @@ private:
 
 	std::map<uint16_t, RuneSpell> runes;
 	std::map<std::string, InstantSpell> instants;
+
+	// secondary name-indexed maps for O(log n) lookups by spell name
+	std::map<std::string, InstantSpell*, CILess> instantsByName;
+	std::map<std::string, RuneSpell*, CILess> runesByName;
 
 	friend class CombatSpell;
 	LuaScriptInterface scriptInterface{"Spell Interface"};

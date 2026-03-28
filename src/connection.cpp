@@ -18,8 +18,8 @@ Connection_ptr ConnectionManager::createConnection(boost::asio::io_context& io_c
 {
 	std::lock_guard<std::mutex> lockClass(connectionManagerLock);
 
-	if (connections.size() >= MAX_CONNECTIONS_TOTAL) {
-		LOG_WARN(fmt::format("[ConnectionManager] Max connections ({}) reached. Rejecting new connection.", MAX_CONNECTIONS_TOTAL));
+	if (connections.size() >= static_cast<size_t>(getInteger(ConfigManager::MAX_CONNECTIONS))) {
+		LOG_WARN(fmt::format("[ConnectionManager] Max connections ({}) reached. Rejecting new connection.", getInteger(ConfigManager::MAX_CONNECTIONS)));
 		return nullptr;
 	}
 
@@ -64,20 +64,26 @@ void ConnectionManager::closeAll()
 	ipConnectionCount.clear();
 }
 
-bool ConnectionManager::isMaxConnectionsReached() const
+bool ConnectionManager::isMaxConnectionsReached()
 {
 	std::lock_guard<std::mutex> lockClass(connectionManagerLock);
-	return connections.size() >= MAX_CONNECTIONS_TOTAL;
+	return connections.size() >= static_cast<size_t>(getInteger(ConfigManager::MAX_CONNECTIONS));
 }
 
-bool ConnectionManager::isMaxConnectionsPerIPReached(uint32_t ip) const
+bool ConnectionManager::isMaxConnectionsPerIPReached(uint32_t ip)
 {
 	std::lock_guard<std::mutex> lockClass(connectionManagerLock);
 	auto it = ipConnectionCount.find(ip);
 	if (it == ipConnectionCount.end()) {
 		return false;
 	}
-	return it->second >= MAX_CONNECTIONS_PER_IP;
+
+	uint32_t limit = static_cast<uint32_t>(getInteger(ConfigManager::MAX_CONNECTIONS_PER_IP));
+	if (limit == 0) {
+		return false;
+	}
+
+	return it->second >= limit;
 }
 
 size_t ConnectionManager::getConnectionCount() const

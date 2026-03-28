@@ -398,7 +398,7 @@ int luaGameGetReturnMessage(lua_State* L)
 int luaGameGetItemAttributeByName(lua_State* L)
 {
 	// Game.getItemAttributeByName(name)
-	lua_pushinteger(L, stringToItemAttribute(getString(L, 1)));
+	lua_pushinteger(L, stringToItemAttribute(getStringView(L, 1)));
 	return 1;
 }
 

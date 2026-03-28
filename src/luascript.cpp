@@ -804,6 +804,16 @@ std::string Lua::getString(lua_State* L, int32_t arg)
 	return {c_str, len};
 }
 
+std::string_view Lua::getStringView(lua_State *L, int32_t arg)
+{
+	size_t len;
+	const char *c_str = lua_tolstring(L, arg, &len);
+	if (!c_str || len == 0) {
+		return {};
+	}
+	return {c_str, len};
+}
+
 Position Lua::getPosition(lua_State* L, int32_t arg, int32_t& stackpos)
 {
 	Position position;

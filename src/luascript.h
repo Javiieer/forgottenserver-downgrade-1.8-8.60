@@ -753,6 +753,7 @@ bool getBoolean(lua_State* L, int32_t arg);
 bool getBoolean(lua_State* L, int32_t arg, bool defaultValue);
 
 std::string getString(lua_State* L, int32_t arg);
+std::string_view getStringView(lua_State *L, int32_t arg);
 Position getPosition(lua_State* L, int32_t arg, int32_t& stackpos);
 Position getPosition(lua_State* L, int32_t arg);
 Outfit_t getOutfit(lua_State* L, int32_t arg);

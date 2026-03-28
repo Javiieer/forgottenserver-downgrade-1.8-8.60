@@ -514,6 +514,12 @@ bool ConfigManager::load()
 	strings[String::ADMIN_ENCRYPTION_DATA] = getGlobalString(L, "adminEncryptionData", "");
 	integers[Integer::ADMIN_CONNECTIONS_LIMIT] = getGlobalInteger(L, "adminConnectionsLimit", 1);
 
+	// Connection Limits
+	integers[Integer::MAX_CONNECTIONS] = getGlobalInteger(L, "maxConnections", 2000);
+	integers[Integer::MAX_CONNECTIONS_PER_IP] = getGlobalInteger(L, "maxConnectionsPerIP", 10);
+	integers[Integer::CONNECTION_RATE_LIMIT_ALLOWED] = getGlobalInteger(L, "connectionRateLimitAllowed", 10);
+	integers[Integer::CONNECTION_RATE_LIMIT_MS] = getGlobalInteger(L, "connectionRateLimitMS", 500);
+
 	loaded = true;
 	lua_close(L);
 
