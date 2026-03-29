@@ -57,8 +57,8 @@ private:
 	TaskFunc func;
 };
 
-Task* createTaskWithStats(TaskFunc&& f, const std::string& description, const std::string& extraDescription);
-Task* createTaskWithStats(uint32_t expiration, TaskFunc&& f, const std::string& description, const std::string& extraDescription);
+std::unique_ptr<Task> createTaskWithStats(TaskFunc&& f, const std::string& description, const std::string& extraDescription);
+std::unique_ptr<Task> createTaskWithStats(uint32_t expiration, TaskFunc&& f, const std::string& description, const std::string& extraDescription);
 
 class Dispatcher : public ThreadHolder<Dispatcher>
 {
@@ -72,7 +72,7 @@ public:
 		taskList.reserve(32);
 	}
 
-	void addTask(Task* task);
+	void addTask(std::unique_ptr<Task> task);
 	void addTask(TaskFunc&& f) { addTask(createTask(std::move(f))); }
 	void addTask(uint32_t expiration, TaskFunc&& f) { addTask(createTimedTask(expiration, std::move(f))); }
 
@@ -112,7 +112,7 @@ private:
 	// C++20: binary_semaphore is more efficient than condition_variable
 	std::binary_semaphore taskSignal{0};
 
-	std::vector<Task*> taskList;
+	std::vector<std::unique_ptr<Task>> taskList;
 	uint64_t dispatcherCycle = 0;
 	int dispatcherId = 0;
 

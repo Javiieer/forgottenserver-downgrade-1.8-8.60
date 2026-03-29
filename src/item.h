@@ -962,6 +962,9 @@ public:
 	void incrementReferenceCounter() { ++referenceCounter; }
 	void decrementReferenceCounter()
 	{
+		if (referenceCounter == 0) {
+			return;
+		}
 		if (--referenceCounter == 0) {
 			delete this;
 		}

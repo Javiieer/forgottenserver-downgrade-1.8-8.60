@@ -344,10 +344,15 @@ public:
 	               int32_t maxSearchDist = 0) const;
 
 	void incrementReferenceCounter() { ++referenceCounter; }
-	void decrementReferenceCounter() {
-		if (referenceCounter <= 0) { return; }
-	--referenceCounter;
-		if (referenceCounter == 0) { delete this; } }
+	void decrementReferenceCounter()
+	{
+		if (referenceCounter == 0) {
+			return;
+		}
+		if (--referenceCounter == 0) {
+			delete this;
+		}
+	}
 
 	virtual void setStorageValue(uint32_t key, std::optional<int64_t> value, bool isSpawn = false);
 	virtual std::optional<int64_t> getStorageValue(uint32_t key) const;

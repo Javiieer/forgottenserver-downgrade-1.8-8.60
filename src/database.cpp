@@ -169,7 +169,7 @@ bool Database::executeQuery(std::string_view query)
 
 #ifdef STATS_ENABLED
 	uint64_t ns = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - time_point).count();
-	g_stats.addSqlStats(new Stat(ns, std::string(query.substr(0, 100)), std::string(query.substr(0, 256))));
+	g_stats.addSqlStats(std::make_unique<Stat>(ns, std::string(query.substr(0, 100)), std::string(query.substr(0, 256))));
 #endif
 
 	return success;
@@ -194,7 +194,7 @@ retry:
 
 #ifdef STATS_ENABLED
 	uint64_t ns = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - time_point).count();
-	g_stats.addSqlStats(new Stat(ns, std::string(query.substr(0, 100)), std::string(query.substr(0, 256))));
+	g_stats.addSqlStats(std::make_unique<Stat>(ns, std::string(query.substr(0, 100)), std::string(query.substr(0, 256))));
 #endif
 	
 	if (!res) {

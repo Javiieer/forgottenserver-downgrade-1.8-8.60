@@ -11,20 +11,20 @@
 
 extern Game g_game;
 
-Task* createTaskWithStats(TaskFunc&& f, const std::string& description, const std::string& extraDescription)
+std::unique_ptr<Task> createTaskWithStats(TaskFunc&& f, const std::string& description, const std::string& extraDescription)
 {
 	if (g_stats.isEnabled()) {
-		return new Task(std::move(f), description, extraDescription);
+		return std::make_unique<Task>(std::move(f), description, extraDescription);
 	}
-	return new Task(std::move(f), "", "");
+	return std::make_unique<Task>(std::move(f), "", "");
 }
 
-Task* createTaskWithStats(uint32_t expiration, TaskFunc&& f, const std::string& description, const std::string& extraDescription)
+std::unique_ptr<Task> createTaskWithStats(uint32_t expiration, TaskFunc&& f, const std::string& description, const std::string& extraDescription)
 {
 	if (g_stats.isEnabled()) {
-		return new Task(expiration, std::move(f), description, extraDescription);
+		return std::make_unique<Task>(expiration, std::move(f), description, extraDescription);
 	}
-	return new Task(expiration, std::move(f), "", "");
+	return std::make_unique<Task>(expiration, std::move(f), "", "");
 }
 
 void Dispatcher::threadMain()
@@ -32,7 +32,7 @@ void Dispatcher::threadMain()
     // Capture thread ID for isDispatcherThread() checks
     threadId = std::this_thread::get_id();
 
-    std::vector<Task*> tmpTaskList;
+    std::vector<std::unique_ptr<Task>> tmpTaskList;
     tmpTaskList.reserve(128);
 
 #ifdef STATS_ENABLED
@@ -72,7 +72,7 @@ void Dispatcher::threadMain()
         }
 
         // Process all available tasks
-        for (Task* task : tmpTaskList) {
+        for (auto& task : tmpTaskList) {
 #if defined(STATS_ENABLED) || defined(SLOW_TASK_DETECTION)
             auto taskStart = std::chrono::high_resolution_clock::now();
 #endif
@@ -110,32 +110,22 @@ void Dispatcher::threadMain()
                 task->executionTime = std::chrono::duration_cast<std::chrono::nanoseconds>(
                     std::chrono::high_resolution_clock::now() - time_point
                 ).count();
-                g_stats.addDispatcherTask(dispatcherId, task);
-            } else {
-                delete task;
+                g_stats.addDispatcherTask(dispatcherId, std::move(task));
             }
-#else
-            delete task;
 #endif
         }
         tmpTaskList.clear();
     }
 
-    for (Task* task : tmpTaskList) {
-        delete task;
-    }
     tmpTaskList.clear();
 
     {
         std::lock_guard<std::mutex> lockGuard(taskLock);
-        for (Task* task : taskList) {
-            delete task;
-        }
         taskList.clear();
     }
 }
 
-void Dispatcher::addTask(Task* task)
+void Dispatcher::addTask(std::unique_ptr<Task> task)
 {
 	bool do_signal = false;
 
@@ -144,9 +134,7 @@ void Dispatcher::addTask(Task* task)
 
 		if (getState() == THREAD_STATE_RUNNING) {
 			do_signal = taskList.empty();
-			taskList.push_back(task);
-		} else {
-			delete task;
+			taskList.push_back(std::move(task));
 		}
 	}
 
@@ -157,13 +145,13 @@ void Dispatcher::addTask(Task* task)
 
 void Dispatcher::shutdown()
 {
-	Task* task = createTaskWithStats([this]() { setState(THREAD_STATE_TERMINATED); }, "Dispatcher::shutdown", "");
+	auto task = createTaskWithStats([this]() { setState(THREAD_STATE_TERMINATED); }, "Dispatcher::shutdown", "");
 
     task->trackInStats = false; // sentinel must always be freed by threadMain
 
 	{
 		std::lock_guard<std::mutex> lockGuard(taskLock);
-		taskList.push_back(task);
+		taskList.push_back(std::move(task));
 	}
 
 	taskSignal.release();

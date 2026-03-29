@@ -585,7 +585,7 @@ bool LuaScriptInterface::callFunction(int params)
 
 #ifdef STATS_ENABLED
 	uint64_t ns = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - time_point).count();
-	g_stats.addLuaStats(new Stat(ns, getFileByIdForStats(scriptId), ""));
+	g_stats.addLuaStats(std::make_unique<Stat>(ns, getFileByIdForStats(scriptId), ""));
 #endif
 
 	resetScriptEnv();

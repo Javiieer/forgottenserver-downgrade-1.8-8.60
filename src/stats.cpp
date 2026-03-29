@@ -15,16 +15,7 @@ int64_t Stats::DUMP_INTERVAL = 30000; // 30 sec
 uint32_t Stats::SLOW_EXECUTION_TIME = 10000000; // 10 ms
 uint32_t Stats::VERY_SLOW_EXECUTION_TIME = 50000000; // 50 ms
 
-Stats::~Stats() {
-	for (auto& d : dispatchers) {
-		for (Task* t : d.queue) {
-			delete t;
-		}
-	}
-	for (Stat* s : lua.queue) { delete s; }
-	for (Stat* s : sql.queue) { delete s; }
-	for (Stat* s : special.queue) { delete s; }
-}
+Stats::~Stats() = default;
 
 AutoStatRecursive* AutoStatRecursive::activeStat = nullptr;
 
@@ -44,20 +35,20 @@ void Stats::threadMain() {
 		SLOW_EXECUTION_TIME = ConfigManager::getInteger(ConfigManager::STATS_SLOW_LOG_TIME) * 1000000;
 		VERY_SLOW_EXECUTION_TIME = ConfigManager::getInteger(ConfigManager::STATS_VERY_SLOW_LOG_TIME) * 1000000;
 
-		std::vector<std::forward_list < Task * >> tasks;
+		std::vector<std::forward_list<std::unique_ptr<Task>>> tasks;
 		for (auto &dispatcher : dispatchers) {
 			tasks.push_back(std::move(dispatcher.queue));
 			dispatcher.queue.clear();
 		}
-		std::forward_list < Stat * > lua_stats(std::move(lua.queue));
+		std::forward_list<std::unique_ptr<Stat>> lua_stats(std::move(lua.queue));
 		lua.queue.clear();
-		std::forward_list < Stat * > sql_stats(std::move(sql.queue));
+		std::forward_list<std::unique_ptr<Stat>> sql_stats(std::move(sql.queue));
 		sql.queue.clear();
-		std::forward_list < Stat * > special_stats(std::move(special.queue));
+		std::forward_list<std::unique_ptr<Stat>> special_stats(std::move(special.queue));
 		special.queue.clear();
 		taskLockUnique.unlock();
 
-		parseDispatchersQueue(tasks);
+		parseDispatchersQueue(std::move(tasks));
 		parseLuaQueue(lua_stats);
 		parseSqlQueue(sql_stats);
 		parseSpecialQueue(special_stats);
@@ -112,30 +103,30 @@ void Stats::threadMain() {
 	}
 }
 
-void Stats::addDispatcherTask(int index, Task* task) {
+void Stats::addDispatcherTask(int index, std::unique_ptr<Task> task) {
 	std::lock_guard<std::mutex> lockClass(statsLock);
-	dispatchers[index].queue.push_front(task);
+	dispatchers[index].queue.push_front(std::move(task));
 }
 
-void Stats::addLuaStats(Stat* stats) {
+void Stats::addLuaStats(std::unique_ptr<Stat> stats) {
 	std::lock_guard<std::mutex> lockClass(statsLock);
-	lua.queue.push_front(stats);
+	lua.queue.push_front(std::move(stats));
 }
 
-void Stats::addSqlStats(Stat* stats) {
+void Stats::addSqlStats(std::unique_ptr<Stat> stats) {
 	std::lock_guard<std::mutex> lockClass(statsLock);
-	sql.queue.push_front(stats);
+	sql.queue.push_front(std::move(stats));
 }
 
-void Stats::addSpecialStats(Stat* stats) {
+void Stats::addSpecialStats(std::unique_ptr<Stat> stats) {
 	std::lock_guard<std::mutex> lockClass(statsLock);
-	special.queue.push_front(stats);
+	special.queue.push_front(std::move(stats));
 }
 
-void Stats::parseDispatchersQueue(std::vector<std::forward_list < Task * >> queues) {
+void Stats::parseDispatchersQueue(std::vector<std::forward_list<std::unique_ptr<Task>>>&& queues) {
 	int i = 0;
 	for(auto& dispatcher : dispatchers) {
-		for(Task* task : queues[i++]) {
+		for(const auto& task : queues[i++]) {
 			auto it = dispatcher.stats.emplace(task->description, statsData(0, 0, task->extraDescription)).first;
 			it->second.calls += 1;
 			it->second.executionTime += task->executionTime;
@@ -144,13 +135,12 @@ void Stats::parseDispatchersQueue(std::vector<std::forward_list < Task * >> queu
 			} else if(SLOW_EXECUTION_TIME > 0 && task->executionTime > SLOW_EXECUTION_TIME) {
 				writeSlowInfo("dispatcher_slow.log", task->executionTime, task->description, task->extraDescription);
 			}
-			delete task;
 		}
 	}
 }
 
-void Stats::parseLuaQueue(std::forward_list <Stat*>& queue) {
-	for(Stat* stats : queue) {
+void Stats::parseLuaQueue(std::forward_list<std::unique_ptr<Stat>>& queue) {
+	for(const auto& stats : queue) {
 		auto it = lua.stats.emplace(stats->description, statsData(0, 0, stats->extraDescription)).first;
 		it->second.calls += 1;
 		it->second.executionTime += stats->executionTime;
@@ -160,12 +150,11 @@ void Stats::parseLuaQueue(std::forward_list <Stat*>& queue) {
 		} else if(SLOW_EXECUTION_TIME > 0 && stats->executionTime > SLOW_EXECUTION_TIME) {
 			writeSlowInfo("lua_slow.log", stats->executionTime, stats->description, stats->extraDescription);
 		}
-		delete stats;
 	}
 }
 
-void Stats::parseSqlQueue(std::forward_list <Stat*>& queue) {
-	for(Stat* stats : queue) {
+void Stats::parseSqlQueue(std::forward_list<std::unique_ptr<Stat>>& queue) {
+	for(const auto& stats : queue) {
 		auto it = sql.stats.emplace(stats->description, statsData(0, 0, stats->extraDescription)).first;
 		it->second.calls += 1;
 		it->second.executionTime += stats->executionTime;
@@ -175,12 +164,11 @@ void Stats::parseSqlQueue(std::forward_list <Stat*>& queue) {
 		} else if(SLOW_EXECUTION_TIME > 0 && stats->executionTime > SLOW_EXECUTION_TIME) {
 			writeSlowInfo("sql_slow.log", stats->executionTime, stats->description, stats->extraDescription);
 		}
-		delete stats;
 	}
 }
 
-void Stats::parseSpecialQueue(std::forward_list <Stat*>& queue) {
-	for(Stat* stats : queue) {
+void Stats::parseSpecialQueue(std::forward_list<std::unique_ptr<Stat>>& queue) {
+	for(const auto& stats : queue) {
 		auto it = special.stats.emplace(stats->description, statsData(0, 0, stats->extraDescription)).first;
 		it->second.calls += 1;
 		it->second.executionTime += stats->executionTime;
@@ -190,7 +178,6 @@ void Stats::parseSpecialQueue(std::forward_list <Stat*>& queue) {
 		} else if(SLOW_EXECUTION_TIME > 0 && stats->executionTime > SLOW_EXECUTION_TIME) {
 			writeSlowInfo("special_slow.log", stats->executionTime, stats->description, stats->extraDescription);
 		}
-		delete stats;
 	}
 }
 

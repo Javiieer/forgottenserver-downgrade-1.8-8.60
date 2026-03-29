@@ -14,6 +14,14 @@ extern Game g_game;
 
 Party::Party(Player* leader) : leader(leader) { leader->setParty(this); }
 
+
+std::shared_ptr<Party> Party::create(Player* leader)
+{
+	auto party = std::shared_ptr<Party>(new Party(leader));
+	party->self = party;
+	return party;
+}
+
 void Party::disband()
 {
 	if (!g_events->eventPartyOnDisband(this)) {
@@ -52,7 +60,7 @@ void Party::disband()
 		currentLeader->sendCreatureSkull(member);
 	}
 	memberList.clear();
-	delete this;
+	self.reset();
 }
 
 bool Party::leaveParty(Player* player, bool forceRemove /* = false */)

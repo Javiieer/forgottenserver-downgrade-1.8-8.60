@@ -4,6 +4,8 @@
 #ifndef FS_PARTY_H
 #define FS_PARTY_H
 
+#include <memory>
+
 #include "monsters.h"
 #include "player.h"
 
@@ -23,6 +25,8 @@ enum SharedExpStatus_t : uint8_t {
 class Party
 {
 public:
+	static std::shared_ptr<Party> create(Player* leader);
+
 	explicit Party(Player* leader);
 
 	Player* getLeader() const { return leader; }
@@ -70,6 +74,8 @@ private:
 
 	bool sharedExpActive = false;
 	bool sharedExpEnabled = false;
+
+	std::shared_ptr<Party> self;
 };
 
 #endif

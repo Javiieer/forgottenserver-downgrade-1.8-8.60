@@ -23,15 +23,15 @@ private:
 	uint32_t eventId = 0;
 	uint32_t delay = 0;
 
-	friend SchedulerTask* createSchedulerTaskWithStats(uint32_t, TaskFunc&&, const std::string&, const std::string&);
+	friend std::unique_ptr<SchedulerTask> createSchedulerTaskWithStats(uint32_t, TaskFunc&&, const std::string&, const std::string&);
 };
 
-SchedulerTask* createSchedulerTaskWithStats(uint32_t delay, TaskFunc&& f, const std::string& description, const std::string& extraDescription);
+std::unique_ptr<SchedulerTask> createSchedulerTaskWithStats(uint32_t delay, TaskFunc&& f, const std::string& description, const std::string& extraDescription);
 
 class Scheduler : public ThreadHolder<Scheduler>
 {
 public:
-	uint32_t addEvent(SchedulerTask* task);
+	uint32_t addEvent(std::unique_ptr<SchedulerTask> task);
 	uint32_t addEvent(uint32_t delay, TaskFunc&& f) {
 		return addEvent(createSchedulerTask(delay, std::move(f)));
 	}

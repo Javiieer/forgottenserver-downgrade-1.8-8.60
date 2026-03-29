@@ -5,7 +5,7 @@
 
 #include "scheduler.h"
 
-uint32_t Scheduler::addEvent(SchedulerTask* task)
+uint32_t Scheduler::addEvent(std::unique_ptr<SchedulerTask> task)
 {
 	// check if the event has a valid id
 	if (task->getEventId() == 0) {
@@ -14,41 +14,38 @@ uint32_t Scheduler::addEvent(SchedulerTask* task)
 		task->setEventId(id);
 	}
 
-	struct TaskGuard {
-		SchedulerTask* task;
-		bool released = false;
-		explicit TaskGuard(SchedulerTask* t) : task(t) {}
-		TaskGuard(const TaskGuard&) = delete;
-		TaskGuard& operator=(const TaskGuard&) = delete;
-		~TaskGuard() { if (!released) delete task; }
-	};
-	auto guard = std::make_shared<TaskGuard>(task);
+	const uint32_t eventId = task->getEventId();
 
-	boost::asio::post(io_context, [this, guard]() {
+	struct TaskHolder {
+		std::unique_ptr<SchedulerTask> task;
+		explicit TaskHolder(std::unique_ptr<SchedulerTask> t) : task(std::move(t)) {}
+	};
+	auto holder = std::make_shared<TaskHolder>(std::move(task));
+
+	boost::asio::post(io_context, [this, holder]() {
 		// insert the event id in the list of active events
-		auto [it, inserted] = eventIdTimerMap.emplace(guard->task->getEventId(), boost::asio::steady_timer{ io_context });
+		auto [it, inserted] = eventIdTimerMap.emplace(holder->task->getEventId(), boost::asio::steady_timer{ io_context });
 			if (!inserted) {
       			return;
     		}
 		auto& timer = it->second;
 
-		timer.expires_after(std::chrono::milliseconds(guard->task->getDelay()));
-		timer.async_wait([this, guard](const boost::system::error_code& error) {
-			eventIdTimerMap.erase(guard->task->getEventId());
+		timer.expires_after(std::chrono::milliseconds(holder->task->getDelay()));
+		timer.async_wait([this, holder](const boost::system::error_code& error) {
+			eventIdTimerMap.erase(holder->task->getEventId());
 
 			if (error == boost::asio::error::operation_aborted || getState() == THREAD_STATE_TERMINATED) {
 				// the timer has been manually canceled(timer->cancel()) or Scheduler::shutdown has been called.
-				// guard destructor will delete the task.
+				// holder destructor will clean up the task via unique_ptr.
 				return;
 			}
 
-			// Transfer ownership to the dispatcher; guard must not delete.
-			guard->released = true;
-			g_dispatcher.addTask(guard->task);
+			// Transfer ownership to the dispatcher.
+			g_dispatcher.addTask(std::move(holder->task));
 			});
 		});
 
-	return task->getEventId();
+	return eventId;
 }
 
 void Scheduler::stopEvent(uint32_t eventId) noexcept
@@ -78,7 +75,7 @@ void Scheduler::shutdown() noexcept
 	});
 }
 
-SchedulerTask* createSchedulerTaskWithStats(uint32_t delay, TaskFunc&& f, const std::string& description, const std::string& extraDescription)
+std::unique_ptr<SchedulerTask> createSchedulerTaskWithStats(uint32_t delay, TaskFunc&& f, const std::string& description, const std::string& extraDescription)
 {
-	return new SchedulerTask(delay, std::move(f), description, extraDescription);
+	return std::unique_ptr<SchedulerTask>(new SchedulerTask(delay, std::move(f), description, extraDescription));
 }
