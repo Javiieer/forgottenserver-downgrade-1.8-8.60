@@ -399,8 +399,8 @@ bool Actions::useItem(Player* player, const Position& pos, uint8_t index, Item* 
 		}
 		if (!player->hasFlag(PlayerFlag_HasNoExhaustion)) {
 			int32_t cooldown = getInteger(ConfigManager::ACTIONS_DELAY_INTERVAL);
-			if (Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST_WEAPON, cooldown, 0, false, EXHAUST_OPENCONTAINER)) {
-				player->addCondition(condition);
+			if (auto condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST_WEAPON, cooldown, 0, false, EXHAUST_OPENCONTAINER)) {
+				player->addCondition(std::move(condition));
 			}
 			player->sendUseItemCooldown(cooldown);
 		}
@@ -479,20 +479,20 @@ bool Actions::useItemEx(Player* player, const Position& fromPos, const Position&
 	if (!player->hasFlag(PlayerFlag_HasNoExhaustion)) {
 		if (isPotion) {
 			int32_t potionCooldown = getInteger(ConfigManager::EXHAUST_POTION_INTERVAL);
-			if (Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST_WEAPON, potionCooldown, 0, false, EXHAUST_POTION)) {
-				player->addCondition(condition);
+			if (auto condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST_WEAPON, potionCooldown, 0, false, EXHAUST_POTION)) {
+				player->addCondition(std::move(condition));
 			}
 			if (getBoolean(ConfigManager::POTION_CAN_EXHAUST_ITEM)) {
 				int32_t itemCooldown = getInteger(ConfigManager::EX_ACTIONS_DELAY_INTERVAL);
-				if (Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST_WEAPON, itemCooldown, 0, false, EXHAUST_USEITEM)) {
-					player->addCondition(condition);
+				if (auto condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST_WEAPON, itemCooldown, 0, false, EXHAUST_USEITEM)) {
+					player->addCondition(std::move(condition));
 				}
 				player->sendUseItemCooldown(itemCooldown);
 			}
 		} else {
 			int32_t cooldown = getInteger(ConfigManager::EX_ACTIONS_DELAY_INTERVAL);
-			if (Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST_WEAPON, cooldown, 0, false, EXHAUST_USEITEM)) {
-				player->addCondition(condition);
+			if (auto condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST_WEAPON, cooldown, 0, false, EXHAUST_USEITEM)) {
+				player->addCondition(std::move(condition));
 			}
 			player->sendUseItemCooldown(cooldown);
 		}

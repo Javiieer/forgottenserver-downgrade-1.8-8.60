@@ -60,9 +60,6 @@ Player::~Player()
 	setEditHouse(nullptr);
 
 	// clear stored conditions to prevent memory leak from IOLoginData::loadPlayer
-	for (Condition* condition : storedConditionList) {
-		delete condition;
-	}
 	storedConditionList.clear();
 }
 
@@ -469,7 +466,7 @@ float Player::getDefenseFactor() const
 uint16_t Player::getClientIcons() const
 {
 	uint16_t icons = 0;
-	for (Condition* condition : conditions) {
+	for (const auto& condition : conditions) {
 		if (!isSuppress(condition->getType())) {
 			icons |= condition->getIcons();
 		}
@@ -1118,8 +1115,8 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin)
 			}
 		}
 
-		for (auto condition : storedConditionList) {
-			addCondition(condition);
+		for (auto& condition : storedConditionList) {
+			addCondition(std::move(condition));
 		}
 		storedConditionList.clear();
 
@@ -1495,8 +1492,8 @@ void Player::onCreatureMove(Creature* creature, const Tile* newTile, const Posit
 	if (teleport || oldPos.z != newPos.z) {
 		const int64_t ticks = getInteger(ConfigManager::STAIRHOP_DELAY);
 		if (ticks > 0) {
-			if (Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_PACIFIED, ticks, 0)) {
-				addCondition(condition);
+			if (auto condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_PACIFIED, ticks, 0)) {
+				addCondition(std::move(condition));
 			}
 		}
 	}
@@ -1781,7 +1778,7 @@ uint32_t Player::isMuted() const
 	}
 
 	int32_t muteTicks = 0;
-	for (Condition* condition : conditions) {
+	for (const auto& condition : conditions) {
 		if (condition->getType() == CONDITION_MUTED && condition->getTicks() > muteTicks) {
 			muteTicks = condition->getTicks();
 		}
@@ -1814,8 +1811,8 @@ void Player::removeMessageBuffer()
 
 			uint32_t muteTime = 5 * muteCount * muteCount;
 			muteCountMap[guid] = muteCount + 1;
-			Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_MUTED, muteTime * 1000, 0);
-			addCondition(condition);
+			auto condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_MUTED, muteTime * 1000, 0);
+			addCondition(std::move(condition));
 
 			sendTextMessage(MESSAGE_STATUS_SMALL, fmt::format("You are muted for {:d} seconds.", muteTime));
 		}
@@ -2372,21 +2369,22 @@ void Player::death(Creature* lastHitCreature)
 
 		{
 			std::vector<Condition*> toRemove;
-			for (Condition* condition : conditions) {
+			for (const auto& condition : conditions) {
 				if (condition->isPersistent() && !condition->isConstant()) {
-					toRemove.push_back(condition);
+					toRemove.push_back(condition.get());
 				}
 			}
 			for (Condition* condition : toRemove) {
-				auto it = std::find(conditions.begin(), conditions.end(), condition);
+				auto it = std::find_if(conditions.begin(), conditions.end(),
+				                        [condition](const auto& c) { return c.get() == condition; });
 				if (it == conditions.end()) {
 					continue;
 				}
+				auto owned = std::move(*it);
 				conditions.erase(it);
 
-				condition->endCondition(this);
-				onEndCondition(condition->getType());
-				delete condition;
+				owned->endCondition(this);
+				onEndCondition(owned->getType());
 			}
 		}
 	} else {
@@ -2395,20 +2393,21 @@ void Player::death(Creature* lastHitCreature)
 		// Same snapshot pattern for the second death-branch loop.
 		{
 			std::vector<Condition*> toRemove;
-			for (Condition* condition : conditions) {
+			for (const auto& condition : conditions) {
 				if (condition->isPersistent() && !condition->isConstant()) {
-					toRemove.push_back(condition);
+					toRemove.push_back(condition.get());
 				}
 			}
 			for (Condition* condition : toRemove) {
-				auto it = std::find(conditions.begin(), conditions.end(), condition);
+				auto it = std::find_if(conditions.begin(), conditions.end(),
+				                        [condition](const auto& c) { return c.get() == condition; });
 				if (it == conditions.end()) {
 					continue;
 				}
+				auto owned = std::move(*it);
 				conditions.erase(it);
-				condition->endCondition(this);
-				onEndCondition(condition->getType());
-				delete condition;
+				owned->endCondition(this);
+				onEndCondition(owned->getType());
 			}
 		}
 
@@ -2476,14 +2475,14 @@ Item* Player::getCorpse(Creature* lastHitCreature, Creature* mostDamageCreature)
 
 void Player::addCombatExhaust(uint32_t ticks)
 {
-	Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST_COMBAT, ticks, 0);
-	addCondition(condition);
+	auto condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST_COMBAT, ticks, 0);
+	addCondition(std::move(condition));
 }
 
 void Player::addHealExhaust(uint32_t ticks)
 {
-	Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST_HEAL, ticks, 0);
-	addCondition(condition);
+	auto condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST_HEAL, ticks, 0);
+	addCondition(std::move(condition));
 }
 
 void Player::addInFightTicks(bool pzlock /*= false*/)
@@ -2496,9 +2495,9 @@ void Player::addInFightTicks(bool pzlock /*= false*/)
 		pzLocked = true;
 	}
 
-	Condition* condition =
+	auto condition =
 	    Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, getInteger(ConfigManager::PZ_LOCKED), 0);
-	addCondition(condition);
+	addCondition(std::move(condition));
 }
 
 // Account Manager functionality removed
@@ -3983,9 +3982,9 @@ bool Player::onKilledCreature(Creature* target, bool lastHit /* = true*/)
 
 			if (lastHit && hasCondition(CONDITION_INFIGHT)) {
 				pzLocked = true;
-				Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT,
+				auto condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT,
 				                                            getInteger(ConfigManager::WHITE_SKULL_TIME) * 1000, 0);
-				addCondition(condition);
+				addCondition(std::move(condition));
 			}
 		}
 	}
@@ -4814,7 +4813,7 @@ size_t Player::getMaxDepotItems() const
 std::forward_list<Condition*> Player::getMuteConditions() const
 {
 	std::forward_list<Condition*> muteConditions;
-	for (Condition* condition : conditions) {
+	for (const auto& condition : conditions) {
 		if (condition->getTicks() <= 0) {
 			continue;
 		}
@@ -4824,7 +4823,7 @@ std::forward_list<Condition*> Player::getMuteConditions() const
 			continue;
 		}
 
-		muteConditions.push_front(condition);
+		muteConditions.push_front(condition.get());
 	}
 	return muteConditions;
 }
@@ -6425,7 +6424,7 @@ Inbox* Player::getInbox()
 void Player::clearCooldowns()
 {
 	for (auto it = conditions.begin(); it != conditions.end(); ++it) {
-		Condition* condition = *it;
+		const auto& condition = *it;
 		if (!condition) {
 			continue;
 		}

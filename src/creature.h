@@ -12,7 +12,7 @@
 #include "position.h"
 #include "tile.h"
 
-using ConditionList = std::list<Condition*>;
+using ConditionList = std::list<Condition_ptr>;
 using CreatureEventList = std::list<CreatureEvent*>;
 
 enum slots_t : uint8_t
@@ -226,8 +226,8 @@ public:
 	virtual float getAttackFactor() const { return 1.0f; }
 	virtual float getDefenseFactor() const { return 1.0f; }
 
-	bool addCondition(Condition* condition, bool force = false);
-	bool addCombatCondition(Condition* condition);
+	bool addCondition(Condition_ptr condition, bool force = false);
+	bool addCombatCondition(Condition_ptr condition);
 	void removeCondition(ConditionType_t type, ConditionId_t conditionId, bool force = false);
 	void removeCondition(ConditionType_t type, bool force = false);
 	void removeCondition(Condition* condition, bool force = false);

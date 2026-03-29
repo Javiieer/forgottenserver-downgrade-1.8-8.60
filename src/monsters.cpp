@@ -51,11 +51,10 @@ bool Monsters::reload()
 	return true;
 }
 
-ConditionDamage* Monsters::getDamageCondition(ConditionType_t conditionType, int32_t maxDamage, int32_t minDamage,
-                                              int32_t startDamage, uint32_t tickInterval)
+Condition_ptr Monsters::getDamageCondition(ConditionType_t conditionType, int32_t maxDamage, int32_t minDamage,
+                                            int32_t startDamage, uint32_t tickInterval)
 {
-	ConditionDamage* condition =
-	    static_cast<ConditionDamage*>(Condition::createCondition(CONDITIONID_COMBAT, conditionType, 0, 0));
+	auto condition = Condition::createCondition(CONDITIONID_COMBAT, conditionType, 0, 0);
 	condition->setParam(CONDITION_PARAM_TICKINTERVAL, tickInterval);
 	condition->setParam(CONDITION_PARAM_MINVALUE, minDamage);
 	condition->setParam(CONDITION_PARAM_MAXVALUE, maxDamage);
@@ -155,9 +154,9 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 			int32_t conMaxDamage = std::abs(spell->conditionMaxDamage);
 			int32_t startDamage = std::abs(spell->conditionStartDamage);
 
-			Condition* condition =
+			auto condition =
 			    getDamageCondition(conditionType, conMaxDamage, conMinDamage, startDamage, tickInterval);
-			combat->addCondition(condition);
+			combat->addCondition(std::move(condition));
 		}
 
 		std::string tmpName = boost::algorithm::to_lower_copy<std::string>(spell->name);
@@ -224,10 +223,9 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 				conditionType = CONDITION_PARALYZE;
 			}
 
-			ConditionSpeed* condition = static_cast<ConditionSpeed*>(
-			    Condition::createCondition(CONDITIONID_COMBAT, conditionType, duration, 0));
-			condition->setFormulaVars(minSpeedChange / 1000.0, 0, maxSpeedChange / 1000.0, 0);
-			combat->addCondition(condition);
+			auto condition = Condition::createCondition(CONDITIONID_COMBAT, conditionType, duration, 0);
+			static_cast<ConditionSpeed*>(condition.get())->setFormulaVars(minSpeedChange / 1000.0, 0, maxSpeedChange / 1000.0, 0);
+			combat->addCondition(std::move(condition));
 		} else if (tmpName == "outfit") {
 			int32_t duration = 10000;
 
@@ -235,11 +233,10 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 				duration = spell->duration;
 			}
 
-			ConditionOutfit* condition = static_cast<ConditionOutfit*>(
-			    Condition::createCondition(CONDITIONID_COMBAT, CONDITION_OUTFIT, duration, 0));
-			condition->setOutfit(spell->outfit);
+			auto condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_OUTFIT, duration, 0);
+			static_cast<ConditionOutfit*>(condition.get())->setOutfit(spell->outfit);
 			combat->setParam(COMBAT_PARAM_AGGRESSIVE, 0);
-			combat->addCondition(condition);
+			combat->addCondition(std::move(condition));
 		} else if (tmpName == "invisible") {
 			int32_t duration = 10000;
 
@@ -247,9 +244,9 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 				duration = spell->duration;
 			}
 
-			Condition* condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_INVISIBLE, duration, 0);
+			auto condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_INVISIBLE, duration, 0);
 			combat->setParam(COMBAT_PARAM_AGGRESSIVE, 0);
-			combat->addCondition(condition);
+			combat->addCondition(std::move(condition));
 		} else if (tmpName == "drunk") {
 			int32_t duration = 10000;
 			uint8_t drunkenness = 25;
@@ -262,9 +259,9 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 				drunkenness = spell->drunkenness;
 			}
 
-			Condition* condition =
+			auto condition =
 			    Condition::createCondition(CONDITIONID_COMBAT, CONDITION_DRUNK, duration, drunkenness);
-			combat->addCondition(condition);
+			combat->addCondition(std::move(condition));
 		} else if (tmpName == "firefield") {
 			combat->setParam(COMBAT_PARAM_CREATEITEM, ITEM_FIREFIELD_PVP_FULL);
 		} else if (tmpName == "poisonfield") {

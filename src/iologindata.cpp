@@ -400,7 +400,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 	Condition_ptr condition = Condition::createCondition(propStream);
 	while (condition) {
 		if (condition->unserialize(propStream)) {
-			player->storedConditionList.push_front(condition.release());
+			player->storedConditionList.push_front(std::move(condition));
 		}
 		condition = Condition::createCondition(propStream);
 	}
@@ -918,7 +918,7 @@ bool IOLoginData::savePlayer(Player* player)
 
 	// serialize conditions
 	PropWriteStream propWriteStream;
-	for (Condition* condition : player->conditions) {
+	for (const auto& condition : player->conditions) {
 		if (condition->isPersistent() || condition->isConstant()) {
 			condition->serialize(propWriteStream);
 			propWriteStream.write<uint8_t>(CONDITIONATTR_END);

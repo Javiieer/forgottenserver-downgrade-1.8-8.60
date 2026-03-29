@@ -547,21 +547,21 @@ void Spell::postCastSpell(Player* player, bool finishedCast /*= true*/, bool pay
 			}
 			if (cooldown > 0) {
 				int32_t adjustedCooldown = std::max<int32_t>(1000, static_cast<int32_t>(cooldown) - momentumReduction);
-				Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN,
-				                                                  adjustedCooldown, 0, false, spellId);
-				player->addCondition(condition);
+				auto condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN,
+				                                              adjustedCooldown, 0, false, spellId);
+				player->addCondition(std::move(condition));
 			}
 
 			if (groupCooldown > 0) {
-				Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN,
-				                                                  groupCooldown, 0, false, group);
-				player->addCondition(condition);
+				auto condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN,
+				                                              groupCooldown, 0, false, group);
+				player->addCondition(std::move(condition));
 			}
 
 			if (secondaryGroupCooldown > 0) {
-				Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN,
-				                                                  secondaryGroupCooldown, 0, false, secondaryGroup);
-				player->addCondition(condition);
+				auto condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN,
+				                                              secondaryGroupCooldown, 0, false, secondaryGroup);
+				player->addCondition(std::move(condition));
 			}
 		}
 
@@ -636,22 +636,22 @@ bool InstantSpell::playerCastInstant(Player* player, std::string& param)
 			if (!target || target->isRemoved() || target->isDead()) {
 				if (!casterTargetOrDirection) {
 					if (cooldown > 0) {
-						Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN,
+						auto condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN,
 						                                                  cooldown, 0, false, spellId);
-						player->addCondition(condition);
+						player->addCondition(std::move(condition));
 					}
 
 					if (groupCooldown > 0) {
-						Condition* condition = Condition::createCondition(
+						auto condition = Condition::createCondition(
 						    CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, groupCooldown, 0, false, group);
-						player->addCondition(condition);
+						player->addCondition(std::move(condition));
 					}
 
 					if (secondaryGroupCooldown > 0) {
-						Condition* condition =
+						auto condition =
 						    Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN,
 						                               secondaryGroupCooldown, 0, false, secondaryGroup);
-						player->addCondition(condition);
+						player->addCondition(std::move(condition));
 					}
 
 					player->sendCancelMessage(ret);
@@ -700,21 +700,21 @@ bool InstantSpell::playerCastInstant(Player* player, std::string& param)
 
 			if (ret != RETURNVALUE_NOERROR) {
 				if (cooldown > 0) {
-					Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN,
+					auto condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN,
 					                                                  cooldown, 0, false, spellId);
-					player->addCondition(condition);
+					player->addCondition(std::move(condition));
 				}
 
 				if (groupCooldown > 0) {
-					Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN,
+					auto condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN,
 					                                                  groupCooldown, 0, false, group);
-					player->addCondition(condition);
+					player->addCondition(std::move(condition));
 				}
 
 				if (secondaryGroupCooldown > 0) {
-					Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN,
+					auto condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN,
 					                                                  secondaryGroupCooldown, 0, false, secondaryGroup);
-					player->addCondition(condition);
+					player->addCondition(std::move(condition));
 				}
 
 				player->sendCancelMessage(ret);

@@ -119,7 +119,7 @@ public:
 
 	void setArea(AreaCombat* area);
 	bool hasArea() const { return area != nullptr; }
-	void addCondition(const Condition* condition) { params.conditionList.emplace_front(condition); }
+	void addCondition(Condition_ptr condition) { params.conditionList.push_front(std::move(condition)); }
 	void clearConditions() { params.conditionList.clear(); }
 	void setPlayerCombatValues(formulaType_t formulaType, double mina, double minb, double maxa, double maxb);
 	void postCombatEffects(Creature* caster, const Position& pos) const { postCombatEffects(caster, pos, params); }

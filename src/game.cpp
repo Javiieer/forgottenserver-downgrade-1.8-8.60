@@ -1196,9 +1196,9 @@ void Game::playerMoveItem(Player* player, const Position& fromPos, uint16_t spri
 	if (ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
 	} else {
-		if (Condition* c = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST_WEAPON,
+		if (auto c = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST_WEAPON,
 		            getInteger(ConfigManager::ACTIONS_DELAY_INTERVAL), 0, false, EXHAUST_MOVEITEM)) {
-			player->addCondition(c);
+			player->addCondition(std::move(c));
 		}
 	}
 }
@@ -3798,8 +3798,8 @@ bool Game::playerYell(Player* player, std::string_view text)
 			}
 		}
 
-		Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_YELLTICKS, 30000, 0);
-		player->addCondition(condition);
+		auto condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_YELLTICKS, 30000, 0);
+		player->addCondition(std::move(condition));
 	}
 
 	internalCreatureSay(player, TALKTYPE_YELL, boost::algorithm::to_upper_copy(std::string{text}), false);
@@ -5601,13 +5601,13 @@ void Game::parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, std::str
 
 void Game::forceAddCondition(uint32_t creatureId, Condition* condition)
 {
+	Condition_ptr condPtr(condition);
 	Creature* creature = getCreatureByID(creatureId);
 	if (!creature) {
-		delete condition;
 		return;
 	}
 
-	creature->addCondition(condition, true);
+	creature->addCondition(std::move(condPtr), true);
 }
 
 void Game::forceRemoveCondition(uint32_t creatureId, ConditionType_t type)

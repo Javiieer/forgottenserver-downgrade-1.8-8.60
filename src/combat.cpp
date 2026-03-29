@@ -734,9 +734,9 @@ void Combat::doCombat(Creature* caster, Creature* target) const
 			if (params.origin != ORIGIN_MELEE) {
 				for (const auto& condition : params.conditionList) {
 					if (caster == target || !target->isImmune(condition->getType())) {
-						Condition* conditionCopy = condition->clone();
+						auto conditionCopy = condition->clone();
 						conditionCopy->setParam(CONDITION_PARAM_OWNER, caster->getID());
-						target->addCombatCondition(conditionCopy);
+						target->addCombatCondition(std::move(conditionCopy));
 					}
 				}
 			}
@@ -818,13 +818,13 @@ void Combat::doCombat(Creature* caster, const Position& position) const
 					    (caster != creature && Combat::canDoCombat(caster, creature) == RETURNVALUE_NOERROR)) {
 						for (const auto& condition : params.conditionList) {
 							if (caster == creature || !creature->isImmune(condition->getType())) {
-								Condition* conditionCopy = condition->clone();
+								auto conditionCopy = condition->clone();
 								if (caster) {
 									conditionCopy->setParam(CONDITION_PARAM_OWNER, caster->getID());
 								}
 
 								// TODO: infight condition until all aggressive conditions has ended
-								creature->addCombatCondition(conditionCopy);
+								creature->addCombatCondition(std::move(conditionCopy));
 							}
 						}
 					}
@@ -920,14 +920,14 @@ void Combat::doTargetCombat(Creature* caster, Creature* target, CombatDamage& da
 		if (damage.blockType == BLOCK_NONE || damage.blockType == BLOCK_ARMOR) {
 			for (const auto& condition : params.conditionList) {
 				if (caster == target || (target && !target->isImmune(condition->getType()))) {
-					Condition* conditionCopy = condition->clone();
+					auto conditionCopy = condition->clone();
 					if (caster) {
 						conditionCopy->setParam(CONDITION_PARAM_OWNER, caster->getID());
 					}
 
 					// TODO: infight condition until all aggressive conditions has ended
 					if (target) {
-						target->addCombatCondition(conditionCopy);
+						target->addCombatCondition(std::move(conditionCopy));
 					}
 				}
 			}
@@ -977,22 +977,21 @@ void Combat::doTargetCombat(Creature* caster, Creature* target, CombatDamage& da
 						}
 
 						if (avatarLookType != 0) {
-							ConditionOutfit *outfitCond = static_cast<ConditionOutfit *>(
-									Condition::createCondition(CONDITIONID_COMBAT,
-																						 CONDITION_OUTFIT, avatarDuration));
+							auto outfitCondPtr = Condition::createCondition(CONDITIONID_COMBAT,
+																						 CONDITION_OUTFIT, avatarDuration);
 							Outfit_t avatarOutfit;
 							avatarOutfit.lookType = avatarLookType;
-							outfitCond->setOutfit(avatarOutfit);
-							targetPlayer->addCondition(outfitCond);
+							static_cast<ConditionOutfit*>(outfitCondPtr.get())->setOutfit(avatarOutfit);
+							targetPlayer->addCondition(std::move(outfitCondPtr));
 
-							Condition *attrCond = Condition::createCondition(
+							auto attrCond = Condition::createCondition(
 									CONDITIONID_COMBAT, CONDITION_ATTRIBUTES, avatarDuration, 0,
 									false, 9999);
 							attrCond->setParam(
 									CONDITION_PARAM_SPECIALSKILL_CRITICALHITCHANCE, 1000);
 							attrCond->setParam(
 									CONDITION_PARAM_SPECIALSKILL_CRITICALHITAMOUNT, 5000);
-							targetPlayer->addCondition(attrCond);
+							targetPlayer->addCondition(std::move(attrCond));
 
 							targetPlayer->setStorageValue(
 									AVATAR_TIMER_STORAGE,
@@ -1170,13 +1169,13 @@ void Combat::doAreaCombat(Creature* caster, const Position& position, const Area
 			if (damage.blockType == BLOCK_NONE || damage.blockType == BLOCK_ARMOR) {
 				for (const auto& condition : params.conditionList) {
 					if (caster == creature || !creature->isImmune(condition->getType())) {
-						Condition* conditionCopy = condition->clone();
+						auto conditionCopy = condition->clone();
 						if (caster) {
 							conditionCopy->setParam(CONDITION_PARAM_OWNER, caster->getID());
 						}
 
 						// TODO: infight condition until all aggressive conditions has ended
-						creature->addCombatCondition(conditionCopy);
+						creature->addCombatCondition(std::move(conditionCopy));
 					}
 				}
 			}
@@ -1544,7 +1543,7 @@ void MagicField::onStepInField(Creature* creature)
 {
 	const ItemType& it = items[getID()];
 	if (it.conditionDamage) {
-		Condition* conditionCopy = it.conditionDamage->clone();
+		auto conditionCopy = it.conditionDamage->clone();
 		uint32_t ownerId = getOwner();
 		if (ownerId) {
 			bool harmfulField = true;
@@ -1573,6 +1572,6 @@ void MagicField::onStepInField(Creature* creature)
 			}
 		}
 
-		creature->addCondition(conditionCopy);
+		creature->addCondition(std::move(conditionCopy));
 	}
 }

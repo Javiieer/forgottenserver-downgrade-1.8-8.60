@@ -248,8 +248,8 @@ public:
 	std::map<std::string, MonsterType> monsters;
 
 private:
-	ConditionDamage* getDamageCondition(ConditionType_t conditionType, int32_t maxDamage, int32_t minDamage,
-	                                    int32_t startDamage, uint32_t tickInterval);
+	Condition_ptr getDamageCondition(ConditionType_t conditionType, int32_t maxDamage, int32_t minDamage,
+	                                 int32_t startDamage, uint32_t tickInterval);
 
 	std::unordered_map<uint32_t, std::string> bestiaryMonsters;
 
