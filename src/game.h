@@ -234,6 +234,18 @@ public:
 	size_t getMonstersOnline() const { return monstersOnline.load(std::memory_order_relaxed); }
 	size_t getNpcsOnline() const { return npcsOnline.load(std::memory_order_relaxed); }
 	uint32_t getPlayersRecord() const { return playersRecord; }
+	uint8_t getSpawnRate() const {
+		size_t playersOnline = getPlayersOnline();
+		uint8_t rate = 1;
+		if (playersOnline >= 300 && playersOnline < 500) {
+			rate += 1;
+		} else if (playersOnline >= 500 && playersOnline < 1000) {
+			rate += 2;
+		} else if (playersOnline >= 1000) {
+			rate += 3;
+		}
+		return static_cast<uint8_t>(rate * ConfigManager::getInteger(ConfigManager::SPAWN_MULTIPLIER));
+	}
 
 	LightInfo getWorldLightInfo() const { return {lightLevel, lightColor}; }
 	void setWorldLightInfo(LightInfo lightInfo)

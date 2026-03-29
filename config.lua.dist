@@ -295,6 +295,7 @@ rateSkill = 3
 rateLoot = 2
 rateMagic = 3
 rateSpawn = 1
+spawnMultiplier = 1
 
 -- Player speed
 -- NOTE: Most clients display speed at half its actual value (e.g. 1500 shows as 750).

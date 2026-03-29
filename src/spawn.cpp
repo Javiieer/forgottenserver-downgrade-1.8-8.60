@@ -433,7 +433,7 @@ void Spawn::checkSpawn()
 			continue;
 		}
 
-		const uint32_t spawnInterval = static_cast<uint32_t>(sb.interval / rate);
+		const uint32_t spawnInterval = static_cast<uint32_t>(sb.interval / (rate * std::max<int64_t>(1, g_game.getSpawnRate())));
 		if (now >= sb.lastSpawn + std::max<uint32_t>(MINSPAWN_INTERVAL, spawnInterval)) {
 			// If there is a player blocking and no monster in the set ignores the block,
 			// we show POFF and retry on the next cycle (no teleport effect).

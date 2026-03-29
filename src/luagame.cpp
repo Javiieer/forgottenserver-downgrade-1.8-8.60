@@ -70,6 +70,13 @@ int luaGameGetPlayers(lua_State* L)
 	return 1;
 }
 
+int luaGameGetSpawnRate(lua_State* L)
+{
+	// Game.getSpawnRate()
+	lua_pushnumber(L, g_game.getSpawnRate());
+	return 1;
+}
+
 int luaGameGetNpcs(lua_State* L)
 {
 	// Game.getNpcs()
@@ -843,6 +850,7 @@ void LuaScriptInterface::registerGame()
 
 	registerMethod("Game", "getSpectators", luaGameGetSpectators);
 	registerMethod("Game", "getPlayers", luaGameGetPlayers);
+registerMethod("Game", "getSpawnRate", luaGameGetSpawnRate);
 	registerMethod("Game", "getNpcs", luaGameGetNpcs);
 	registerMethod("Game", "getMonsters", luaGameGetMonsters);
 	registerMethod("Game", "loadMap", luaGameLoadMap);
