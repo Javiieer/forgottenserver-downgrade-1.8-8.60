@@ -4222,18 +4222,11 @@ void Player::doReset() // reset system
 	++reset;
 	uint32_t bonusReset = reset * getInteger(ConfigManager::RESET_STATBONUS);
 	capacity += bonusReset;
-	
-	mana = getMaxMana();
-	health = getMaxHealth();
-	experience = 0;
-	level = 1;
-	levelPercent = 0;
-	magLevel = 0;
-	magLevelPercent = 0;
-	for (int i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
-		skills[i].level = 10;
-		skills[i].percent = 0;
-	}
+
+	// Persist immediately
+	Database::getInstance().executeQuery(
+		fmt::format("UPDATE `players` SET `reset` = {:d} WHERE `id` = {:d}", reset, getGUID()));
+
 	sendStats();
 	sendSkills();
 }

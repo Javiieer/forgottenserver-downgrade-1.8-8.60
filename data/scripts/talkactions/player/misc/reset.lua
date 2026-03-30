@@ -12,8 +12,8 @@ function talk.onSay(player, words, param)
 		return false
 	end
 
-	player:addReset(1)
-	
+	player:doReset()
+
 	local currentExp = player:getExperience()
 	local targetExp = Game.getExperienceForLevel(8)
 	if currentExp > targetExp then

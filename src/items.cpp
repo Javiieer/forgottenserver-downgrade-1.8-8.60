@@ -2066,6 +2066,9 @@ void Items::parseScriptAttribute(ItemType& it, const pugi::xml_node& attributeNo
 							moveevent.setNeedPremium(true);
 							moveevent.setWieldInfo(WIELDINFO_PREMIUM);
 						}
+					} else if (key == "reset") {
+						it.minReqReset = subValue.as_uint();
+						moveevent.setWieldInfo(WIELDINFO_RESET);
 					} else if (key == "vocation") {
 						std::string vocations = subValue.as_string();
 						std::istringstream vss(vocations);

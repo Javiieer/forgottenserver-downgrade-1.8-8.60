@@ -295,8 +295,8 @@ bool ConfigManager::load()
 		integers[Integer::ADMIN_PORT] = getGlobalInteger(L, "adminPort", 7170); // Default admin port to 7170
 
 		integers[RESET_LEVEL] = getGlobalInteger(L, "resetLevel", 100);
-		integers[RESET_STATBONUS] = getGlobalInteger(L, "resetStatBonus", 5);
-		integers[RESET_DMGBONUS] = getGlobalInteger(L, "resetDmgBonus", 10);
+		integers[RESET_STATBONUS] = getGlobalInteger(L, "resetStats", 5);
+		integers[RESET_DMGBONUS] = getGlobalInteger(L, "resetDmgBonus", 0);
 		integers[RESET_REDUCTION_PERCENTAGE] = getGlobalInteger(L, "resetReductionPercentage", 0);
 
 		integers[Integer::MARKET_OFFER_DURATION] = getGlobalInteger(L, "marketOfferDuration", 30 * 24 * 60 * 60);

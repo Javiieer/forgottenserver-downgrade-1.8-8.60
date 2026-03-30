@@ -4533,6 +4533,18 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		damage.primary.value = std::abs(damage.primary.value);
 		damage.secondary.value = std::abs(damage.secondary.value);
 
+		// Reset system: damage bonus per reset
+		if (attackerPlayer && ConfigManager::getBoolean(ConfigManager::RESET_SYSTEM_ENABLED)) {
+			uint32_t resets = attackerPlayer->getReset();
+			if (resets > 0) {
+				int32_t bonusPercent = resets * ConfigManager::getInteger(ConfigManager::RESET_DMGBONUS);
+				if (bonusPercent > 0) {
+					damage.primary.value += damage.primary.value * bonusPercent / 100;
+					damage.secondary.value += damage.secondary.value * bonusPercent / 100;
+				}
+			}
+		}
+
 		if (targetPlayer && targetPlayer->isAvatarActive()) {
 			damage.primary.value -= static_cast<int32_t>(std::ceil(damage.primary.value * AVATAR_DAMAGE_REDUCTION_PERCENT / 100.0));
 			damage.secondary.value -= static_cast<int32_t>(std::ceil(damage.secondary.value * AVATAR_DAMAGE_REDUCTION_PERCENT / 100.0));
