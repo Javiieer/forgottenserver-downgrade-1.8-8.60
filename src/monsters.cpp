@@ -200,7 +200,6 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 				minSpeedChange = spell->minSpeedChange;
 			} else {
 				LOG_ERROR(fmt::format("[Error - Monsters::deserializeSpell] - {} - missing speedchange/minspeedchange value", description));
-				delete spell;
 				return false;
 			}
 

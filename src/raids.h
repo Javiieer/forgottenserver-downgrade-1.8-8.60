@@ -68,7 +68,7 @@ public:
 private:
 	LuaScriptInterface scriptInterface{"Raid Interface"};
 
-	std::list<Raid*> raidList;
+	std::list<std::unique_ptr<Raid>> raidList;
 	Raid* running = nullptr;
 	uint64_t lastRaidEnd = 0;
 	uint32_t checkRaidsEvent = 0;
@@ -107,7 +107,7 @@ public:
 	void stopEvents();
 
 private:
-	std::vector<RaidEvent*> raidEvents;
+	std::vector<std::unique_ptr<RaidEvent>> raidEvents;
 	std::string name;
 	uint32_t interval;
 	uint32_t nextEvent = 0;

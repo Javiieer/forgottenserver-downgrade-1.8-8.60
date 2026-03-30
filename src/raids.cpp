@@ -17,12 +17,7 @@ extern Game g_game;
 
 Raids::Raids() { }
 
-Raids::~Raids()
-{
-	for (Raid* raid : raidList) {
-		delete raid;
-	}
-}
+Raids::~Raids() = default;
 
 bool Raids::loadFromXml()
 {
@@ -76,12 +71,11 @@ bool Raids::loadFromXml()
 			repeat = false;
 		}
 
-		Raid* newRaid = new Raid(name, interval, margin, repeat);
+		auto newRaid = std::make_unique<Raid>(name, interval, margin, repeat);
 		if (newRaid->loadFromXml("data/raids/" + file)) {
-			raidList.push_back(newRaid);
+			raidList.push_back(std::move(newRaid));
 		} else {
 			LOG_ERROR(fmt::format("[Error - Raids::loadFromXml] Failed to load raid: {}", name));
-			delete newRaid;
 		}
 	}
 
@@ -127,9 +121,6 @@ void Raids::shutdown()
     }
     
     // Clear the raid list.
-    for (Raid* raid : raidList) {
-        delete raid;
-    }
     raidList.clear();
     
     LOG_INFO("[Raids] Shutdown completed");
@@ -141,7 +132,7 @@ void Raids::checkRaids()
 		uint64_t now = OTSYS_TIME();
 
 		for (auto it = raidList.begin(), end = raidList.end(); it != end; ++it) {
-			Raid* raid = *it;
+			Raid* raid = it->get();
 			if (now >= (getLastRaidEnd() + raid->getMargin())) {
 				if (((MAX_RAND_RANGE * CHECK_RAIDS_INTERVAL) / raid->getInterval()) >=
 				    static_cast<uint32_t>(uniform_random(0, MAX_RAND_RANGE))) {
@@ -172,9 +163,8 @@ void Raids::clear()
 	g_scheduler.stopEvent(checkRaidsEvent);
 	checkRaidsEvent = 0;
 
-	for (Raid* raid : raidList) {
+	for (const auto& raid : raidList) {
 		raid->stopEvents();
-		delete raid;
 	}
 	raidList.clear();
 
@@ -194,20 +184,15 @@ bool Raids::reload()
 
 Raid* Raids::getRaidByName(std::string_view name)
 {
-	for (Raid* raid : raidList) {
+	for (const auto& raid : raidList) {
 		if (caseInsensitiveEqual(raid->getName(), name)) {
-			return raid;
+			return raid.get();
 		}
 	}
 	return nullptr;
 }
 
-Raid::~Raid()
-{
-	for (RaidEvent* raidEvent : raidEvents) {
-		delete raidEvent;
-	}
-}
+Raid::~Raid() = default;
 
 bool Raid::loadFromXml(const std::string& filename)
 {
@@ -223,30 +208,29 @@ bool Raid::loadFromXml(const std::string& filename)
 	}
 
 	for (const auto& eventNode : doc.child("raid").children()) {
-		RaidEvent* event;
+		std::unique_ptr<RaidEvent> event;
 		if (caseInsensitiveEqual(eventNode.name(), "announce")) {
-			event = new AnnounceEvent();
+			event = std::make_unique<AnnounceEvent>();
 		} else if (caseInsensitiveEqual(eventNode.name(), "singlespawn")) {
-			event = new SingleSpawnEvent();
+			event = std::make_unique<SingleSpawnEvent>();
 		} else if (caseInsensitiveEqual(eventNode.name(), "areaspawn")) {
-			event = new AreaSpawnEvent();
+			event = std::make_unique<AreaSpawnEvent>();
 		} else if (caseInsensitiveEqual(eventNode.name(), "script")) {
-			event = new ScriptEvent(&g_game.raids.getScriptInterface());
+			event = std::make_unique<ScriptEvent>(&g_game.raids.getScriptInterface());
 		} else {
 			continue;
 		}
 
 		if (event->configureRaidEvent(eventNode)) {
-			raidEvents.push_back(event);
+			raidEvents.push_back(std::move(event));
 		} else {
 			LOG_ERROR(fmt::format("[Error - Raid::loadFromXml] In file ({}), eventNode: {}", filename, eventNode.name()));
-			delete event;
 		}
 	}
 
 	// sort by delay time
 	std::sort(raidEvents.begin(), raidEvents.end(),
-	          [](const RaidEvent* lhs, const RaidEvent* rhs) { return lhs->getDelay() < rhs->getDelay(); });
+	          [](const auto& lhs, const auto& rhs) { return lhs->getDelay() < rhs->getDelay(); });
 
 	loaded = true;
 	return true;
@@ -300,7 +284,7 @@ void Raid::stopEvents()
 RaidEvent* Raid::getNextRaidEvent()
 {
 	if (nextEvent < raidEvents.size()) {
-		return raidEvents[nextEvent];
+		return raidEvents[nextEvent].get();
 	}
 	return nullptr;
 }
