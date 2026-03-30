@@ -193,6 +193,7 @@ FastPotionIds loadLuaFastPotionIds(lua_State* L)
 		return {};
 	}
 
+	ids.reserve(lua_rawlen(L, -1));
 	lua_pushnil(L);
 	while (lua_next(L, -2) != 0) {
 		const auto id = static_cast<uint16_t>(lua_tointeger(L, -1));
@@ -212,6 +213,7 @@ BlockedTeleportIds loadLuaBlockedTeleportIds(lua_State* L)
 		return {};
 	}
 
+	ids.reserve(lua_rawlen(L, -1));
 	lua_pushnil(L);
 	while (lua_next(L, -2) != 0) {
 		const auto id = static_cast<uint16_t>(lua_tointeger(L, -1));
@@ -231,6 +233,7 @@ TokenProtectionExceptions loadLuaTokenProtectionExceptions(lua_State* L)
 		return {};
 	}
 
+	ids.reserve(lua_rawlen(L, -1));
 	lua_pushnil(L);
 	while (lua_next(L, -2) != 0) {
 		const auto id = static_cast<uint16_t>(lua_tointeger(L, -1));

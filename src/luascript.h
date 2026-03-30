@@ -237,8 +237,8 @@ public:
 	void removeItemByUID(uint32_t uid);
 
 private:
-	using StorageMap = std::map<uint32_t, int32_t>;
-	using DBResultMap = std::map<uint32_t, DBResult_ptr>;
+	using StorageMap = std::unordered_map<uint32_t, int32_t>;
+	using DBResultMap = std::unordered_map<uint32_t, DBResult_ptr>;
 
 	LuaScriptInterface* interface;
 

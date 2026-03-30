@@ -53,11 +53,11 @@ public:
 
 private:
 	// map of the spawned creatures
-	using SpawnedMap = std::map<uint32_t, Monster*>;
+	using SpawnedMap = std::unordered_map<uint32_t, Monster*>;
 	SpawnedMap spawnedMap;
 
 	// map of creatures in the spawn
-	std::map<uint32_t, spawnBlock_t> spawnMap;
+	std::unordered_map<uint32_t, spawnBlock_t> spawnMap;
 
 	Position centerPos;
 	int32_t radius;

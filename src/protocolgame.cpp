@@ -1890,7 +1890,7 @@ void ProtocolGame::sendSaleItemList(const std::list<ShopInfo>& shop)
 		msg.add<uint32_t>(money);
 	}
 
-	std::map<uint16_t, uint32_t> saleMap;
+	std::unordered_map<uint16_t, uint32_t> saleMap;
 
 	if (shop.size() <= 5) {
 		// For very small shops it's not worth it to create the complete map
@@ -1915,7 +1915,7 @@ void ProtocolGame::sendSaleItemList(const std::list<ShopInfo>& shop)
 		// Large shop, it's better to get a cached map of all item counts and use it
 		// We need a temporary map since the finished map should only contain items
 		// available in the shop
-		std::map<uint32_t, uint32_t> tempSaleMap;
+		std::unordered_map<uint32_t, uint32_t> tempSaleMap;
 		player->getAllItemTypeCount(tempSaleMap);
 
 		// We must still check manually for the special items that require subtype matches
@@ -1945,7 +1945,7 @@ void ProtocolGame::sendSaleItemList(const std::list<ShopInfo>& shop)
 					saleMap[shopInfo.itemId] = count;
 				}
 			} else {
-				std::map<uint32_t, uint32_t>::const_iterator findIt = tempSaleMap.find(shopInfo.itemId);
+				auto findIt = tempSaleMap.find(shopInfo.itemId);
 				if (findIt != tempSaleMap.end() && findIt->second > 0) {
 					saleMap[shopInfo.itemId] = findIt->second;
 				}
@@ -1957,7 +1957,7 @@ void ProtocolGame::sendSaleItemList(const std::list<ShopInfo>& shop)
 	msg.addByte(itemsToSend);
 
 	uint8_t i = 0;
-	for (std::map<uint16_t, uint32_t>::const_iterator it = saleMap.begin(); i < itemsToSend; ++it, ++i) {
+	for (auto it = saleMap.begin(); i < itemsToSend; ++it, ++i) {
 		msg.addItemId(it->first);
 		msg.addByte(static_cast<uint8_t>(std::min<uint32_t>(it->second, std::numeric_limits<uint8_t>::max())));
 	}
@@ -3168,7 +3168,7 @@ void ProtocolGame::sendFeatures()
 {
 	if (!isOTCv8) return;
 
-	std::map<GameFeature, bool> features;
+	std::unordered_map<GameFeature, bool> features;
 	features[GameFeature::ExtendedOpcode] = false;
 	features[GameFeature::SkillsBase] = true;
 	features[GameFeature::PlayerMounts] = true;

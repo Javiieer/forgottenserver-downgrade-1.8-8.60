@@ -39,7 +39,7 @@ struct statsData {
 	std::string extraInfo;
 };
 
-using statsMap = std::map<std::string, statsData>;
+using statsMap = std::unordered_map<std::string, statsData>;
 
 class Stats : public ThreadHolder<Stats> {
 public:

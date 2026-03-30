@@ -24,7 +24,7 @@ struct ConnectBlock
 };
 
 // Cleanup stale entries periodically to prevent memory growth
-void cleanupConnectMap(std::map<uint32_t, ConnectBlock>& ipConnectMap, uint64_t currentTime)
+void cleanupConnectMap(std::unordered_map<uint32_t, ConnectBlock>& ipConnectMap, uint64_t currentTime)
 {
 	static uint64_t lastCleanup = 0;
 	if (currentTime - lastCleanup < 60000) { // every 60 seconds
@@ -49,7 +49,7 @@ bool acceptConnection(const uint32_t clientIP)
 
 	uint64_t currentTime = OTSYS_TIME();
 
-	static std::map<uint32_t, ConnectBlock> ipConnectMap;
+	static std::unordered_map<uint32_t, ConnectBlock> ipConnectMap;
 
 	// Periodic cleanup of stale entries
 	cleanupConnectMap(ipConnectMap, currentTime);

@@ -404,7 +404,7 @@ protected:
 
 	Position position;
 
-	using CountMap = std::map<uint32_t, CountBlock_t>;
+	using CountMap = std::unordered_map<uint32_t, CountBlock_t>;
 	CountMap damageMap;
 
 	std::list<Creature*> summons;

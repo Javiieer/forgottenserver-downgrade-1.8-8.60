@@ -11,7 +11,7 @@
 
 extern Game g_game;
 
-std::map<uint32_t, int64_t> ProtocolStatus::ipConnectMap;
+std::unordered_map<uint32_t, int64_t> ProtocolStatus::ipConnectMap;
 const uint64_t ProtocolStatus::start = OTSYS_TIME();
 
 enum RequestedInfo_t : uint16_t
@@ -32,7 +32,7 @@ void ProtocolStatus::onRecvFirstMessage(NetworkMessage& msg)
 	if (ip != 0x0100007F) {
 		std::string ipStr = convertIPToString(ip);
 		if (ipStr != getString(ConfigManager::IP)) {
-			std::map<uint32_t, int64_t>::const_iterator it = ipConnectMap.find(ip);
+			auto it = ipConnectMap.find(ip);
 			if (it != ipConnectMap.end() &&
 			    (OTSYS_TIME() < (it->second + getInteger(ConfigManager::STATUSQUERY_TIMEOUT)))) {
 				disconnect();
@@ -108,7 +108,7 @@ void ProtocolStatus::sendStatusString()
 	uint32_t reportableOnlinePlayerCount = 0;
 	uint32_t maxPlayersPerIp = getInteger(ConfigManager::STATUS_COUNT_MAX_PLAYERS_PER_IP);
 	if (maxPlayersPerIp > 0) {
-		std::map<uint32_t, uint32_t> playersPerIp;
+		std::unordered_map<uint32_t, uint32_t> playersPerIp;
 		for (const auto& it : g_game.getPlayers()) {
 			uint32_t playerIp = it.second->getIP();
 			if (playerIp != 0) {

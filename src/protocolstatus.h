@@ -35,7 +35,7 @@ public:
 	static const uint64_t start;
 
 private:
-	static std::map<uint32_t, int64_t> ipConnectMap;
+	static std::unordered_map<uint32_t, int64_t> ipConnectMap;
 };
 
 #endif

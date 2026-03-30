@@ -65,7 +65,7 @@ private:
 	bool canEnableSharedExperience();
 	SharedExpStatus_t getSharedExperienceStatus();
 
-	std::map<uint32_t, int64_t> ticksMap;
+	std::unordered_map<uint32_t, int64_t> ticksMap;
 
 	PlayerVector memberList;
 	PlayerVector inviteList;

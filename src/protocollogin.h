@@ -37,7 +37,7 @@ private:
 		int64_t firstAttempt = 0;
 	};
 
-	std::map<uint32_t, AttemptInfo> attempts;
+	std::unordered_map<uint32_t, AttemptInfo> attempts;
 	std::mutex mu;
 
 	static constexpr uint32_t MAX_FAILURES = 5;

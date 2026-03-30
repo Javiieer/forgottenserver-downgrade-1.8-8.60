@@ -174,7 +174,7 @@ public:
 	 * \param countMap a map to put the itemID:count mapping in
 	 * \returns a map mapping item id to count (same as first argument)
 	 */
-	virtual std::map<uint32_t, uint32_t>& getAllItemTypeCount(std::map<uint32_t, uint32_t>& countMap) const;
+	virtual std::unordered_map<uint32_t, uint32_t>& getAllItemTypeCount(std::unordered_map<uint32_t, uint32_t>& countMap) const;
 
 	/**
 	 * Adds an object to the cylinder without sending to the client(s)

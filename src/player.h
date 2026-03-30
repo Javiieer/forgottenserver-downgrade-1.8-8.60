@@ -98,7 +98,7 @@ struct AutoLootConfig
 	std::string text;
 };
 
-using MuteCountMap = std::map<uint32_t, uint32_t>;
+using MuteCountMap = std::unordered_map<uint32_t, uint32_t>;
 
 inline constexpr int32_t PLAYER_MIN_SPEED = 10;
 inline constexpr int32_t PLAYER_MAX_BLESSINGS = 5;
@@ -1251,7 +1251,7 @@ private:
 	int32_t getThingIndex(const Thing* thing) const override;
 	size_t getFirstIndex() const override;
 	size_t getLastIndex() const override;
-	std::map<uint32_t, uint32_t>& getAllItemTypeCount(std::map<uint32_t, uint32_t>& countMap) const override;
+	std::unordered_map<uint32_t, uint32_t>& getAllItemTypeCount(std::unordered_map<uint32_t, uint32_t>& countMap) const override;
 
 	void internalAddThing(Thing* thing) override;
 	void internalAddThing(uint32_t index, Thing* thing) override;

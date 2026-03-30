@@ -25,7 +25,7 @@ private:
 	Position templePosition;
 };
 
-using TownMap = std::map<uint32_t, std::unique_ptr<Town>>;
+using TownMap = std::unordered_map<uint32_t, std::unique_ptr<Town>>;
 
 class Towns
 {
