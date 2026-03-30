@@ -66,8 +66,8 @@ bool Spawns::loadFromXml(std::string_view filename)
 			continue;
 		}
 
-		spawnList.emplace_front(centerPos, radius);
-		Spawn& spawn = spawnList.front();
+		spawnList.push_front(std::make_unique<Spawn>(centerPos, radius));
+		Spawn& spawn = *spawnList.front();
 
 		for (auto& childNode : spawnNode.children()) {
 			if (caseInsensitiveEqual(childNode.name(), "monsters")) {
@@ -211,8 +211,8 @@ void Spawns::startup()
 	}
 	npcList.clear();
 
-	for (Spawn& spawn : spawnList) {
-		spawn.startup();
+	for (const auto& spawn : spawnList) {
+		spawn->startup();
 	}
 
 	started = true;
@@ -220,9 +220,9 @@ void Spawns::startup()
 
 void Spawns::clear()
 {
-	for (Spawn& spawn : spawnList) {
-		spawn.clearMonsters();
-		spawn.stopEvent();
+	for (const auto& spawn : spawnList) {
+		spawn->clearMonsters();
+		spawn->stopEvent();
 	}
 	spawnList.clear();
 	activeNpcs.clear();

@@ -144,8 +144,8 @@ void Game::setGameState(GameState_t newState)
 			// Game::shutdown() where it runs AFTER all creatures are removed,
 			// avoiding a race where scheduler-dispatched checkSpawn tasks
 			// could access destroyed Spawn objects.
-			for (Spawn& spawn : map.spawns.getSpawnList()) {
-				spawn.stopEvent();
+			for (const auto& spawn : map.spawns.getSpawnList()) {
+				spawn->stopEvent();
 			}
 
 			saveMotdNum();

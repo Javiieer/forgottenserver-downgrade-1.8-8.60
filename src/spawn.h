@@ -7,6 +7,7 @@
 #include "position.h"
 #include "tile.h"
 
+#include <memory>
 #include <utility>
 #include <vector>
 
@@ -88,20 +89,20 @@ public:
 
 	bool isStarted() const { return started; }
 
-	std::forward_list<Spawn>& getSpawnList() { return spawnList; }
+	std::forward_list<std::unique_ptr<Spawn>>& getSpawnList() { return spawnList; }
 
 	size_t getNpcCount() const { return std::distance(npcList.begin(), npcList.end()); }
 	size_t getMonsterCount() const {
 		size_t count = 0;
 		for (const auto& spawn : spawnList) {
-			count += spawn.getMonsterCount();
+			count += spawn->getMonsterCount();
 		}
 		return count;
 	}
 
 private:
 	std::forward_list<std::unique_ptr<Npc>> npcList;
-	std::forward_list<Spawn> spawnList;
+	std::forward_list<std::unique_ptr<Spawn>> spawnList;
 	std::vector<Npc*> activeNpcs;
 	std::string filename;
 	bool loaded = false;
