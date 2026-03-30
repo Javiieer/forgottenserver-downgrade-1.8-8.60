@@ -246,7 +246,7 @@ int luaGameGetTowns(lua_State* L)
 
 	int index = 0;
 	for (auto& townEntry : towns) {
-		pushUserdata<Town>(L, townEntry.second);
+		pushUserdata<Town>(L, townEntry.second.get());
 		setMetatable(L, -1, "Town");
 		lua_rawseti(L, -2, ++index);
 	}
@@ -261,7 +261,7 @@ int luaGameGetHouses(lua_State* L)
 
 	int index = 0;
 	for (auto& houseEntry : houses) {
-		pushUserdata<House>(L, houseEntry.second);
+		pushUserdata<House>(L, houseEntry.second.get());
 		setMetatable(L, -1, "House");
 		lua_rawseti(L, -2, ++index);
 	}

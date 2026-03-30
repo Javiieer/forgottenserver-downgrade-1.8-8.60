@@ -25,30 +25,24 @@ private:
 	Position templePosition;
 };
 
-using TownMap = std::map<uint32_t, Town*>;
+using TownMap = std::map<uint32_t, std::unique_ptr<Town>>;
 
 class Towns
 {
 public:
 	Towns() = default;
-	~Towns()
-	{
-		for (const auto& it : townMap) {
-			delete it.second;
-		}
-	}
 
 	// non-copyable
 	Towns(const Towns&) = delete;
 	Towns& operator=(const Towns&) = delete;
 
-	bool addTown(uint32_t townId, Town* town) { return townMap.emplace(townId, town).second; }
+	bool addTown(uint32_t townId, std::unique_ptr<Town> town) { return townMap.emplace(townId, std::move(town)).second; }
 
 	Town* getTown(std::string_view townName) const
 	{
 		for (const auto& it : townMap) {
 			if (caseInsensitiveEqual(townName, it.second->getName())) {
-				return it.second;
+				return it.second.get();
 			}
 		}
 		return nullptr;
@@ -60,7 +54,7 @@ public:
 		if (it == townMap.end()) {
 			return nullptr;
 		}
-		return it->second;
+		return it->second.get();
 	}
 
 	const TownMap& getTowns() const { return townMap; }

@@ -94,7 +94,7 @@ bool IOMapSerialize::saveHouseItems()
 		PropWriteStream stream;
 		for (const auto& it : g_game.map.houses.getHouses()) {
 			// save house items
-			House* house = it.second;
+			House* house = it.second.get();
 			for (HouseTile* tile : house->getTiles()) {
 				saveTile(stream, tile);
 
@@ -354,7 +354,7 @@ bool IOMapSerialize::saveHouseInfo()
 
 	bool notEmpty = false;
 	for (const auto& it : g_game.map.houses.getHouses()) {
-		House* house = it.second;
+		House* house = it.second.get();
 		if (notEmpty) {
 			query << ",";
 		}
@@ -386,7 +386,7 @@ bool IOMapSerialize::saveHouseInfo()
 	DBInsert stmt("INSERT INTO `house_lists` (`house_id` , `listid` , `list`) VALUES ");
 
 	for (const auto& it : g_game.map.houses.getHouses()) {
-		House* house = it.second;
+		House* house = it.second.get();
 
 		auto listText = house->getAccessList(GUEST_LIST).value_or("");
 

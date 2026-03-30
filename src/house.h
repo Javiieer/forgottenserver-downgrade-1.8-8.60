@@ -236,7 +236,7 @@ private:
 	HouseType_t type = HOUSE_TYPE_NORMAL;
 };
 
-using HouseMap = std::map<uint32_t, House*>;
+using HouseMap = std::map<uint32_t, std::unique_ptr<House>>;
 
 enum RentPeriod_t
 {
@@ -252,12 +252,6 @@ class Houses
 {
 public:
 	Houses() = default;
-	~Houses()
-	{
-		for (const auto& it : houseMap) {
-			delete it.second;
-		}
-	}
 
 	// non-copyable
 	Houses(const Houses&) = delete;
@@ -267,12 +261,11 @@ public:
 	{
 		auto it = houseMap.find(id);
 		if (it != houseMap.end()) {
-			return it->second;
+			return it->second.get();
 		}
 
-		House* house = new House(id);
-		houseMap[id] = house;
-		return house;
+		auto [ins, ok] = houseMap.emplace(id, std::make_unique<House>(id));
+		return ins->second.get();
 	}
 
 	House* getHouse(uint32_t houseId)
@@ -281,7 +274,7 @@ public:
 		if (it == houseMap.end()) {
 			return nullptr;
 		}
-		return it->second;
+		return it->second.get();
 	}
 
 	House* getHouseByPlayerId(uint32_t playerId);

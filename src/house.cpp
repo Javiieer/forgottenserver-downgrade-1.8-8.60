@@ -744,7 +744,7 @@ House* Houses::getHouseByPlayerId(uint32_t playerId)
 {
 	for (const auto& it : houseMap) {
 		if (it.second->getOwner() == playerId) {
-			return it.second;
+			return it.second.get();
 		}
 	}
 	return nullptr;
@@ -839,7 +839,7 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const
 
 	time_t currentTime = time(nullptr);
 	for (const auto& it : houseMap) {
-		House* house = it.second;
+		House* house = it.second.get();
 		if (house->getOwner() == 0) {
 			continue;
 		}
