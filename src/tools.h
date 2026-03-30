@@ -45,7 +45,7 @@ std::string asLowerCaseString(std::string source);
 using StringVector = std::vector<std::string>;
 using IntegerVector = std::vector<int32_t>;
 
-std::vector<std::string_view> explodeString(std::string_view inString, const std::string& separator,
+std::vector<std::string_view> explodeString(std::string_view inString, std::string_view separator,
                                             int32_t limit = -1);
 IntegerVector vectorAtoi(const std::vector<std::string_view>& stringVector);
 constexpr bool hasBitSet(uint32_t flag, uint32_t flags) { return (flags & flag) != 0; }

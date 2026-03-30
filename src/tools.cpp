@@ -366,7 +366,7 @@ bool caseInsensitiveStartsWith(std::string_view str, std::string_view prefix)
 	                                                 [](char a, char b) { return tolower(a) == tolower(b); });
 }
 
-std::vector<std::string_view> explodeString(std::string_view inString, const std::string& separator,
+std::vector<std::string_view> explodeString(std::string_view inString, std::string_view separator,
                                             int32_t limit /* = -1*/)
 {
 	std::vector<std::string_view> returnVector;

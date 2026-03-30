@@ -43,7 +43,7 @@ public:
 	Container(const Container&) = delete;
 	Container& operator=(const Container&) = delete;
 
-	Item* clone() const override final;
+	[[nodiscard]] Item* clone() const override final;
 
 	Container* getContainer() override final { return this; }
 	const Container* getContainer() const override final { return this; }

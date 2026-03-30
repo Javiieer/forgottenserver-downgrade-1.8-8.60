@@ -97,7 +97,7 @@ public:
 
 	bool load();
 
-	ChatChannel* createChannel(const Player& player, uint16_t channelId);
+	[[nodiscard]] ChatChannel* createChannel(const Player& player, uint16_t channelId);
 	bool deleteChannel(const Player& player, uint16_t channelId);
 
 	ChatChannel* addUserToChannel(Player& player, uint16_t channelId);
@@ -108,10 +108,10 @@ public:
 
 	ChannelList getChannelList(const Player& player);
 
-	ChatChannel* getChannel(const Player& player, uint16_t channelId);
-	ChatChannel* getChannelById(uint16_t channelId);
-	ChatChannel* getGuildChannelById(uint32_t guildId);
-	PrivateChatChannel* getPrivateChannel(const Player& player);
+	[[nodiscard]] ChatChannel* getChannel(const Player& player, uint16_t channelId);
+	[[nodiscard]] ChatChannel* getChannelById(uint16_t channelId);
+	[[nodiscard]] ChatChannel* getGuildChannelById(uint32_t guildId);
+	[[nodiscard]] PrivateChatChannel* getPrivateChannel(const Player& player);
 
 	LuaScriptInterface* getScriptInterface() { return &scriptInterface; }
 

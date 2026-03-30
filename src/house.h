@@ -96,7 +96,7 @@ using HouseBedItemList = std::list<BedItem*>;
 class HouseTransferItem final : public Item
 {
 public:
-	static HouseTransferItem* createHouseTransferItem(House* house);
+	[[nodiscard]] static HouseTransferItem* createHouseTransferItem(House* house);
 
 	explicit HouseTransferItem(House* house) : Item(0), house(house) {}
 
@@ -268,7 +268,7 @@ public:
 		return ins->second.get();
 	}
 
-	House* getHouse(uint32_t houseId)
+	[[nodiscard]] House* getHouse(uint32_t houseId)
 	{
 		auto it = houseMap.find(houseId);
 		if (it == houseMap.end()) {
@@ -277,7 +277,7 @@ public:
 		return it->second.get();
 	}
 
-	House* getHouseByPlayerId(uint32_t playerId);
+	[[nodiscard]] House* getHouseByPlayerId(uint32_t playerId);
 
 	bool loadHousesXML(const std::string& filename);
 

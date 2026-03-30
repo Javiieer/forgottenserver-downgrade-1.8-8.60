@@ -135,55 +135,55 @@ public:
 	 * \param id is the unique creature id to get a creature pointer to
 	 * \returns A Creature pointer to the creature
 	 */
-	Creature* getCreatureByID(uint32_t id);
+	[[nodiscard]] Creature* getCreatureByID(uint32_t id);
 
 	/**
 	 * Returns a monster based on the unique creature identifier
 	 * \param id is the unique monster id to get a monster pointer to
 	 * \returns A Monster pointer to the monster
 	 */
-	Monster* getMonsterByID(uint32_t id);
+	[[nodiscard]] Monster* getMonsterByID(uint32_t id);
 
 	/**
 	 * Returns an npc based on the unique creature identifier
 	 * \param id is the unique npc id to get a npc pointer to
 	 * \returns A NPC pointer to the npc
 	 */
-	Npc* getNpcByID(uint32_t id);
+	[[nodiscard]] Npc* getNpcByID(uint32_t id);
 
 	/**
 	 * Returns a player based on the unique creature identifier
 	 * \param id is the unique player id to get a player pointer to
 	 * \returns A Pointer to the player
 	 */
-	Player* getPlayerByID(uint32_t id);
+	[[nodiscard]] Player* getPlayerByID(uint32_t id);
 
 	/**
 	 * Returns a creature based on a string name identifier
 	 * \param s is the name identifier
 	 * \returns A Pointer to the creature
 	 */
-	Creature* getCreatureByName(const std::string& s);
+	[[nodiscard]] Creature* getCreatureByName(std::string_view s);
 
 	/**
 	 * Returns a npc based on a string name identifier
 	 * \param s is the name identifier
 	 * \returns A Pointer to the npc
 	 */
-	Npc* getNpcByName(std::string_view npcName);
+	[[nodiscard]] Npc* getNpcByName(std::string_view npcName);
 
 	/**
 	 * Returns a player based on a string name identifier
 	 * \param s is the name identifier
 	 * \returns A Pointer to the player
 	 */
-	Player* getPlayerByName(std::string_view s);
+	[[nodiscard]] Player* getPlayerByName(std::string_view s);
 
 	/**
 	 * Returns a player based on guid
 	 * \returns A Pointer to the player
 	 */
-	Player* getPlayerByGUID(const uint32_t& guid);
+	[[nodiscard]] Player* getPlayerByGUID(const uint32_t& guid);
 
 	/**
 	 * Returns a player based on a string name identifier, with support for the "~" wildcard.
@@ -198,7 +198,7 @@ public:
 	 * \param acc is the account identifier
 	 * \returns A Pointer to the player
 	 */
-	Player* getPlayerByAccount(uint32_t acc);
+	[[nodiscard]] Player* getPlayerByAccount(uint32_t acc);
 
 	/**
 	 * Place Creature on the map without sending out events to the surrounding.
@@ -519,11 +519,11 @@ public:
 
 	void internalRemoveItems(std::vector<Item*> itemList, uint32_t amount, bool stackable);
 
-	BedItem* getBedBySleeper(uint32_t guid) const;
+	[[nodiscard]] BedItem* getBedBySleeper(uint32_t guid) const;
 	void setBedSleeper(BedItem* bed, uint32_t guid);
 	void removeBedSleeper(uint32_t guid);
 
-	Item* getUniqueItem(uint16_t uniqueId);
+	[[nodiscard]] Item* getUniqueItem(uint16_t uniqueId);
 	bool addUniqueItem(uint16_t uniqueId, Item* item);
 	void removeUniqueItem(uint16_t uniqueId);
 

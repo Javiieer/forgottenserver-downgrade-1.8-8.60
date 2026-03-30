@@ -134,7 +134,7 @@ public:
 
 	bool isLeaf() const { return leaf; }
 
-	QTreeLeafNode* getLeaf(uint32_t x, uint32_t y);
+	[[nodiscard]] QTreeLeafNode* getLeaf(uint32_t x, uint32_t y);
 
 	template <typename Leaf, typename Node>
 	static Leaf getLeafStatic(Node node, uint32_t x, uint32_t y)
@@ -151,7 +151,7 @@ public:
 		return static_cast<Leaf>(node);
 	}
 
-	QTreeLeafNode* createLeaf(uint32_t x, uint32_t y, uint32_t level);
+	[[nodiscard]] QTreeLeafNode* createLeaf(uint32_t x, uint32_t y, uint32_t level);
 
 protected:
 	bool leaf = false;
@@ -176,8 +176,8 @@ public:
 	QTreeLeafNode(const QTreeLeafNode&) = delete;
 	QTreeLeafNode& operator=(const QTreeLeafNode&) = delete;
 
-	Floor* createFloor(uint32_t z);
-	Floor* getFloor(uint8_t z) const { return array[z].get(); }
+	[[nodiscard]] Floor* createFloor(uint32_t z);
+	[[nodiscard]] Floor* getFloor(uint8_t z) const { return array[z].get(); }
 
 	void addCreature(Creature* c);
 	void removeCreature(Creature* c);
@@ -217,8 +217,8 @@ public:
 	 * Get a single tile.
 	 * \returns A pointer to that tile.
 	 */
-	Tile* getTile(uint16_t x, uint16_t y, uint8_t z) const;
-	Tile* getTile(const Position& pos) const { return getTile(pos.x, pos.y, pos.z); }
+	[[nodiscard]] Tile* getTile(uint16_t x, uint16_t y, uint8_t z) const;
+	[[nodiscard]] Tile* getTile(const Position& pos) const { return getTile(pos.x, pos.y, pos.z); }
 
 	/**
 	 * Set a single tile.

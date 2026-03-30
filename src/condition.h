@@ -96,9 +96,9 @@ public:
 	void setTicks(int32_t newTicks);
 	bool isAggressive() const { return aggressive; }
 
-	static Condition_ptr createCondition(ConditionId_t id, ConditionType_t type, int32_t ticks, int32_t param = 0,
+	[[nodiscard]] static Condition_ptr createCondition(ConditionId_t id, ConditionType_t type, int32_t ticks, int32_t param = 0,
 	                                     bool buff = false, uint32_t subId = 0, bool aggressive = false);
-	static Condition_ptr createCondition(PropStream& propStream);
+	[[nodiscard]] static Condition_ptr createCondition(PropStream& propStream);
 
 	virtual bool setParam(ConditionParam_t param, int32_t value);
 	virtual int32_t getParam(ConditionParam_t param) const;

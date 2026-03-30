@@ -408,13 +408,13 @@ Player* Game::getPlayerByID(uint32_t id)
 	return it->second;
 }
 
-Creature* Game::getCreatureByName(const std::string& s)
+Creature* Game::getCreatureByName(std::string_view s)
 {
 	if (s.empty()) {
 		return nullptr;
 	}
 
-	const std::string& lowerCaseName = boost::algorithm::to_lower_copy<std::string>(s);
+	const std::string lowerCaseName = boost::algorithm::to_lower_copy(std::string{s});
 
 	{
 		auto it = mappedPlayerNames.find(lowerCaseName);

@@ -500,17 +500,17 @@ class Item : virtual public Thing
 {
 public:
 	// Factory member to create item of right type based on type
-	static Item* CreateItem(const uint16_t type, uint16_t count = 0);
-	static std::unique_ptr<Item> CreateItemSafe(const uint16_t type, uint16_t count = 0);
-	static Container* CreateItemAsContainer(const uint16_t type, uint16_t size);
-	static Item* CreateItem(PropStream& propStream);
-	static std::unique_ptr<Item> CreateItemSafe(PropStream& propStream);
+	[[nodiscard]] static Item* CreateItem(const uint16_t type, uint16_t count = 0);
+	[[nodiscard]] static std::unique_ptr<Item> CreateItemSafe(const uint16_t type, uint16_t count = 0);
+	[[nodiscard]] static Container* CreateItemAsContainer(const uint16_t type, uint16_t size);
+	[[nodiscard]] static Item* CreateItem(PropStream& propStream);
+	[[nodiscard]] static std::unique_ptr<Item> CreateItemSafe(PropStream& propStream);
 	static Items items;
 
 	// Constructor for items
 	Item(const uint16_t type, uint16_t count = 0);
 	Item(const Item& i);
-	virtual Item* clone() const;
+	[[nodiscard]] virtual Item* clone() const;
 
 	virtual ~Item();
 

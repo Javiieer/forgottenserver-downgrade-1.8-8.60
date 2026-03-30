@@ -38,7 +38,6 @@ private:
 	void runTask(const DatabaseTask& task);
 
 	Database db;
-	std::thread thread;
 	std::deque<DatabaseTask> tasks;
 	std::mutex taskLock;
 	std::condition_variable taskSignal;
