@@ -419,3 +419,13 @@ void printCustomInfo()
 	LOG_INFO(fmt::format(fg(fmt::color::yellow), "Repository CUSTOM: https://github.com/Mateuzkl/forgottenserver-downgrade"));
 	LOG_INFO("");
 }
+
+#ifndef _WIN32
+// Called by GDB on crash — must be extern "C" and __attribute__((used)) to prevent stripping
+extern "C" __attribute__((used)) void saveServer()
+{
+	if (g_game.getPlayersOnline() > 0) {
+		g_game.saveGameState(true);
+	}
+}
+#endif

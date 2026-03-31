@@ -189,20 +189,39 @@ void Game::setGameState(GameState_t newState)
 	}
 }
 
-void Game::saveGameState()
+void Game::saveGameState(bool crash /* = false */)
 {
-	AutoStat stat("Game::saveGameState", "full");
+	AutoStat stat("Game::saveGameState", crash ? "crash" : "full");
 	if (gameState == GAME_STATE_NORMAL) {
 		setGameState(GAME_STATE_MAINTAIN);
 	}
 
+	if (crash) {
+		LOG_WARN("[Anti-Rollback] Server crash detected — emergency save initiated.");
+	}
+
+	uint32_t savedCount = 0;
 	for (const auto& it : players) {
-		it.second->loginPosition = it.second->getPosition();
+		Player* player = it.second;
+		if (crash) {
+			const Town* town = player->getTown();
+			if (town) {
+				player->loginPosition = town->getTemplePosition();
+			} else {
+				player->loginPosition = player->getPosition();
+			}
+		} else {
+			player->loginPosition = player->getPosition();
+		}
+		++savedCount;
 	}
 
 	g_saveManager.saveAll();
-
 	g_databaseTasks.flush();
+
+	if (crash && savedCount > 0) {
+		LOG_WARN(fmt::format("[Anti-Rollback] Emergency save completed — {} player(s) saved at temple.", savedCount));
+	}
 
 	if (gameState == GAME_STATE_MAINTAIN) {
 		setGameState(GAME_STATE_NORMAL);
