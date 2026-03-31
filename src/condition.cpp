@@ -265,6 +265,10 @@ Condition_ptr Condition::createCondition(PropStream& propStream)
 		return nullptr;
 	}
 
+	if (type == 0 || (type & (type - 1)) != 0 || type > CONDITION_SPELLGROUPCOOLDOWN) {
+		return nullptr;
+	}
+
 	if (!propStream.read<uint8_t>(attr) || attr != CONDITIONATTR_ID) {
 		return nullptr;
 	}
