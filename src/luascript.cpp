@@ -1551,12 +1551,12 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(CONST_ME_YELLOWSMOKE);
 	registerEnum(CONST_ME_GREENSMOKE);
 	registerEnum(CONST_ME_PURPLESMOKE);
-	registerEnum(CONST_ME_LIGHTNING);
-	registerEnum(CONST_ME_RAGIAZ_BONE_CAPSULE);
-	registerEnum(CONST_ME_CRITICAL_HIT);
+	registerEnum(CONST_ME_EARLY_THUNDER);
+	registerEnum(CONST_ME_RAGIAZ_BONECAPSULE);
+	registerEnum(CONST_ME_CRITICAL_DAMAGE);
 	registerEnum(CONST_ME_PLUNGING_FISH);
 	registerEnum(CONST_ME_BLUE_ENERGY_SPARK);
-	registerEnum(CONST_ME_ORANGE_ENERGY_SPARK)
+	registerEnum(CONST_ME_ORANGE_ENERGY_SPARK);
 	registerEnum(CONST_ME_GREEN_ENERGY_SPARK);
 	registerEnum(CONST_ME_PINK_ENERGY_SPARK);
 	registerEnum(CONST_ME_WHITE_ENERGY_SPARK);
@@ -1575,8 +1575,8 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(CONST_ME_ORANGE_FIREWORKS);
 	registerEnum(CONST_ME_PINK_FIREWORKS);
 	registerEnum(CONST_ME_BLUE_FIREWORKS);
-	registerEnum(CONST_ME_BLACK_BLOOD);
 	registerEnum(CONST_ME_SUPREME_CUBE);
+	registerEnum(CONST_ME_BLACK_BLOOD);
 	registerEnum(CONST_ME_PRISMATIC_SPARK);
 	registerEnum(CONST_ME_THAIAN);
 	registerEnum(CONST_ME_THAIAN_GHOST);
@@ -1601,6 +1601,7 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(CONST_ME_DODGE);
 	registerEnum(CONST_ME_HOURGLASS);
 	registerEnum(CONST_ME_DAZZLING);
+	registerEnum(CONST_ME_SPARKLING);
 	registerEnum(CONST_ME_FERUMBRAS_1);
 	registerEnum(CONST_ME_GAZHARAGOTH);
 	registerEnum(CONST_ME_MAD_MAGE);
@@ -1616,6 +1617,8 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(CONST_ME_WATER_FLOATING_THRASH);
 	registerEnum(CONST_ME_AGONY);
 	registerEnum(CONST_ME_LOOT_HIGHLIGHT);
+
+	// 13.40
 	registerEnum(CONST_ME_MELTING_CREAM);
 	registerEnum(CONST_ME_REAPER);
 	registerEnum(CONST_ME_POWERFUL_HEARTS);
@@ -1654,6 +1657,19 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(CONST_ME_WHITE_ENERGYSHOCK);
 	registerEnum(CONST_ME_GREEN_ENERGYSHOCK);
 	registerEnum(CONST_ME_YELLOW_ENERGYSHOCK);
+
+	registerEnum(CONST_ME_INK_SPLASH);
+	registerEnum(CONST_ME_PAPER_PLANE);
+	registerEnum(CONST_ME_SPIKES);
+	registerEnum(CONST_ME_BLOOD_RAIN);
+	registerEnum(CONST_ME_OPEN_BOOKMACHINE);
+	registerEnum(CONST_ME_OPEN_BOOKSPELL);
+	registerEnum(CONST_ME_SMALL_WHITE_ENERGYSHOCK);
+	registerEnum(CONST_ME_SMALL_GREEN_ENERGYSHOCK);
+	registerEnum(CONST_ME_SMALL_PINK_ENERGYSHOCK);
+	registerEnum(CONST_ME_SMALLWHITE_ENERGY_SPARK);
+	registerEnum(CONST_ME_SMALLGREEN_ENERGY_SPARK);
+	registerEnum(CONST_ME_SMALLPINK_ENERGY_SPARK);
 
 	registerEnum(CONST_ANI_NONE);
 	registerEnum(CONST_ANI_SPEAR);

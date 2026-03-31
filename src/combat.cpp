@@ -937,7 +937,7 @@ void Combat::doTargetCombat(Creature* caster, Creature* target, CombatDamage& da
 			SpectatorVec critSpectators;
 			g_game.map.getSpectators(critSpectators, target->getPosition(), true, true);
 			InstanceUtils::sendMagicEffectToInstance(
-				critSpectators, target->getPosition(), CONST_ME_CRITICAL_HIT, target->getInstanceID());
+				critSpectators, target->getPosition(), CONST_ME_CRITICAL_DAMAGE, target->getInstanceID());
 		}
 
 		if (damage.fatal && target) {
@@ -1151,7 +1151,7 @@ void Combat::doAreaCombat(Creature* caster, const Position& position, const Area
 			SpectatorVec critSpectators;
 			g_game.map.getSpectators(critSpectators, creature->getPosition(), true, true);
 			InstanceUtils::sendMagicEffectToInstance(
-				critSpectators, creature->getPosition(), CONST_ME_CRITICAL_HIT, creature->getInstanceID());
+				critSpectators, creature->getPosition(), CONST_ME_CRITICAL_DAMAGE, creature->getInstanceID());
 			  }
 
 		bool success = false;
