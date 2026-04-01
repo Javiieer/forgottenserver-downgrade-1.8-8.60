@@ -31,7 +31,7 @@ bool Scripts::loadScripts(const std::string& folderName, bool isLib, bool reload
 	std::vector<std::string> disabled = {}, loaded = {}, reloaded = {};
 
 	fs::recursive_directory_iterator endit;
-	std::vector<fs::path> v;
+	std::vector<std::pair<fs::path, std::string>> v;
 	std::string disable = ("#");
 	for (fs::recursive_directory_iterator it(dir); it != endit; ++it) {
 		auto fn = it->path().parent_path().filename();
@@ -49,25 +49,25 @@ bool Scripts::loadScripts(const std::string& folderName, bool isLib, bool reload
 				}
 				continue;
 			}
-			const std::string canonical = fs::canonical(it->path()).string();
+			std::string canonical = fs::canonical(it->path()).string();
 			if (!loadedFiles.contains(canonical)) {
-				v.push_back(it->path());
+				v.emplace_back(it->path(), std::move(canonical));
 			}
 		}
 	}
-	sort(v.begin(), v.end());
-	for (auto it = v.begin(); it != v.end(); ++it) {
-		const std::string scriptFile = it->string();
+	sort(v.begin(), v.end(), [](const auto& a, const auto& b) { return a.first < b.first; });
+	for (auto& [path, canonical] : v) {
+		const std::string scriptFile = path.string();
 		if (scriptInterface.loadFile(scriptFile) == -1) {
-			LOG_ERROR(fmt::format("> {} [error]", it->filename().string()));
+			LOG_ERROR(fmt::format("> {} [error]", path.filename().string()));
 			LOG_ERROR(fmt::format("^ {}", scriptInterface.getLastLuaError()));
 			continue;
 		}
 
-		loadedFiles.insert(fs::canonical(*it).string());
+		loadedFiles.insert(std::move(canonical));
 
 		if (scriptsConsoleLogs) {
-			const auto& scrName = it->filename().string();
+			const auto& scrName = path.filename().string();
 			if (!reload) {
 				loaded.push_back(fmt::format(
 				    "\"{}\"",

@@ -154,6 +154,7 @@ void Game::setGameState(GameState_t newState)
 			{
 				auto shutdownTask = createTaskWithStats([this]() { shutdown(); }, "Game::shutdown", "setGameState");
 				shutdownTask->trackInStats = false;
+				shutdownTask->skipSlowDetection = true;
 				g_dispatcher.addTask(std::move(shutdownTask));
 			}
 

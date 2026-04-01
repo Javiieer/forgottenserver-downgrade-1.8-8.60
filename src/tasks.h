@@ -49,6 +49,7 @@ public:
 	uint64_t executionTime = 0;
 
 	bool trackInStats = true;
+	bool skipSlowDetection = false;
 
 protected:
 	std::chrono::steady_clock::time_point expiration = SYSTEM_TIME_ZERO;

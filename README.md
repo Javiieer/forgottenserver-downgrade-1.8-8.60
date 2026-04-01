@@ -1,13 +1,14 @@
-# 🌺 𝓜𝓲𝓵𝓵𝓱𝓲𝓸𝓻𝓮 𝓣𝓕𝓢 𝓓𝓸𝔀𝓷𝓰𝓻𝓪𝓭𝓮 🌺
+# ⚔️ TFS 1.8 Downgrade — Protocol 8.60
 
 [![Build status](https://ci.appveyor.com/api/projects/status/github/Mateuzkl/forgottenserver-downgrade?branch=official&svg=true)](https://ci.appveyor.com/project/Mateuzkl/forgottenserver-downgrade)
 
-### 🐱 [Based nekiro downgrade.](https://github.com/nekiro/TFS-1.5-Downgrades)
+**Engine:** TFS 1.8 | **Protocol:** 8.60  
+**Developed & Optimized by** [Mateuzkl](https://github.com/Mateuzkl)
 
-**Version: TFS 1.8 | Protocol: 8.60**  
-_Developed by MillhioreBT & Mateuzkl_
+> Based on [Nekiro's TFS 1.5 Downgrades](https://github.com/nekiro/TFS-1.5-Downgrades), forked from [MillhioreBT's downgrade](https://github.com/MillhioreBT/forgottenserver-downgrade).  
+> Fully reworked — all systems, optimizations, and custom features by Mateuzkl.
 
-> TFS 1.8 for 8.60 client — full DAT system, ClientID only, no ServerID mapping, reads assets.dat directly like Canary/Crystal/Black Tek.
+TFS 1.8 for 8.60 client — full DAT system, ClientID only, no ServerID mapping, reads assets.dat directly like Canary/Crystal/Black Tek.
 
 ---
 
@@ -34,9 +35,9 @@ This custom version includes several enhanced systems and fully integrated featu
 - **Commands**: `/war invite, guildname`, `/war accept, guildname`.
 - **Emblems**: Ally, Member, and Enemy emblems update in real-time.
 
-### ⚔️ Tier & Classification System
+### ⚔️ Forge & Classification System
 - Items can have **Tier** and **Classification** attributes.
-- **Upgrades**: Tier system allows for item upgrades and strong progression.
+- **Forge**: Tier system allows for item upgrades via fusion and strong progression.
 - **Classification**: System for categorizing items by rarity or power.
 - Fully integrated with Lua scripting API for custom RPG systems.
 
@@ -79,6 +80,33 @@ This custom version includes several enhanced systems and fully integrated featu
 - **Bonus**: Configurable EXP bonus for active casters.
 - **Spectators**: Can chat in the Live Cast channel.
 - **Commands**: `/spectators`, `/kick`, `/mute`, `/ban` (for broadcasters).
+
+### 🔥 Forge System (Item Fusion)
+- **Tier Upgrading**: Fuse two identical items — one is consumed, the other gains +1 tier.
+- **Tier Range**: 0 → 9, capped by item classification.
+- **Success Rates**: 50% (T0) down to 5% (T9), with scaling gold and dust costs.
+- **Materials**: Forge Dust, Silver Tokens, and Exalted Cores (required from T5+).
+- **On Success**: Upgraded item is placed inside an Exaltation Chest and delivered to the player's inventory.
+- **Commands**: `/forge info`, `/forge dust`, `/forge silver`.
+
+### 🧿 Imbuement System
+- **Two Methods**: Apply directly via **Imbuement Scrolls** or craft from **raw materials** using an Etcher tool.
+- **Workbench**: 4-slot station — 1 equipment + up to 3 scrolls or materials.
+- **27 Imbuement Types**: Skill boosts, Magic Level, Life/Mana Leech, Critical Hit, Elemental Damage & Protection, Speed, Capacity, and more.
+- **3 Tiers**: Flawed → Intricate → Powerful, with increasing costs and power.
+- **Owner Lock**: Only the item's owner can imbue it.
+
+### 🏰 Instance System
+- **Isolated Areas**: Create private dungeon instances — monsters, effects, and items are only visible to players in the same instance.
+- **Lua API**: `player:setInstanceId()`, `Game.registerInstanceArea()`, `Game.createMonster()` with instance parameter.
+- **C++ Core**: Spectator filtering, item visibility, and interaction checks all respect instance boundaries.
+- **Use Case**: Solo/party dungeons, boss rooms, quests — without interfering with the main world.
+
+### 🧘 Harmony System (Monk Vocation)
+- **Exclusive to Monks** (vocations 9-10): gain Harmony points by hitting enemies.
+- **Virtues**: Rotating states — Justice, Harmony, Sustain — each with unique bonuses.
+- **Scaling Bonuses**: XP and damage increase with accumulated Harmony.
+- **Command**: `!harmony`.
 
 ---
 
@@ -157,7 +185,34 @@ Recommended usage with **vcpkg**. See [Wiki Guide](https://github.com/MillhioreB
 
 ---
 
-## 📦 Client Configuration (OTCv8)
+## � Website (MyAAC) — SHA256 Password Support
+
+> [!IMPORTANT]
+> This TFS 1.8 uses **SHA256 + salt** for password hashing instead of the traditional SHA1. The standard MyAAC will **not work** for creating accounts or logging in.
+
+You **must** use the modified MyAAC fork that supports SHA256:
+
+**Repository:** [https://github.com/Mateuzkl/myaac](https://github.com/Mateuzkl/myaac)
+
+```bash
+git clone https://github.com/Mateuzkl/myaac.git
+```
+
+### What was changed?
+
+- Account creation hashes passwords using `SHA256 + random salt` in the format: `$SHA256$<salt>$<hash>`
+- Login verification supports both **new SHA256** and **legacy SHA1** formats
+- **Transparent migration**: when a player logs in with an old SHA1 password, the server automatically upgrades it to SHA256+salt in the database
+
+### Why?
+
+SHA1 is considered **insecure** and deprecated for password storage. SHA256 with per-account random salt provides significantly better security against rainbow table and brute-force attacks.
+
+> If you use a different AAC (Znote, Gesior, etc.), you will need to adapt the password hashing functions to use the `$SHA256$<salt>$<hash>` format described above.
+
+---
+
+## �📦 Client Configuration (OTCv8)
 
 To fully utilize features like extended sprites and mounts, updates are required:
 
@@ -173,7 +228,6 @@ if(version >= 860) then
     g_game.enableFeature(GameMagicEffectU16)
     g_game.enableFeature(GameDistanceEffectU16)
     g_game.enableFeature(GameDoubleHealth)
-    g_game.enableFeature(GameDoubleExperience)
     g_game.enableFeature(GameOfflineTrainingTime)
     g_game.enableFeature(GameDoubleSkills)
     g_game.enableFeature(GameBaseSkillU16)

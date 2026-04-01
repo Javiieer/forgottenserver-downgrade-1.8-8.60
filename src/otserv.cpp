@@ -309,7 +309,11 @@ void startServer()
 	g_stats.start();
 #endif
 
-	g_dispatcher.addTask(createTaskWithStats([=, services = &serviceManager]() { mainLoader(services); }, "MainLoader", ""));
+	{
+		auto loaderTask = createTaskWithStats([=, services = &serviceManager]() { mainLoader(services); }, "MainLoader", "");
+		loaderTask->skipSlowDetection = true;
+		g_dispatcher.addTask(std::move(loaderTask));
+	}
 
 	g_loaderSignal.wait(g_loaderUniqueLock);
 

@@ -93,7 +93,7 @@ void Dispatcher::threadMain()
                     std::chrono::high_resolution_clock::now() - taskStart
                 ).count();
 
-                if (static_cast<uint64_t>(elapsed) > SLOW_TASK_THRESHOLD_NS) {
+                if (static_cast<uint64_t>(elapsed) > SLOW_TASK_THRESHOLD_NS && !task->skipSlowDetection) {
                     ++slowTaskCount;
                     auto elapsedMs = elapsed / 1'000'000;
                     if (!task->description.empty()) {
