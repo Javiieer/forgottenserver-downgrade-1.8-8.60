@@ -8,19 +8,19 @@
 > Based on [Nekiro's TFS 1.5 Downgrades](https://github.com/nekiro/TFS-1.5-Downgrades), forked from [MillhioreBT's downgrade](https://github.com/MillhioreBT/forgottenserver-downgrade).  
 > Fully reworked — all systems, optimizations, and custom features by Mateuzkl.
 
-TFS 1.8 for 8.60 client — ClientID-based OTB, where ServerID equals ClientID. Items, maps, and scripts all reference the same ID used by the client's .dat file. No traditional ServerID/ClientID conversion needed.
+TFS 1.8 for 8.60 client — uses ClientID only. Items, maps, and scripts all reference the ClientID from the client's `.dat` file directly. No ServerID conversion layer.
 
 ---
 
-## 🎯 ClientID Implementation
+## 🎯 ClientID Implementation (Full .dat Support)
 
-This server uses a **ClientID-based items.otb**, where the ServerID stored in the OTB is set equal to the ClientID from the client's `.dat` file:
+This server uses **ClientID only** — all items are identified by their ClientID from the client's `.dat` file:
 
-- **ServerID = ClientID**: The `items.otb` is generated so that each item's ServerID matches its ClientID. Scripts, maps, and the database all use the same ID the client uses — no mental translation needed.
-- **Single ID Everywhere**: Lua scripts (`items.xml`, RevScriptSys), maps (OTBM), and SQL tables all reference items by their ClientID directly.
-- **OTB-Based**: Items are still loaded from `items.otb` + `items.xml` (not directly from `.dat`). The `.dat` file is only read by the client.
+- **ClientID Only**: No ServerID. Items, maps (OTBM), Lua scripts, and database tables all use the ClientID directly.
+- **Full .dat System**: Reads item definitions from the client's `.dat` file, like Canary and Crystal Server.
+- **No Conversion Layer**: There is no ServerID/ClientID mapping — the ID you see in the client is the same ID used everywhere in the server.
 
-This approach eliminates the traditional ServerID/ClientID mismatch found in standard TFS/OTServ distributions, making content creation and debugging simpler.
+This eliminates the traditional ServerID/ClientID mismatch, making content creation and debugging simpler.
 
 
 
