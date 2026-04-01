@@ -8,7 +8,23 @@
 > Based on [Nekiro's TFS 1.5 Downgrades](https://github.com/nekiro/TFS-1.5-Downgrades), forked from [MillhioreBT's downgrade](https://github.com/MillhioreBT/forgottenserver-downgrade).  
 > Fully reworked — all systems, optimizations, and custom features by Mateuzkl.
 
-TFS 1.8 for 8.60 client — full DAT system, ClientID only, no ServerID mapping, reads assets.dat directly like Canary/Crystal/Black Tek.
+TFS 1.8 for 8.60 client — ClientID-based OTB, where ServerID equals ClientID. Items, maps, and scripts all reference the same ID used by the client's .dat file. No traditional ServerID/ClientID conversion needed.
+
+---
+
+## 🎯 ClientID Implementation
+
+This server uses a **ClientID-based items.otb**, where the ServerID stored in the OTB is set equal to the ClientID from the client's `.dat` file:
+
+- **ServerID = ClientID**: The `items.otb` is generated so that each item's ServerID matches its ClientID. Scripts, maps, and the database all use the same ID the client uses — no mental translation needed.
+- **Single ID Everywhere**: Lua scripts (`items.xml`, RevScriptSys), maps (OTBM), and SQL tables all reference items by their ClientID directly.
+- **OTB-Based**: Items are still loaded from `items.otb` + `items.xml` (not directly from `.dat`). The `.dat` file is only read by the client.
+
+This approach eliminates the traditional ServerID/ClientID mismatch found in standard TFS/OTServ distributions, making content creation and debugging simpler.
+
+
+
+To edit maps compatible with this ClientID system, use the modified RME: **[Download RME-CLIENTID](https://github.com/Mateuzkl/RME-CLIENTID)**
 
 ---
 
