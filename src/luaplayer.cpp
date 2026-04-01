@@ -1300,7 +1300,7 @@ int luaPlayerAddItem(lua_State* L)
 			subType -= stackCount;
 		}
 
-		Item* item = Item::CreateItem(itemId, static_cast<uint16_t>(stackCount));
+		Item* item = Item::CreateItem(itemId, static_cast<uint16_t>(stackCount)).release();
 		if (!item) {
 			if (!hasTable) {
 				lua_pushnil(L);
@@ -1458,10 +1458,10 @@ int luaPlayerShowTextDialog(lua_State* L)
 	Item* item;
 	bool fixMemoryLeak = false;
 	if (isInteger(L, 2)) {
-		item = Item::CreateItem(getInteger<uint16_t>(L, 2));
+		item = Item::CreateItem(getInteger<uint16_t>(L, 2)).release();
 		fixMemoryLeak = true;
 	} else if (isString(L, 2)) {
-		item = Item::CreateItem(Item::items.getItemIdByName(getString(L, 2)));
+		item = Item::CreateItem(Item::items.getItemIdByName(getString(L, 2))).release();
 		fixMemoryLeak = true;
 	} else if (isUserdata(L, 2)) {
 		if (getUserdataType(L, 2) != LuaData_Item) {

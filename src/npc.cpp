@@ -882,7 +882,7 @@ int NpcScriptInterface::luaDoSellItem(lua_State* L)
 	if (it.stackable) {
 		while (amount > 0) {
 			int32_t stackCount = std::min<int32_t>(amount, it.stackSize);
-			Item* item = Item::CreateItem(it.id, static_cast<uint16_t>(stackCount));
+			Item* item = Item::CreateItem(it.id, static_cast<uint16_t>(stackCount)).release();
 			if (item && actionId != 0) {
 				item->setActionId(static_cast<uint16_t>(actionId));
 			}
@@ -898,7 +898,7 @@ int NpcScriptInterface::luaDoSellItem(lua_State* L)
 		}
 	} else {
 		for (uint32_t i = 0; i < amount; ++i) {
-			Item* item = Item::CreateItem(it.id, static_cast<uint16_t>(subType));
+			Item* item = Item::CreateItem(it.id, static_cast<uint16_t>(subType)).release();
 			if (item && actionId != 0) {
 				item->setActionId(static_cast<uint16_t>(actionId));
 			}

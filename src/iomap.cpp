@@ -278,7 +278,7 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
                     }
 
                     case OTBM_AttrTypes_t::ITEM: {
-                        std::unique_ptr<Item> item(Item::CreateItem(tilePropStream));
+                        auto item = Item::CreateItem(tilePropStream);
                         if (!item) {
                             setLastErrorString(fmt::format("[x:{:d}, y:{:d}, z:{:d}] Failed to create item.", x, y, z));
                             delete ground_item;
@@ -333,7 +333,7 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
                     return false;
                 }
 
-                std::unique_ptr<Item> item(Item::CreateItem(stream));
+                auto item = Item::CreateItem(stream);
                 if (!item) {
                     setLastErrorString(fmt::format("[x:{:d}, y:{:d}, z:{:d}] Failed to create item.", x, y, z));
                     delete ground_item;

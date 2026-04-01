@@ -2703,7 +2703,7 @@ int LuaScriptInterface::luaDoPlayerAddItem(lua_State* L)
 			stackCount = it.stackSize;
 		}
 
-		Item* newItem = Item::CreateItem(itemId, stackCount);
+		Item* newItem = Item::CreateItem(itemId, stackCount).release();
 		if (!newItem) {
 			reportErrorFunc(L, getErrorDesc(LuaErrorCode::ITEM_NOT_FOUND));
 			Lua::pushBoolean(L, false);
@@ -3043,7 +3043,7 @@ int LuaScriptInterface::luaDoAddContainerItem(lua_State* L)
 
 	while (itemCount > 0) {
 		int32_t stackCount = std::min<int32_t>(subType, it.stackSize);
-		Item* newItem = Item::CreateItem(itemId, static_cast<uint16_t>(stackCount));
+		Item* newItem = Item::CreateItem(itemId, static_cast<uint16_t>(stackCount)).release();
 		if (!newItem) {
 			reportErrorFunc(L, getErrorDesc(LuaErrorCode::ITEM_NOT_FOUND));
 			Lua::pushBoolean(L, false);

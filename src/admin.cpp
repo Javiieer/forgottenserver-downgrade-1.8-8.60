@@ -89,7 +89,7 @@ Item* Admin::createMail(const std::string& xmlData, std::string& name, uint32_t&
 	}
 
 	uint16_t itemId = root.attribute("id").as_uint(ITEM_PARCEL);
-	Item* mailItem = Item::CreateItem(itemId);
+	Item* mailItem = Item::CreateItem(itemId).release();
 	if (!mailItem) {
 		return nullptr;
 	}

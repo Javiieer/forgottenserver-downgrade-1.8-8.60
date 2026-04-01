@@ -885,7 +885,7 @@ DepotLocker* Player::getDepotLocker(uint32_t depotId)
 	}
 
 	if (!hasInbox) {
-		it->second->internalAddThing(Item::CreateItem(ITEM_INBOX));
+		it->second->internalAddThing(Item::CreateItem(ITEM_INBOX).release());
 	}
 
 	return it->second.get();

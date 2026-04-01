@@ -167,7 +167,7 @@ int luaContainerAddItem(lua_State* L)
 		count = std::min<uint16_t>(count, it.stackSize);
 	}
 
-	Item* item = Item::CreateItem(itemId, count);
+	Item* item = Item::CreateItem(itemId, count).release();
 	if (!item) {
 		lua_pushnil(L);
 		return 1;

@@ -89,7 +89,7 @@ bool Container::unserializeItemNode(OTB::Loader& loader, const OTB::Node& node, 
 			return false;
 		}
 
-		Item* item = Item::CreateItem(itemPropStream);
+		Item* item = Item::CreateItem(itemPropStream).release();
 		if (!item) {
 			return false;
 		}

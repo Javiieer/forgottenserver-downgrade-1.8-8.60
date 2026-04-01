@@ -877,7 +877,7 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const
 				if (house->getPayRentWarnings() < 7) {
 					int32_t daysLeft = 7 - house->getPayRentWarnings();
 
-					Item* letter = Item::CreateItem(ITEM_LETTER_STAMPED);
+					Item* letter = Item::CreateItem(ITEM_LETTER_STAMPED).release();
 				std::string period = getRentPeriod(rentPeriod);
 
 				letter->setText(fmt::format(
@@ -927,7 +927,7 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const
 				if (house->getPayRentWarnings() < 7) {
 					int32_t daysLeft = 7 - house->getPayRentWarnings();
 
-					Item* letter = Item::CreateItem(ITEM_LETTER_STAMPED);
+					Item* letter = Item::CreateItem(ITEM_LETTER_STAMPED).release();
 				std::string period = getRentPeriod(rentPeriod);
 
 				letter->setText(fmt::format(

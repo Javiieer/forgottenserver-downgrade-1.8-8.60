@@ -527,7 +527,7 @@ Item* createItemFromBasic(const std::shared_ptr<BasicItem>& basicItem, const Pos
         return nullptr;
     }
     
-    Item* item = Item::CreateItem(basicItem->id, basicItem->charges);
+    Item* item = Item::CreateItem(basicItem->id, basicItem->charges).release();
     if (!item) {
         LOG_ERROR(fmt::format("[MapCache] Failed to create item with ID {}", basicItem->id));
         return nullptr;

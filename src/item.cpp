@@ -31,7 +31,7 @@ Items Item::items;
 // The OS reclaims the memory when the process exits.
 static auto &g_validItems = *new std::unordered_set<Item*>();
 
-Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
+std::unique_ptr<Item> Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
 {
 	Item* newItem = nullptr;
 
@@ -80,7 +80,7 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
 		newItem->incrementReferenceCounter();
 	}
 
-	return newItem;
+	return std::unique_ptr<Item>(newItem);
 }
 
 Container* Item::CreateItemAsContainer(const uint16_t type, uint16_t size)
@@ -96,7 +96,7 @@ Container* Item::CreateItemAsContainer(const uint16_t type, uint16_t size)
 	return newItem;
 }
 
-Item* Item::CreateItem(PropStream& propStream)
+std::unique_ptr<Item> Item::CreateItem(PropStream& propStream)
 {
 	uint16_t id;
 	if (!propStream.read<uint16_t>(id)) {
@@ -139,14 +139,6 @@ Item* Item::CreateItem(PropStream& propStream)
 	return Item::CreateItem(id, 0);
 }
 
-std::unique_ptr<Item> Item::CreateItemSafe(const uint16_t type, uint16_t count)
-{
-    return std::unique_ptr<Item>(CreateItem(type, count));
-}
-std::unique_ptr<Item> Item::CreateItemSafe(PropStream& propStream)
-{
-    return std::unique_ptr<Item>(CreateItem(propStream));
-}
 
 Item::Item(const uint16_t type, uint16_t count /*= 0*/) : id(type)
 {
@@ -201,16 +193,18 @@ void Item::clearGlobalRegistry()
 
 Item* Item::clone() const
 {
-	Item* item = Item::CreateItem(id, count);
-	if (attributes) {
+	auto item = Item::CreateItem(id, count);
+	if (item && attributes) {
 		item->attributes.reset(new ItemAttributes(*attributes));
 		if (item->getDuration() > 0) {
-			item->incrementReferenceCounter();
-			item->setDecaying(DECAYING_TRUE);
-			g_game.toDecayItems.push_front(item);
+			Item* raw = item.release();
+			raw->incrementReferenceCounter();
+			raw->setDecaying(DECAYING_TRUE);
+			g_game.toDecayItems.push_front(raw);
+			return raw;
 		}
 	}
-	return item;
+	return item.release();
 }
 
 bool Item::equals(const Item* otherItem) const

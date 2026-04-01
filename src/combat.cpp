@@ -607,7 +607,7 @@ void Combat::combatTileEffects(const SpectatorVec& spectators, Creature* caster,
 			}
 		}
 
-		Item* item = Item::CreateItem(itemId);
+		Item* item = Item::CreateItem(itemId).release();
 		if (caster) {
 			item->setOwner(caster->getID());
 			item->setInstanceID(caster->getInstanceID());

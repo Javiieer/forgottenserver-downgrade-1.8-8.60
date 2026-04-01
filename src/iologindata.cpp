@@ -730,7 +730,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 				container = containerIt->second;
 			}
 			else {
-				Item* containerItem = Item::CreateItem(ITEM_REWARD_CONTAINER);
+				auto containerItem = Item::CreateItem(ITEM_REWARD_CONTAINER);
 				if (!containerItem) {
 					delete item;
 					continue;
@@ -738,13 +738,13 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
 				container = containerItem->getContainer();
 				if (!container) {
-					g_game.ReleaseItem(containerItem);
 					delete item;
 					continue;
 				}
 
 				container->setIntAttr(ITEM_ATTRIBUTE_DATE, rewardDate); // Set the DATE attribute on the container
 				container->setIntAttr(ITEM_ATTRIBUTE_REWARDID, item->getIntAttr(ITEM_ATTRIBUTE_REWARDID));
+				containerItem.release(); // transfer ownership to dateContainers map
 				dateContainers[rewardDate] = container;
 			}
 
@@ -1452,13 +1452,13 @@ void IOLoginData::loadItems(ItemMap& itemMap, DBResult_ptr result)
 		PropStream propStream;
 		propStream.init(attr.data(), attr.size());
 
-		Item* item = Item::CreateItem(type, count);
+		auto item = Item::CreateItem(type, count);
 		if (item) {
 			if (!item->unserializeAttr(propStream)) {
 				LOG_WARN("WARNING: Serialize error in IOLoginData::loadItems");
 			}
 
-			std::pair<Item*, uint32_t> pair(item, pid);
+			std::pair<Item*, uint32_t> pair(item.release(), pid);
 			itemMap[sid] = pair;
 		}
 	} while (result->next());

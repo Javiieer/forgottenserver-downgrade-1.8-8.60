@@ -1844,9 +1844,9 @@ void Monster::death(Creature*)
 			}
 			auto rewardContainer = rewardItem->getContainer();
 			if (!rewardContainer) {
-				delete rewardItem;
 				return;
 			}
+			rewardItem.release(); // transfer to manual ref-count management
 			rewardContainer->setIntAttr(ITEM_ATTRIBUTE_DATE, currentTime);
 			rewardContainer->setIntAttr(ITEM_ATTRIBUTE_REWARDID, getMonster()->getID());
 			bool hasLoot = false;
@@ -1872,8 +1872,9 @@ void Monster::death(Creature*)
 					// The container destructor calls decrementReferenceCounter() for each item,
 					// so we must NOT decrement here — doing so frees the item immediately and
 					// leaves the container with a dangling pointer.
-					rewardContainer->internalAddThing(lootItem);
-					lootItem->decrementReferenceCounter();
+					Item* rawLoot = lootItem.release();
+					rewardContainer->internalAddThing(rawLoot);
+					rawLoot->decrementReferenceCounter();
 					hasLoot = true;
 				} else if (!lootBlock.unique) {
 					// Normal loot distribution for non-unique items
@@ -1888,8 +1889,9 @@ void Monster::death(Creature*)
 							lootItem->setIntAttr(ITEM_ATTRIBUTE_REWARDID, getMonster()->getID());
 						}
 						// Same ownership rule: container owns the item, do NOT decrement here.
-						rewardContainer->internalAddThing(lootItem);
-						lootItem->decrementReferenceCounter();
+						Item* rawLoot = lootItem.release();
+						rewardContainer->internalAddThing(rawLoot);
+						rawLoot->decrementReferenceCounter();
 						hasLoot = true;
 					}
 				}
@@ -2042,7 +2044,7 @@ void Monster::dropLoot(Container* corpse, Creature*)
 
 	if (getMonster()->isRewardBoss()) {
 		int64_t currentTime = std::time(nullptr);
-		Item* rewardContainer = Item::CreateItem(ITEM_REWARD_CONTAINER);
+		Item* rewardContainer = Item::CreateItem(ITEM_REWARD_CONTAINER).release();
 		if (!rewardContainer) {
 			return;
 		}

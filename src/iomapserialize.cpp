@@ -156,20 +156,19 @@ bool IOMapSerialize::loadItem(PropStream& propStream, Cylinder* parent)
 	const ItemType& iType = Item::items[id];
 	if (iType.moveable || iType.forceSerialize || !tile) {
 		// create a new item
-		Item* item = Item::CreateItem(id);
+		auto item = Item::CreateItem(id);
 		if (item) {
 			if (item->unserializeAttr(propStream)) {
 				Container* container = item->getContainer();
 				if (container && !loadContainer(propStream, container)) {
-					delete item;
 					return false;
 				}
 
-				parent->internalAddThing(item);
-				item->startDecaying();
+				Item* raw = item.release();
+				parent->internalAddThing(raw);
+				raw->startDecaying();
 			} else {
 				LOG_WARN(fmt::format("WARNING: Unserialization error in IOMapSerialize::loadItem() {}", id));
-				delete item;
 				return false;
 			}
 		}
@@ -204,7 +203,7 @@ bool IOMapSerialize::loadItem(PropStream& propStream, Cylinder* parent)
 			}
 		} else {
 			// The map changed since the last save, just read the attributes
-			std::unique_ptr<Item> dummy(Item::CreateItem(id));
+			auto dummy = Item::CreateItem(id);
 			if (dummy) {
 				dummy->unserializeAttr(propStream);
 				Container* container = dummy->getContainer();

@@ -1677,7 +1677,7 @@ ReturnValue Game::internalPlayerAddItem(Player* player, Item* item, bool dropOnM
 	uint32_t remainderCount = 0;
 	ReturnValue ret = internalAddItem(player, item, static_cast<int32_t>(slot), 0, false, remainderCount);
 	if (remainderCount != 0) {
-		Item* remainderItem = Item::CreateItem(item->getID(), static_cast<uint16_t>(remainderCount));
+		Item* remainderItem = Item::CreateItem(item->getID(), static_cast<uint16_t>(remainderCount)).release();
 		ReturnValue remaindRet = internalAddItem(player->getTile(), remainderItem, INDEX_WHEREEVER, FLAG_NOLIMIT);
 		if (remaindRet != RETURNVALUE_NOERROR) {
 			ReleaseItem(remainderItem);
@@ -1836,7 +1836,7 @@ void Game::addMoney(Cylinder* cylinder, uint64_t money, uint32_t flags /*= 0*/)
 		while (currencyCoins > 0) {
 			const uint16_t count = std::min<uint16_t>(100, static_cast<uint16_t>(currencyCoins));
 
-			Item* remaindItem = Item::CreateItem(it.second, count);
+			Item* remaindItem = Item::CreateItem(it.second, count).release();
 
 			ReturnValue ret = internalAddItem(cylinder, remaindItem, INDEX_WHEREEVER, flags);
 			if (ret != RETURNVALUE_NOERROR) {
@@ -1923,7 +1923,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 					return nullptr;
 				} else if (newItemId != newId) {
 					// Replacing the the old item with the new while maintaining the old position
-					Item* newItem = Item::CreateItem(static_cast<uint16_t>(newItemId), 1);
+					Item* newItem = Item::CreateItem(static_cast<uint16_t>(newItemId), 1).release();
 					if (newItem == nullptr) {
 						return nullptr;
 					}
@@ -1997,9 +1997,9 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 	// Replacing the old item with the new while maintaining the old position
 	Item* newItem;
 	if (newCount == -1) {
-		newItem = Item::CreateItem(newId);
+		newItem = Item::CreateItem(newId).release();
 	} else {
-		newItem = Item::CreateItem(newId, static_cast<uint16_t>(newCount));
+		newItem = Item::CreateItem(newId, static_cast<uint16_t>(newCount)).release();
 	}
 
 	if (newItem == nullptr) {
@@ -4329,14 +4329,14 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 					color = TEXTCOLOR_LIGHTGREEN;
 					effect = CONST_ME_HITBYPOISON;
 					if (targetTile) {
-						splash = Item::CreateItem(ITEM_SMALLSPLASH, FLUID_SLIME);
+						splash = Item::CreateItem(ITEM_SMALLSPLASH, FLUID_SLIME).release();
 					}
 					break;
 				case RACE_BLOOD:
 					color = TEXTCOLOR_RED;
 					effect = CONST_ME_DRAWBLOOD;
 					if (targetTile && !targetTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
-						splash = Item::CreateItem(ITEM_SMALLSPLASH, FLUID_BLOOD);
+						splash = Item::CreateItem(ITEM_SMALLSPLASH, FLUID_BLOOD).release();
 					}
 					break;
 				case RACE_UNDEAD:
@@ -4356,7 +4356,7 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 					effect = CONST_ME_BLACK_BLOOD;
 					if (const Tile* tile = target->getTile()) {
 						if (tile && !tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
-							splash = Item::CreateItem(ITEM_SMALLSPLASH, FLUID_INK);
+							splash = Item::CreateItem(ITEM_SMALLSPLASH, FLUID_INK).release();
 						}
 					}
 					break;

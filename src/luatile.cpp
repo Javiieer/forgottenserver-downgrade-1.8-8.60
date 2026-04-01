@@ -643,7 +643,7 @@ int luaTileAddItem(lua_State* L)
 		subType = std::min<int32_t>(subType, it.stackSize);
 	}
 
-	Item* item = Item::CreateItem(itemId, static_cast<uint16_t>(subType));
+	Item* item = Item::CreateItem(itemId, static_cast<uint16_t>(subType)).release();
 	if (!item) {
 		lua_pushnil(L);
 		return 1;
