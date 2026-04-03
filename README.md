@@ -228,7 +228,7 @@ SHA1 is considered **insecure** and deprecated for password storage. SHA256 with
 
 ---
 
-## �📦 Client Configuration (OTCv8)
+## 📦 Client Configuration (OTCv8 and Mehah)
 
 To fully utilize features like extended sprites and mounts, updates are required:
 
