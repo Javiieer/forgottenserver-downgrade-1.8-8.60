@@ -405,6 +405,46 @@
 	<spawn centerx="1119" centery="1223" centerz="6" radius="1">
 		<monster name="Lion" x="0" y="-1" z="6" spawntime="60" />
 	</spawn>
+	<spawn centerx="1053" centery="1325" centerz="6" radius="1">
+		<monster name="Trainer" x="-1" y="0" z="6" spawntime="60" />
+		<monster name="Trainer" x="1" y="0" z="6" spawntime="60" />
+	</spawn>
+	<spawn centerx="1071" centery="1325" centerz="6" radius="1">
+		<monster name="Trainer" x="-1" y="0" z="6" spawntime="60" />
+		<monster name="Trainer" x="1" y="0" z="6" spawntime="60" />
+	</spawn>
+	<spawn centerx="1089" centery="1325" centerz="6" radius="1">
+		<monster name="Trainer" x="-1" y="0" z="6" spawntime="60" />
+		<monster name="Trainer" x="1" y="0" z="6" spawntime="60" />
+	</spawn>
+	<spawn centerx="1107" centery="1325" centerz="6" radius="1">
+		<monster name="Trainer" x="-1" y="0" z="6" spawntime="60" />
+		<monster name="Trainer" x="1" y="0" z="6" spawntime="60" />
+	</spawn>
+	<spawn centerx="1125" centery="1325" centerz="6" radius="1">
+		<monster name="Trainer" x="-1" y="0" z="6" spawntime="60" />
+		<monster name="Trainer" x="1" y="0" z="6" spawntime="60" />
+	</spawn>
+	<spawn centerx="1053" centery="1339" centerz="6" radius="1">
+		<monster name="Trainer" x="-1" y="0" z="6" spawntime="60" />
+		<monster name="Trainer" x="1" y="0" z="6" spawntime="60" />
+	</spawn>
+	<spawn centerx="1071" centery="1339" centerz="6" radius="1">
+		<monster name="Trainer" x="-1" y="0" z="6" spawntime="60" />
+		<monster name="Trainer" x="1" y="0" z="6" spawntime="60" />
+	</spawn>
+	<spawn centerx="1089" centery="1339" centerz="6" radius="1">
+		<monster name="Trainer" x="-1" y="0" z="6" spawntime="60" />
+		<monster name="Trainer" x="1" y="0" z="6" spawntime="60" />
+	</spawn>
+	<spawn centerx="1107" centery="1339" centerz="6" radius="1">
+		<monster name="Trainer" x="-1" y="0" z="6" spawntime="60" />
+		<monster name="Trainer" x="1" y="0" z="6" spawntime="60" />
+	</spawn>
+	<spawn centerx="1125" centery="1339" centerz="6" radius="1">
+		<monster name="Trainer" x="-1" y="0" z="6" spawntime="60" />
+		<monster name="Trainer" x="1" y="0" z="6" spawntime="60" />
+	</spawn>
 	<spawn centerx="840" centery="857" centerz="7" radius="1">
 		<monster name="War Wolf" x="1" y="-1" z="7" spawntime="60" direction="3" />
 	</spawn>

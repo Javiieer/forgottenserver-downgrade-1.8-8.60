@@ -1,10 +1,12 @@
 local portalEffects = GlobalEvent("PortalEffects")
 function portalEffects.onThink(interval)
     local effects = {
-        {position = Position(997, 995, 7),  text = "Forge",        effect = 30, color = TEXTCOLOR_BLUE},
+        {position = Position(997, 995, 7),  text = "Forge",        effect = 31, color = TEXTCOLOR_BLUE},
         {position = Position(1003, 995, 7), text = "Imbuements",   effect = 30, color = TEXTCOLOR_RED},
         {position = Position(997, 998, 7),  text = "Dungeon",      effect = 30, color = TEXTCOLOR_PURPLE},
-        {position = Position(1003, 998, 7), text = "Sala de Boss", effect = 30, color = TEXTCOLOR_GREEN},
+        {position = Position(1003, 998, 7), text = "Sala de Boss", effect = 30, color = TEXTCOLOR_LIGHTGREEN},
+        {position = Position(1003, 1001, 7),  text = "Trainer",      effect = 31, color = TEXTCOLOR_BLUE},
+		{position = Position(997, 1001, 7),  text = "Roullete",     effect = 30, color = TEXTCOLOR_LIGHTGREEN},
     }
 
     for i = 1, #effects do
