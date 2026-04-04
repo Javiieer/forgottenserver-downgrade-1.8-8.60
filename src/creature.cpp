@@ -13,8 +13,6 @@
 #include "scriptmanager.h"
 #include "instance_utils.h"
 
-#include <cstring>
-
 extern Game g_game;
 
 std::unordered_set<const Creature*> Creature::liveCreatures;
@@ -145,11 +143,11 @@ void Creature::onThink(uint32_t interval)
 		updateMapCache();
 	}
 
-	if (followCreature && master != followCreature && !canSeeCreature(followCreature)) {
+	if (followCreature && (followCreature->isRemoved() || (master != followCreature && !canSeeCreature(followCreature)))) {
 		onCreatureDisappear(followCreature, false);
 	}
 
-	if (attackedCreature && master != attackedCreature && !canSeeCreature(attackedCreature)) {
+	if (attackedCreature && (attackedCreature->isRemoved() || (master != attackedCreature && !canSeeCreature(attackedCreature)))) {
 		onCreatureDisappear(attackedCreature, false);
 	}
 
@@ -186,6 +184,11 @@ void Creature::onAttacking(uint32_t interval)
 	// checkCreatures() already validates creature state before calling this.
 
 	if (!attackedCreature) {
+		return;
+	}
+
+	if (attackedCreature->isRemoved()) {
+		setAttackedCreature(nullptr);
 		return;
 	}
 

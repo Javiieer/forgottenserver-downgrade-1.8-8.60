@@ -13,6 +13,10 @@
 #include "weapons.h"
 #include "logger.h"
 #include <fmt/format.h>
+#include <fstream>
+#include <cstring>
+#include "configmanager.h"
+#include "itemloader.h"
 
 namespace {
 

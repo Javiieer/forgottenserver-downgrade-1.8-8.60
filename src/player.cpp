@@ -788,18 +788,6 @@ bool Player::canWalkthrough(const Creature* creature) const
 		return false;
 	}
 
-	Player* thisPlayer = const_cast<Player*>(this);
-	if ((OTSYS_TIME() - lastWalkthroughAttempt) > 2000) {
-		thisPlayer->setLastWalkthroughAttempt(OTSYS_TIME());
-		return false;
-	}
-
-	if (creature->getPosition() != lastWalkthroughPosition) {
-		thisPlayer->setLastWalkthroughPosition(creature->getPosition());
-		return false;
-	}
-
-	thisPlayer->setLastWalkthroughPosition(creature->getPosition());
 	return true;
 }
 
@@ -860,6 +848,7 @@ DepotChest* Player::getDepotChest(uint32_t depotId, bool autoCreate)
 	}
 
 	it = depotChests.emplace(depotId, new DepotChest(ITEM_DEPOT)).first;
+	it->second->incrementReferenceCounter();
 	it->second->setMaxDepotItems(getMaxDepotItems());
 	return it->second;
 }
@@ -885,7 +874,14 @@ DepotLocker* Player::getDepotLocker(uint32_t depotId)
 	}
 
 	if (!hasInbox) {
-		it->second->internalAddThing(Item::CreateItem(ITEM_INBOX).release());
+		auto inbox = Item::CreateItem(ITEM_INBOX);
+		if (inbox) {
+			Item* rawInbox = inbox.get();
+			it->second->internalAddThing(rawInbox);
+			if (rawInbox->getParent() == it->second.get() && it->second->getThingIndex(rawInbox) != -1) {
+				inbox.release();
+			}
+		}
 	}
 
 	return it->second.get();
@@ -956,6 +952,7 @@ Item* Player::getWriteItem(uint32_t& windowTextId, uint16_t& maxWriteLen)
 	maxWriteLen = this->maxWriteLen;
 	return writeItem;
 }
+
 void Player::setWriteItem(Item* item, uint16_t maxWriteLen /*= 0*/)
 {
 	windowTextId++;
@@ -6290,9 +6287,6 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries)
 	return sendUpdate;
 }
 
-
-
-
 void Player::addReset(uint32_t count /*= 1*/)
 {
 	reset += count;
@@ -6315,6 +6309,7 @@ double Player::getResetExpReduction() const
 	double multiplier = 1.0 - (static_cast<double>(reset * reductionPerReset) / 100.0);
 	return std::max<double>(0.1, multiplier);
 }
+
 void Player::applyOfflineTraining(uint32_t trainingTime)
 {
 	float efficiency = ConfigManager::getFloat(ConfigManager::OFFLINE_TRAINING_EFFICIENCY);

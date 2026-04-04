@@ -8,9 +8,6 @@
 #include "housetile.h"
 #include "position.h"
 
-#include <set>
-#include <unordered_set>
-
 class House;
 class BedItem;
 class Player;
@@ -111,6 +108,7 @@ class House
 {
 public:
 	explicit House(uint32_t houseId);
+	~House();
 
 	void addTile(HouseTile* tile);
 

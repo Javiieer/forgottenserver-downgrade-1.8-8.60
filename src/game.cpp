@@ -30,7 +30,6 @@
 #include "weapons.h"
 #include "logger.h"
 #include <fmt/format.h>
-#include <limits>
 #include "luascript.h"
 #include "save_manager.h"
 
@@ -128,7 +127,7 @@ void Game::setGameState(GameState_t newState)
 
 		case GAME_STATE_SHUTDOWN: {
 			LOG_INFO(">> Starting shutdown sequence...");
-			
+
 			g_globalEvents->save();
 			g_globalEvents->shutdown();
 			LOG_INFO(">> Global events saved and shutdown.");
@@ -601,10 +600,11 @@ bool Game::removeCreature(Creature* creature, bool isLogout /* = true*/)
 
 	Tile* tile = creature->getTile();
 
-	std::vector<int32_t> oldStackPosVector;
-
 	SpectatorVec spectators;
 	map.getSpectators(spectators, tile->getPosition(), true);
+
+	std::vector<int32_t> oldStackPosVector;
+	oldStackPosVector.reserve(spectators.size());
 	for (Creature* spectator : spectators) {
 		if (Player* player = spectator->getPlayer()) {
 			oldStackPosVector.push_back(
@@ -824,6 +824,28 @@ void Game::playerMoveCreature(Player* player, Creature* movingCreature, const Po
 	}
 
 	if (player != movingCreature) {
+		if (getBoolean(ConfigManager::PUSH_CREATURE_ZONE)) {
+			if (player->getZone() == ZONE_PROTECTION && movingCreature->getPlayer()) {
+				player->sendCancelMessage("You cannot move players who are in a Protection Zone.");
+				return;
+			}
+
+			if (player->getZone() == ZONE_NOPVP && movingCreature->getPlayer()) {
+				player->sendCancelMessage("You cannot move players who are in a Zone No-PvP.");
+				return;
+			}
+
+			if (movingCreature->getZone() == ZONE_PROTECTION && movingCreature->getPlayer()) {
+				player->sendCancelMessage("You cannot move players who are in a Protection Zone.");
+				return;
+			}
+
+			if (movingCreature->getZone() == ZONE_NOPVP && movingCreature->getPlayer()) {
+				player->sendCancelMessage("You cannot move players who are in a Zone No-PvP.");
+				return;
+			}
+		}
+
 		if (toTile->hasFlag(TILESTATE_BLOCKPATH)) {
 			player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 			return;
@@ -1292,7 +1314,7 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 		const Tile* toTile = toCylinder->getTile();
 		if (toTile) {
 			const auto& blockedIds = ConfigManager::getBlockedTeleportIds();
-			
+
 			// Check ground item for teleport
 			const Item* ground = toTile->getGround();
 			if (ground) {
@@ -1323,7 +1345,7 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 
 	// Check for reward containers
 	if (Container* toContainer = dynamic_cast<Container*>(toCylinder)) {
-		                		if (toContainer->isRewardCorpse() || toContainer->getID() == ITEM_REWARD_CONTAINER) {
+		if (toContainer->isRewardCorpse() || toContainer->getID() == ITEM_REWARD_CONTAINER) {
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 
@@ -1594,6 +1616,12 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t inde
 					ReleaseItem(remainderItem);
 					remainderCount = count;
 				}
+
+				// The original stackable item only served as the merge source.
+				// Once any remainder is handled, the core must retire it so callers
+				// do not leak or keep using a consumed object.
+				item->onRemoved();
+				ReleaseItem(item);
 			} else {
 				toCylinder->addThing(index, item);
 
@@ -4801,7 +4829,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 					rewardBossTracking[monsterId].playerScoreTable[playerGuid].damageTaken += realDamage * ConfigManager::getFloat(ConfigManager::REWARD_RATE_DAMAGE_TAKEN);
 				}
 			}
-	
+
 
 		if (realDamage >= targetHealth) {
 			for (CreatureEvent* creatureEvent : target->getCreatureEvents(CREATURE_EVENT_PREPAREDEATH)) {
@@ -5268,6 +5296,7 @@ void Game::shutdown()
 	g_scheduler.shutdown();
 	g_databaseTasks.shutdown();
 	g_dispatcher.shutdown();
+
 #ifdef STATS_ENABLED
 	g_stats.shutdown();
 #endif
@@ -5391,8 +5420,6 @@ void Game::updatePlayerShield(Player* player)
 		p->sendCreatureShield(player);
 	}
 }
-
-
 
 void Game::loadMotdNum()
 {

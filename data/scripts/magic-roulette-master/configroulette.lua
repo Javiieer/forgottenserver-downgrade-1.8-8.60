@@ -10,9 +10,9 @@ local Slot = require('data/scripts/magic-roulette-master/lib/classes/slot')
 return {
 	slots = {
 		[17320] = Slot {
-			needItem = {id = 2972, count = 1},
-			tilesPerSlot = 11,
-			centerPosition = Position(95, 110, 6),
+			needItem = {id = 37110, count = 1},
+			tilesPerSlot = 7,
+			centerPosition = Position(1073, 1077, 5),
 
 			items = {
 				{id = 3366, count = 1, chance = 0.2, rare = true},  -- Magic Plate Armor
