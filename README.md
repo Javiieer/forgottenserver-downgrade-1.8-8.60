@@ -278,35 +278,67 @@ This server supports extended protocol features for **modified 8.60 CIP clients*
 | **Outfit Limit Changer** | ✅ OK | Allows more than 255 outfits (uses uint16 for outfit count) |
 ---
 
-## 🐛 Contributing & Issues
+## 🧠 Memory Safety & Smart Pointer Roadmap
 
-Found a bug? Please report it on our [Issues Page](https://github.com/MillhioreBT/forgottenserver-downgrade/issues).
-Pull requests are welcome!
+A full ownership and RAII audit of all **132 source files** was completed. The goal is progressive, safe migration toward modern C++ lifetime management without breaking the server.
 
-_Maintained by Mateuzkl._
+### ✅ Fixes Already Applied (Valgrind: 0 leaks, 0 errors)
+
+| File | Fix |
+|------|-----|
+| `container.h / container.cpp` | Removed erroneous `incrementReferenceCounter` / `decrementReferenceCounter` calls from `addThing`, `removeThing`, `replaceThing` — aligned with upstream TFS. Eliminated 176-byte leak and latent UAF. |
+| `house.cpp` | Added `House::~House()` to properly decrement refcount of doors in `doorSet`. Previously doors were never freed (58,351 bytes). |
+| `depotlocker.cpp / depotchest.cpp` | `DepotChest` started with `referenceCounter=0`; destructor returned early without freeing. Fixed by calling `incrementReferenceCounter()` at construction. (4,152 bytes). |
+| `creature.h / creature.cpp` | `setRemoved()` now clears `attackedCreature` / `followCreature`. `onThink()` and `onAttacking()` check `isRemoved()` before interacting with targets. Debug assert on over-decrement. |
+| `monster.cpp` | Removed dead `onIdleStatus()` call in `death()` — guard `!isDead()` made it a no-op. |
+| `iologindata.cpp` | Removed conditional `decrementReferenceCounter` compensations in `transferLoadedItem` / `transferLoadedItemAt` lambdas (aligned with Container fix). |
+
+### 🗺️ Future Roadmap (Prioritized)
+
+| Priority | Files |
+|----------|-------|
+| **High** | `item.*`, `game.*`, `creature.*`, `iologindata.*`, `container.*`, `player.*`, `monster.*`, `tile.*`, `map.*` |
+| **Medium** | `chat.*`, `house.*`, `iomapserialize.*`, `iomap.*`, `luacreature.cpp`, `luagame.cpp`, `decay.*`, `events.*`, `spawn.*`, `protocolgame.*`, `party.*` |
+| **Low / Polish** | `combat.*`, `configmanager.*`, `guild.*`, `housetile.*`, Lua layer files |
+
+> A complete interactive audit report is available in `tfs-smart-pointer-review-completo.html` at the repository root.
+
+### 📅 Fix Release Schedule
+
+Memory safety and robustness improvements are shipped as **monthly fix releases** (e.g. `fix1`, `fix2`, …). Each release targets specific high-priority files from the roadmap above, verified with Valgrind before publishing. Check the [Releases](https://github.com/Mateuzkl/forgottenserver-downgrade-1.8-8.60/releases) page for the latest.
 
 ---
 
-## 📢 Estado do Projeto e Doações
+## 🐛 Contributing & Issues
 
-Hoje marca um ponto importante no desenvolvimento deste projeto. Com mais de **500 commits** realizados, entregamos uma base robusta e repleta de funcionalidades exclusivas.
+The base is stable and the systems are fully working. If you find a bug — whether a memory issue, logic error, or any unexpected behavior — **you are very welcome to help**:
 
-Entretanto, até o momento, não houve colaboração significativa da comunidade — sem report de bugs, sem Pull Requests e sem ajuda nas correções. Por conta disso, o desenvolvimento ativo está sendo **pausado** hoje. A base permanecerá como está, com todo o conteúdo atual.
+- **Open an Issue** on [GitHub Issues](https://github.com/Mateuzkl/forgottenserver-downgrade-1.8-8.60/issues) with a clear description, steps to reproduce, and any relevant logs or Valgrind output.
+- **Submit a Pull Request** if you already have a fix. Surgical/minimal patches are preferred — change only what is necessary.
 
-Possuo diversos sistemas bônus de alto nível prontos (como **Market Idêntico ao Global**, **Forge System**, entre outros). Porém, **não irei liberá-los gratuitamente**. O desenvolvimento e adaptação desses sistemas exigem muito trabalho e dedicação, e não faz sentido entregar tudo de graça sem retorno. 
+Any contribution is appreciated. This server is optimized, actively maintained, and packed with exclusive systems — community involvement helps keep it that way.
 
-**Se a comunidade ajudar financeiramente, eu trarei esses sistemas para a base.** Caso contrário, o projeto segue como está.
+_Maintained by [Mateuzkl](https://github.com/Mateuzkl)._
 
-### 🤝 Como Apoiar o Projeto
+---
 
-Se você deseja ver este projeto evoluir, receber novas atualizações, correções e sistemas exclusivos, sua contribuição é essencial. Doações incentivam a manutenção e o aprimoramento contínuo da base TFS 1.8.
+## 📢 Project Status
 
-**Chave PIX (Aleatória) para Doações:**
-Basta copiar a chave abaixo e colar no seu banco na opção **Chave Aleatória**. Você pode doar o valor que quiser!
+This project is nearly at **800 commits** and the base is fully stable, feature-rich, and ready to use.
+
+The focus going forward is on **progressive memory safety** — applying the smart pointer roadmap in monthly fix releases while keeping all existing exclusive systems working.
+
+If you enjoy using this server, find it useful, or benefit from the work put into it, any support is deeply appreciated.
+
+### 🤝 Support the Project
+
+Donations help keep the project alive, fund continued development, and motivate new system releases.
+
+**PIX Key (Random) for Donations:**
 
 `f8761afe-5581-417d-afc8-08cac410a1b0`
 
-Agradeço imensamente a quem puder contribuir para manter este projeto vivo e melhorando!
+Thank you to everyone who contributes — whether through code, bug reports, or donations.
 
 ---
 
