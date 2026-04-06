@@ -56,6 +56,7 @@ void LuaScriptInterface::registerTeleport()
 	// Teleport
 	registerClass("Teleport", "Item", luaTeleportCreate);
 	registerMetaMethod("Teleport", "__eq", LuaScriptInterface::luaUserdataCompare);
+	registerMetaMethod("Teleport", "__gc", LuaScriptInterface::luaItemGC);
 
 	registerMethod("Teleport", "getDestination", luaTeleportGetDestination);
 	registerMethod("Teleport", "setDestination", luaTeleportSetDestination);

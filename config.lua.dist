@@ -360,8 +360,8 @@ staminaTrainerDelay = 5
 staminaTrainerGain = 1
 
 -- Scripts
-warnUnsafeScripts = true
-convertUnsafeScripts = true
+-- warnUnsafeScripts and convertUnsafeScripts have been removed.
+-- The server always enforces safe Lua behavior (hardcoded).
 
 -- Startup
 -- NOTE: defaultPriority only works on Windows and sets process

@@ -762,6 +762,8 @@ void Lua::setItemMetatable(lua_State* L, int32_t index, const Item* item)
 		luaL_getmetatable(L, "Item");
 	}
 	lua_setmetatable(L, index - 1);
+	const_cast<Item*>(item)->incrementReferenceCounter();
+	const_cast<Item*>(item)->incrementLuaRefCount();
 }
 
 void Lua::setCreatureMetatable(lua_State* L, int32_t index, const Creature* creature)
@@ -3818,6 +3820,17 @@ void LuaEnvironment::executeTimerEvent(uint32_t eventIndex)
 				}
 
 				lua_pop(luaState, 1);
+				break;
+			}
+
+			case LuaData_Item:
+			case LuaData_Container:
+			case LuaData_Teleport: {
+				Item** itemPtr = static_cast<Item**>(lua_touserdata(luaState, -1));
+				if (itemPtr && *itemPtr && (*itemPtr)->isRemoved()) {
+					lua_pushnil(luaState);
+					lua_replace(luaState, -2);
+				}
 				break;
 			}
 

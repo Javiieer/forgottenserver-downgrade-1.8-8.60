@@ -302,6 +302,7 @@ void LuaScriptInterface::registerContainer()
 	// Container
 	registerClass("Container", "Item", luaContainerCreate);
 	registerMetaMethod("Container", "__eq", LuaScriptInterface::luaUserdataCompare);
+	registerMetaMethod("Container", "__gc", LuaScriptInterface::luaItemGC);
 
 	registerMethod("Container", "getSize", luaContainerGetSize);
 	registerMethod("Container", "getCapacity", luaContainerGetCapacity);

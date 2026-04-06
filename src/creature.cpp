@@ -1054,9 +1054,11 @@ bool Creature::addCondition(Condition_ptr condition, bool force /* = false*/)
 	if (!force && condition->getType() == CONDITION_HASTE && hasCondition(CONDITION_PARALYZE)) {
 		int64_t walkDelay = getWalkDelay();
 		if (walkDelay > 0) {
-			Condition* rawCond = condition.release();
+			auto condWrapper = std::make_shared<Condition_ptr>(std::move(condition));
 			g_scheduler.addEvent(
-			    createSchedulerTask(walkDelay, ([=, id = getID()]() { g_game.forceAddCondition(id, rawCond); })));
+			    createSchedulerTask(walkDelay, ([id = getID(), condWrapper]() {
+				    g_game.forceAddCondition(id, condWrapper->release());
+			    })));
 			return false;
 		}
 	}

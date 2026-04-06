@@ -1000,11 +1000,23 @@ int LuaScriptInterface::luaItemGetTranscendenceChance(lua_State *L)
 	return 1;
 }
 
+int LuaScriptInterface::luaItemGC(lua_State* L)
+{
+	Item** itemPtr = getRawUserdata<Item>(L, 1);
+	if (itemPtr && *itemPtr) {
+		Item* item = *itemPtr;
+		*itemPtr = nullptr;
+		item->decrementLuaRefCount();
+	}
+	return 0;
+}
+
 void LuaScriptInterface::registerItem()
 {
 	// Item
 	registerClass("Item", "", luaItemCreate);
 	registerMetaMethod("Item", "__eq", LuaScriptInterface::luaUserdataCompare);
+	registerMetaMethod("Item", "__gc", LuaScriptInterface::luaItemGC);
 
 	registerMethod("Item", "isItem", luaItemIsItem);
 

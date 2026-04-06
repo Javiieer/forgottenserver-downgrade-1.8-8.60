@@ -296,8 +296,8 @@ bool ConfigManager::load()
 	booleans[Boolean::MARKET_PREMIUM] = getGlobalBoolean(L, "premiumToCreateMarketOffer", true);
 	booleans[Boolean::EMOTE_SPELLS] = getGlobalBoolean(L, "emoteSpells", false);
 	booleans[Boolean::STAMINA_SYSTEM] = getGlobalBoolean(L, "staminaSystem", true);
-	booleans[Boolean::WARN_UNSAFE_SCRIPTS] = getGlobalBoolean(L, "warnUnsafeScripts", true);
-	booleans[Boolean::CONVERT_UNSAFE_SCRIPTS] = getGlobalBoolean(L, "convertUnsafeScripts", true);
+	booleans[Boolean::WARN_UNSAFE_SCRIPTS] = true;
+	booleans[Boolean::CONVERT_UNSAFE_SCRIPTS] = true;
 	booleans[Boolean::CLASSIC_EQUIPMENT_SLOTS] = getGlobalBoolean(L, "classicEquipmentSlots", false);
 	booleans[Boolean::CLASSIC_ATTACK_SPEED] = getGlobalBoolean(L, "classicAttackSpeed", false);
 	booleans[Boolean::SCRIPTS_CONSOLE_LOGS] = getGlobalBoolean(L, "showScriptsLogInConsole", true);

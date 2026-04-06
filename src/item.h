@@ -969,6 +969,17 @@ public:
 		}
 	}
 
+	void incrementLuaRefCount() { ++luaRefCount; }
+	bool decrementLuaRefCount()
+	{
+		if (luaRefCount > 0) {
+			--luaRefCount;
+			decrementReferenceCounter();
+			return true;
+		}
+		return false;
+	}
+
 	Cylinder* getParent() const override { return parent; }
 	void setParent(Cylinder* cylinder) override { parent = cylinder; }
 	Cylinder* getTopParent();
@@ -1004,6 +1015,7 @@ private:
 	std::vector<std::shared_ptr<Imbuement>> imbuements;
 
 	uint32_t referenceCounter = 0;
+	uint32_t luaRefCount = 0;
 
 	uint8_t count = 1; // number of stacked items
 
