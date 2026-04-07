@@ -635,12 +635,25 @@ int luaWeaponExtraElement(lua_State* L)
 	}
 	return 1;
 }
+
+int luaDeleteWeapon(lua_State* L)
+{
+	Weapon** weaponPtr = getRawUserdata<Weapon>(L, 1);
+	if (weaponPtr && *weaponPtr) {
+		delete *weaponPtr;
+		*weaponPtr = nullptr;
+	}
+	return 0;
+}
 } // namespace
 
 void LuaScriptInterface::registerWeapons()
 {
 	// Weapon
 	registerClass("Weapon", "", luaCreateWeapon);
+	registerMetaMethod("Weapon", "__gc", luaDeleteWeapon);
+	registerMetaMethod("Weapon", "__close", luaDeleteWeapon);
+	registerMethod("Weapon", "delete", luaDeleteWeapon);
 
 	registerMethod("Weapon", "action", luaWeaponAction);
 	registerMethod("Weapon", "register", luaWeaponRegister);

@@ -205,11 +205,24 @@ int luaActionPosition(lua_State* L)
 	pushBoolean(L, true);
 	return 1;
 }
+
+int luaDeleteAction(lua_State* L)
+{
+	Action** actionPtr = getRawUserdata<Action>(L, 1);
+	if (actionPtr && *actionPtr) {
+		delete *actionPtr;
+		*actionPtr = nullptr;
+	}
+	return 0;
+}
 } // namespace
 
 void LuaScriptInterface::registerActions()
 {
 	registerClass("Action", "", luaCreateAction);
+	registerMetaMethod("Action", "__gc", luaDeleteAction);
+	registerMetaMethod("Action", "__close", luaDeleteAction);
+	registerMethod("Action", "delete", luaDeleteAction);
 
 	registerMethod("Action", "onUse", luaActionOnUse);
 	registerMethod("Action", "register", luaActionRegister);

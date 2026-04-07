@@ -293,6 +293,8 @@ void LuaScriptInterface::registerCondition()
 	registerClass("Condition", "", luaConditionCreate);
 	registerMetaMethod("Condition", "__eq", LuaScriptInterface::luaUserdataCompare);
 	registerMetaMethod("Condition", "__gc", luaConditionDelete);
+	registerMetaMethod("Condition", "__close", luaConditionDelete);
+	registerMethod("Condition", "delete", luaConditionDelete);
 
 	registerMethod("Condition", "getId", luaConditionGetId);
 	registerMethod("Condition", "getSubId", luaConditionGetSubId);

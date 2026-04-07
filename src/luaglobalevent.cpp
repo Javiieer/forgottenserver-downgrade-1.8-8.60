@@ -177,12 +177,25 @@ int luaGlobalEventInterval(lua_State* L)
 	}
 	return 1;
 }
+
+int luaDeleteGlobalEvent(lua_State* L)
+{
+	GlobalEvent** globalPtr = getRawUserdata<GlobalEvent>(L, 1);
+	if (globalPtr && *globalPtr) {
+		delete *globalPtr;
+		*globalPtr = nullptr;
+	}
+	return 0;
+}
 } // namespace
 
 void LuaScriptInterface::registerGlobalEvents()
 {
 	// GlobalEvent
 	registerClass("GlobalEvent", "", luaCreateGlobalEvent);
+	registerMetaMethod("GlobalEvent", "__gc", luaDeleteGlobalEvent);
+	registerMetaMethod("GlobalEvent", "__close", luaDeleteGlobalEvent);
+	registerMethod("GlobalEvent", "delete", luaDeleteGlobalEvent);
 
 	registerMethod("GlobalEvent", "type", luaGlobalEventType);
 	registerMethod("GlobalEvent", "register", luaGlobalEventRegister);

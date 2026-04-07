@@ -127,12 +127,25 @@ int luaTalkactionAccountType(lua_State* L)
 	}
 	return 1;
 }
+
+int luaDeleteTalkAction(lua_State* L)
+{
+	TalkAction** talkPtr = getRawUserdata<TalkAction>(L, 1);
+	if (talkPtr && *talkPtr) {
+		delete *talkPtr;
+		*talkPtr = nullptr;
+	}
+	return 0;
+}
 } // namespace
 
 void LuaScriptInterface::registerTalkActions()
 {
 	// TalkAction
 	registerClass("TalkAction", "", luaCreateTalkaction);
+	registerMetaMethod("TalkAction", "__gc", luaDeleteTalkAction);
+	registerMetaMethod("TalkAction", "__close", luaDeleteTalkAction);
+	registerMethod("TalkAction", "delete", luaDeleteTalkAction);
 
 	registerMethod("TalkAction", "onSay", luaTalkactionOnSay);
 	registerMethod("TalkAction", "register", luaTalkactionRegister);

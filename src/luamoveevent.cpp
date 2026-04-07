@@ -318,12 +318,25 @@ int luaMoveEventPosition(lua_State* L)
 	}
 	return 1;
 }
+
+int luaDeleteMoveEvent(lua_State* L)
+{
+	MoveEvent** movePtr = getRawUserdata<MoveEvent>(L, 1);
+	if (movePtr && *movePtr) {
+		delete *movePtr;
+		*movePtr = nullptr;
+	}
+	return 0;
+}
 } // namespace
 
 void LuaScriptInterface::registerMoveEvents()
 {
 	// MoveEvent
 	registerClass("MoveEvent", "", luaCreateMoveEvent);
+	registerMetaMethod("MoveEvent", "__gc", luaDeleteMoveEvent);
+	registerMetaMethod("MoveEvent", "__close", luaDeleteMoveEvent);
+	registerMethod("MoveEvent", "delete", luaDeleteMoveEvent);
 
 	registerMethod("MoveEvent", "type", luaMoveEventType);
 	registerMethod("MoveEvent", "register", luaMoveEventRegister);

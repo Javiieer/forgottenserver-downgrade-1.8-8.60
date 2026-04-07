@@ -109,12 +109,25 @@ int luaCreatureEventOnCallback(lua_State* L)
 	}
 	return 1;
 }
+
+int luaDeleteCreatureEvent(lua_State* L)
+{
+	CreatureEvent** creaturePtr = getRawUserdata<CreatureEvent>(L, 1);
+	if (creaturePtr && *creaturePtr) {
+		delete *creaturePtr;
+		*creaturePtr = nullptr;
+	}
+	return 0;
+}
 } // namespace
 
 void LuaScriptInterface::registerCreatureEvents()
 {
 	// CreatureEvent
 	registerClass("CreatureEvent", "", luaCreateCreatureEvent);
+	registerMetaMethod("CreatureEvent", "__gc", luaDeleteCreatureEvent);
+	registerMetaMethod("CreatureEvent", "__close", luaDeleteCreatureEvent);
+	registerMethod("CreatureEvent", "delete", luaDeleteCreatureEvent);
 
 	registerMethod("CreatureEvent", "type", luaCreatureEventType);
 	registerMethod("CreatureEvent", "register", luaCreatureEventRegister);
