@@ -185,7 +185,6 @@ private:
 	bool randomStepping = false;
 	bool walkingToSpawn = false;
 	bool influenced = false;
-	uint8_t idleCheckCounter = 0;
 	uint8_t influencedLevel = 0;
 
 	void onCreatureEnter(Creature* creature);

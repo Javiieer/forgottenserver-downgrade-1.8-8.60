@@ -806,32 +806,8 @@ void Monster::updateIdleStatus()
 {
 	bool idle = false;
 	if (!isSummon() && targetList.empty()) {
-		if (!spawn.expired() && !position.isInRange(masterPos, 1, 1)) {
-			// OPTIMIZATION: Throttle getSpectators check to every 5th call
-			// to avoid expensive spectator scans on every single think cycle.
-			if (++idleCheckCounter % 5 == 0) {
-				bool playersNearby = false;
-				SpectatorVec spectators;
-				g_game.map.getSpectators(spectators, position, false, true);
-				for (const auto& spectator : spectators) {
-					if (spectator->getPlayer()) {
-						playersNearby = true;
-						break;
-					}
-				}
-
-				if (!playersNearby) {
-					idle = true;
-					walkingToSpawn = false;
-					listWalkDir.clear();
-				} else {
-					idle = false;
-				}
-			}
-		} else {
-			idle = std::find_if(conditions.begin(), conditions.end(),
-			                    [](const auto& condition) { return condition->isAggressive(); }) == conditions.end();
-		}
+		idle = std::find_if(conditions.begin(), conditions.end(),
+		                    [](const auto& condition) { return condition->isAggressive(); }) == conditions.end();
 	}
 
 	setIdle(idle);
