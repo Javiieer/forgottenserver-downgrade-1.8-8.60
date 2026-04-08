@@ -223,7 +223,7 @@ private:
 	void onThinkYell(uint32_t interval);
 	void onThinkDefense(uint32_t interval);
 
-	uint64_t getLostExperience() const override { return skillLoss ? mType->info.experience : 0; }
+	uint64_t getLostExperience() const override;
 	uint16_t getLookCorpse() const override { return mType->info.lookcorpse; }
 	void dropLoot(Container* corpse, Creature* lastHitCreature) override;
 	uint32_t getDamageImmunities() const override { return mType->info.damageImmunities; }

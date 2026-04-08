@@ -889,6 +889,21 @@ int luaGameGetInstanceArea(lua_State* L)
 	return 1;
 }
 
+int luaGameGetBoostedCreature(lua_State* L)
+{
+	// Game.getBoostedCreature()
+	pushString(L, g_game.getBoostedCreature());
+	return 1;
+}
+
+int luaGameSetBoostedCreature(lua_State* L)
+{
+	// Game.setBoostedCreature(name)
+	g_game.setBoostedCreature(getString(L, 1));
+	pushBoolean(L, true);
+	return 1;
+}
+
 int luaGameGetInfluencedCreatures(lua_State* L)
 {
 	// Game.getInfluencedCreatures()
@@ -1006,6 +1021,8 @@ void LuaScriptInterface::registerGame()
 	registerMethod("Game", "getInstanceArea", luaGameGetInstanceArea);
 
 	registerMethod("Game", "getInfluencedCreatures", luaGameGetInfluencedCreatures);
+	registerMethod("Game", "getBoostedCreature", luaGameGetBoostedCreature);
+	registerMethod("Game", "setBoostedCreature", luaGameSetBoostedCreature);
 
 	// Spy system
 	registerMethod("Game", "startSpy", luaGameStartSpy);

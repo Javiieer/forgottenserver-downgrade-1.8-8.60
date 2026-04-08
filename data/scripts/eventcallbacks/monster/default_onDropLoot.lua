@@ -18,10 +18,19 @@ event.onDropLoot = function(self, corpse)
 
 	if not player or staminaOk then
 		local monsterLoot = mType:getLoot()
-		for i = 1, #monsterLoot do
-			local item = corpse:createLootItem(monsterLoot[i])
-			if not item then
-				print("[Warning] DropLoot:", "Could not add loot item to corpse.")
+		local rolls = 1
+		
+		local boostedCreature = Game.getBoostedCreature()
+		if boostedCreature and boostedCreature:lower() == mType:getName():lower() then
+			rolls = 2
+		end
+
+		for roll = 1, rolls do
+			for i = 1, #monsterLoot do
+				local item = corpse:createLootItem(monsterLoot[i])
+				if not item then
+					print("[Warning] DropLoot:", "Could not add loot item to corpse.")
+				end
 			end
 		end
 

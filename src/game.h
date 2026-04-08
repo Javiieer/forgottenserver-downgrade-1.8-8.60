@@ -234,6 +234,10 @@ struct InstanceArea {
 	size_t getMonstersOnline() const { return monstersOnline.load(std::memory_order_relaxed); }
 	size_t getNpcsOnline() const { return npcsOnline.load(std::memory_order_relaxed); }
 	uint32_t getPlayersRecord() const { return playersRecord; }
+	
+	const std::string& getBoostedCreature() const { return boostedCreature; }
+	void setBoostedCreature(const std::string& name) { boostedCreature = name; }
+	
 	uint8_t getSpawnRate() const {
 		size_t playersOnline = getPlayersOnline();
 		uint8_t rate = 1;
@@ -645,6 +649,7 @@ private:
 
 	std::string motdHash;
 	uint32_t motdNum = 0;
+	std::string boostedCreature = "";
 
 	uint32_t lastStageLevel = 0;
 	bool stagesEnabled = false;

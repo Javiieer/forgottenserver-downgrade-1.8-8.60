@@ -69,7 +69,19 @@ Monster::Monster(MonsterType* mType) : Creature(), nameDescription(mType->nameDe
 Monster::~Monster()
 {
 	clearTargetList();
-	clearFriendList();
+	spawn = std::weak_ptr<Spawn>();
+}
+
+uint64_t Monster::getLostExperience() const
+{
+	if (!skillLoss) {
+		return 0;
+	}
+	uint64_t xp = mType->info.experience;
+	if (caseInsensitiveEqual(mType->name, g_game.getBoostedCreature())) {
+		xp *= 2;
+	}
+	return xp;
 }
 
 void Monster::addList() { g_game.addMonster(this); }
