@@ -153,9 +153,7 @@ void Monster::onCreatureAppear(Creature* creature, bool isLogin)
 		Lua::pushUserdata<Creature>(L, creature);
 		Lua::setCreatureMetatable(L, -1, creature);
 
-		if (scriptInterface->callFunction(2)) {
-			return;
-		}
+		scriptInterface->callFunction(2);
 	}
 
 	if (creature == this) {
@@ -195,9 +193,7 @@ void Monster::onRemoveCreature(Creature* creature, bool isLogout)
 		Lua::pushUserdata<Creature>(L, creature);
 		Lua::setCreatureMetatable(L, -1, creature);
 
-		if (scriptInterface->callFunction(2)) {
-			return;
-		}
+		scriptInterface->callFunction(2);
 	}
 
 	if (creature == this) {
@@ -239,9 +235,7 @@ void Monster::onCreatureMove(Creature* creature, const Tile* newTile, const Posi
 		Lua::pushPosition(L, oldPos);
 		Lua::pushPosition(L, newPos);
 
-		if (scriptInterface->callFunction(4)) {
-			return;
-		}
+		scriptInterface->callFunction(4);
 	}
 
 	if (creature == this) {
@@ -850,9 +844,7 @@ void Monster::onThink(uint32_t interval)
 
 		lua_pushinteger(L, interval);
 
-		if (scriptInterface->callFunction(2)) {
-			return;
-		}
+		scriptInterface->callFunction(2);
 	}
 
 	if (!isInSpawnRange(position)) {
