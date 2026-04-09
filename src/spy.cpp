@@ -11,20 +11,9 @@
 #include "protocolspectator.h"
 
 #include <algorithm>
-#include <cctype>
-#include <chrono>
-#include <filesystem>
-#include <fstream>
 
 extern Game g_game;
 SpySystem g_spy;
-
-// ─── Keywords for PM logging ────────────────────────────────────────────
-static const std::vector<std::string> SPY_KEYWORDS = {
-	"pix", "cpf", "chave", "transfere", "transferencia",
-	"deposita", "pagamento", "real", "reais", "conta", "banco",
-	"paypal", "mercadopago", "nubank", "picpay"
-};
 
 bool SpySystem::startSpy(Player* god, Player* target) {
 	if (!god || !target || god == target) {
@@ -232,52 +221,5 @@ void SpySystem::removeSessionInternal(const SpySessionPtr& session) {
 		if (vec.empty()) {
 			targetToSessions_.erase(it);
 		}
-	}
-}
-
-void SpySystem::checkAndLogPrivateMessage(const std::string& senderName,
-                                           const std::string& receiverName,
-                                           std::string_view text) {
-	std::string lower(text);
-	std::transform(lower.begin(), lower.end(), lower.begin(),
-		[](unsigned char c) { return static_cast<char>(std::tolower(c)); });
-
-	bool matched = false;
-	for (const auto& kw : SPY_KEYWORDS) {
-		if (lower.find(kw) != std::string::npos) {
-			matched = true;
-			break;
-		}
-	}
-
-	if (!matched) {
-		return;
-	}
-
-	auto now = std::chrono::system_clock::now();
-	auto timeT = std::chrono::system_clock::to_time_t(now);
-	struct tm tmBuf;
-#ifdef _WIN32
-	localtime_s(&tmBuf, &timeT);
-#else
-	localtime_r(&timeT, &tmBuf);
-#endif
-
-	char dateStr[11];
-	char timeStr[9];
-	std::strftime(dateStr, sizeof(dateStr), "%Y-%m-%d", &tmBuf);
-	std::strftime(timeStr, sizeof(timeStr), "%H:%M:%S", &tmBuf);
-
-	std::error_code ec;
-	std::filesystem::create_directories("data/log/spy", ec);
-
-	std::string logPath = "data/log/spy/private_" + std::string(dateStr) + ".log";
-
-	std::ofstream logFile(logPath, std::ios::app);
-	if (logFile.is_open()) {
-		logFile << "[" << dateStr << " " << timeStr << "] "
-		        << "[PRIVATE] " << senderName
-		        << " -> " << receiverName
-		        << ": \"" << text << "\"\n";
 	}
 }

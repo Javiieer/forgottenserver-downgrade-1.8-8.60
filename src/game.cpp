@@ -3899,9 +3899,25 @@ bool Game::playerSpeakTo(Player* player, SpeakClasses type, std::string_view rec
 	toPlayer->sendPrivateMessage(player, type, text);
 	toPlayer->onCreatureSay(player, type, text);
 
-	// Spy: log PMs with suspicious keywords
-	SpySystem::checkAndLogPrivateMessage(
-		std::string(player->getName()), std::string(toPlayer->getName()), text);
+	// Spy: Lua-based PM keyword logger
+	{
+		lua_State* L = g_luaEnvironment.getLuaState();
+		if (L) {
+			if (g_luaEnvironment.loadFile("data/scripts/spy/spy_pm_logger.lua") == 0) {
+				lua_getglobal(L, "checkPrivateMessage");
+				if (lua_isfunction(L, -1)) {
+					lua_pushlstring(L, player->getName().data(), player->getName().size());
+					lua_pushlstring(L, toPlayer->getName().data(), toPlayer->getName().size());
+					lua_pushlstring(L, text.data(), text.size());
+					if (lua_pcall(L, 3, 0, 0) != 0) {
+						lua_pop(L, 1);
+					}
+				} else {
+					lua_pop(L, 1);
+				}
+			}
+		}
+	}
 
 	if (toPlayer->isInGhostMode() && !player->canSeeGhostMode(toPlayer)) {
 		player->sendTextMessage(MESSAGE_STATUS_SMALL, "A player with this name is not online.");

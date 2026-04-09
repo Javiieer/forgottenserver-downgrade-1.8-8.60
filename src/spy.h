@@ -11,7 +11,6 @@
 #include <memory>
 #include <mutex>
 #include <string>
-#include <string_view>
 #include <unordered_map>
 #include <vector>
 
@@ -48,10 +47,6 @@ public:
 
 	bool isSpying(uint32_t godPlayerId) const;
 	uint32_t getSpyTarget(uint32_t godPlayerId) const;
-
-	static void checkAndLogPrivateMessage(const std::string& senderName,
-	                                       const std::string& receiverName,
-	                                       std::string_view text);
 
 private:
 
