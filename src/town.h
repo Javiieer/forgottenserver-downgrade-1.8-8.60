@@ -25,7 +25,7 @@ private:
 	Position templePosition;
 };
 
-using TownMap = std::unordered_map<uint32_t, std::unique_ptr<Town>>;
+using TownMap = std::unordered_map<uint32_t, std::shared_ptr<Town>>;
 
 class Towns
 {
@@ -36,7 +36,7 @@ public:
 	Towns(const Towns&) = delete;
 	Towns& operator=(const Towns&) = delete;
 
-	bool addTown(uint32_t townId, std::unique_ptr<Town> town) { return townMap.emplace(townId, std::move(town)).second; }
+	bool addTown(uint32_t townId, std::shared_ptr<Town> town) { return townMap.emplace(townId, std::move(town)).second; }
 
 	Town* getTown(std::string_view townName) const
 	{
@@ -55,6 +55,15 @@ public:
 			return nullptr;
 		}
 		return it->second.get();
+	}
+
+	std::shared_ptr<Town> getSharedTown(uint32_t townId) const
+	{
+		auto it = townMap.find(townId);
+		if (it == townMap.end()) {
+			return nullptr;
+		}
+		return it->second;
 	}
 
 	const TownMap& getTowns() const { return townMap; }

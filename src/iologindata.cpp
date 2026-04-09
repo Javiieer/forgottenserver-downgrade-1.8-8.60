@@ -289,7 +289,7 @@ bool IOLoginData::preloadPlayer(Player* player)
 		LOG_ERROR(fmt::format("[Error - IOLoginData::preloadPlayer] {} has Group ID {} which doesn't exist.", player->name, result->getNumber<uint16_t>("group_id")));
 		return false;
 	}
-	player->setGroup(group);
+	player->setGroup(g_game.groups.getSharedGroup(result->getNumber<uint16_t>("group_id")));
 	player->accountNumber = result->getNumber<uint32_t>("account_id");
 	player->accountType = static_cast<AccountType_t>(result->getNumber<uint16_t>("type"));
 	player->premiumEndsAt = result->getNumber<time_t>("premium_ends_at");
@@ -361,7 +361,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 		LOG_ERROR(fmt::format("[Error - IOLoginData::loadPlayer] {} has Group ID {} which doesn't exist", player->name, result->getNumber<uint16_t>("group_id")));
 		return false;
 	}
-	player->setGroup(group);
+	player->setGroup(g_game.groups.getSharedGroup(result->getNumber<uint16_t>("group_id")));
 
 	player->bankBalance = result->getNumber<uint64_t>("balance");
 
@@ -465,13 +465,13 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 	player->setTokenProtected(result->getNumber<uint8_t>("token_protected") != 0);
 	player->setTokenHash(result->getString("token_hash"));
 
-	Town* town = g_game.map.towns.getTown(result->getNumber<uint32_t>("town_id"));
+	auto town = g_game.map.towns.getSharedTown(result->getNumber<uint32_t>("town_id"));
 	if (!town) {
 		LOG_ERROR(fmt::format("[Error - IOLoginData::loadPlayer] {} has Town ID {} which doesn't exist", player->name, result->getNumber<uint32_t>("town_id")));
 		return false;
 	}
 
-	player->town = town;
+	player->town = std::move(town);
 
 	const Position& loginPos = player->loginPosition;
 	if (loginPos.x == 0 && loginPos.y == 0 && loginPos.z == 0) {

@@ -71,11 +71,12 @@ int32_t DatabaseManager::getDatabaseVersion()
 
 void DatabaseManager::updateDatabase()
 {
-	lua_State* L = luaL_newstate();
-	if (!L) {
+	LuaStatePtr ownedL(luaL_newstate());
+	if (!ownedL) {
 		return;
 	}
 
+	lua_State* L = ownedL.get();
 	luaL_openlibs(L);
 
 	// db table
@@ -117,7 +118,7 @@ void DatabaseManager::updateDatabase()
 
 		LuaScriptInterface::resetScriptEnv();
 	} while (true);
-	lua_close(L);
+	// ownedL destructor calls lua_close via LuaStateDeleter
 }
 
 bool DatabaseManager::getDatabaseConfig(std::string_view config, int32_t& value)

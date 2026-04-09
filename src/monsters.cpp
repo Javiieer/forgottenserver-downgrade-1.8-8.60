@@ -331,7 +331,18 @@ MonsterType* Monsters::getMonsterType(const std::string& name)
 	if (it == monsters.end()) {
 		return nullptr;
 	}
-	return &it->second;
+	return it->second.get();
+}
+
+std::shared_ptr<MonsterType> Monsters::getSharedMonsterType(const std::string& name)
+{
+	std::string lowerCaseName = boost::algorithm::to_lower_copy<std::string>(name);
+
+	auto it = monsters.find(lowerCaseName);
+	if (it == monsters.end()) {
+		return nullptr;
+	}
+	return it->second;
 }
 
 MonsterType* Monsters::getMonsterType(uint32_t raceId)

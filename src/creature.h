@@ -325,17 +325,22 @@ public:
 	bool registerCreatureEvent(std::string_view name);
 	bool unregisterCreatureEvent(std::string_view name);
 
-	Cylinder* getParent() const override final { return tile; }
+	Cylinder* getParent() const override final { return tile.lock().get(); }
 	void setParent(Cylinder* cylinder) override final
 	{
-		tile = static_cast<Tile*>(cylinder);
-		position = tile->getPosition();
+		if (cylinder) {
+			auto t = static_cast<Tile*>(cylinder)->shared_from_this();
+			position = t->getPosition();
+			tile = t;
+		} else {
+			tile.reset();
+		}
 	}
 
 	const Position& getPosition() const override final { return position; }
 
-	Tile* getTile() override final { return tile; }
-	const Tile* getTile() const override final { return tile; }
+	Tile* getTile() override final { return tile.lock().get(); }
+	const Tile* getTile() const override final { return tile.lock().get(); }
 
 	const Position& getLastPosition() const { return lastPosition; }
 	void setLastPosition(Position newLastPos) { lastPosition = newLastPos; }
@@ -403,7 +408,7 @@ protected:
 
 	std::vector<Direction> listWalkDir;
 
-	Tile* tile = nullptr;
+	std::weak_ptr<Tile> tile;
 	std::weak_ptr<Creature> attackedCreature;
 	std::weak_ptr<Creature> master;
 	std::weak_ptr<Creature> followCreature;

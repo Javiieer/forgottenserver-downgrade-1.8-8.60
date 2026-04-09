@@ -119,7 +119,7 @@ private:
 
 inline constexpr size_t TILE_UPDATE_THRESHOLD = 8;
 
-class Tile : public Cylinder
+class Tile : public Cylinder, public std::enable_shared_from_this<Tile>
 {
 public:
 	static Tile& nullptr_tile;

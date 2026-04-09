@@ -14,7 +14,7 @@ class Npc;
 struct spawnBlock_t
 {
 	Position pos;
-	std::vector<std::pair<MonsterType*, uint16_t>> mTypes;
+	std::vector<std::pair<std::shared_ptr<MonsterType>, uint16_t>> mTypes;
 	int64_t lastSpawn;
 	uint32_t interval;
 	uint32_t effectInitialInterval; // original respawn interval (ms) used to accelerate effects as spawn approaches
@@ -66,7 +66,7 @@ private:
 
 	static bool findPlayer(const Position& pos);
 	bool spawnMonster(uint32_t spawnId, const spawnBlock_t& sb, bool startup = false);
-	bool spawnMonster(uint32_t spawnId, MonsterType* mType, const Position& pos, Direction dir, bool startup = false);
+	bool spawnMonster(uint32_t spawnId, const std::shared_ptr<MonsterType>& mType, const Position& pos, Direction dir, bool startup = false);
 	void checkSpawn();
 	void scheduleSpawn(uint32_t spawnId, uint32_t interval, bool blocked = false);
 };

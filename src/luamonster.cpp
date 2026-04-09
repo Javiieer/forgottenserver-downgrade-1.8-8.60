@@ -248,7 +248,7 @@ int luaMonsterSetType(lua_State* L)
         return 1;
     }
 
-	MonsterType* monsterType = g_monsters.getMonsterType(getString(L, 2));
+	auto monsterType = g_monsters.getSharedMonsterType(getString(L, 2));
     if (!monsterType) {
         lua_pushnil(L);
         return 1;

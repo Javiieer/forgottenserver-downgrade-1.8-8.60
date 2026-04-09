@@ -194,7 +194,7 @@ void Map::removeTile(uint16_t x, uint16_t y, uint8_t z)
 			tile->setGround(nullptr);
 		}
 		
-		// Reset unique_ptr to delete the tile
+		// Reset shared_ptr to release the tile
 		tile.reset();
 	}
 	

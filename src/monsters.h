@@ -242,11 +242,12 @@ public:
 
 	MonsterType* getMonsterType(const std::string &name);
 	MonsterType* getMonsterType(uint32_t raceId);
+	std::shared_ptr<MonsterType> getSharedMonsterType(const std::string &name);
 	bool deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std::string& description = "");
 	bool registerBestiaryMonster(const MonsterType* mType);
 
 	std::unique_ptr<LuaScriptInterface> scriptInterface;
-	std::map<std::string, MonsterType> monsters;
+	std::map<std::string, std::shared_ptr<MonsterType>> monsters;
 
 private:
 	Condition_ptr getDamageCondition(ConditionType_t conditionType, int32_t maxDamage, int32_t minDamage,

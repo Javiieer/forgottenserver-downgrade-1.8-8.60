@@ -209,7 +209,7 @@ public:
 
 	const GuildWarVector& getGuildWarVector() const { return guildWarVector; }
 
-	Vocation* getVocation() const { return vocation; }
+	Vocation* getVocation() const { return vocation.get(); }
 
 	uint32_t getResetCount() const { return reset; }
 	void addReset(uint32_t count = 1);
@@ -317,8 +317,8 @@ public:
 
 	void setStorageValue(const uint32_t key, const std::optional<int64_t> value, const bool isSpawn = false) override;
 
-	void setGroup(Group* newGroup) { group = newGroup; }
-	Group* getGroup() const { return group; }
+	void setGroup(const std::shared_ptr<Group>& newGroup) { group = newGroup; }
+	Group* getGroup() const { return group.get(); }
 
 	void setLastDepotId(int16_t newId) { lastDepotId = newId; }
 	int16_t getLastDepotId() const { return lastDepotId; }
@@ -383,8 +383,8 @@ public:
 
 	const Position& getLoginPosition() const { return loginPosition; }
 	const Position& getTemplePosition() const { return town->getTemplePosition(); }
-	Town* getTown() const { return town; }
-	void setTown(Town* town) { this->town = town; }
+	Town* getTown() const { return town.get(); }
+	void setTown(const std::shared_ptr<Town>& town) { this->town = town; }
 
 	void clearModalWindows();
 	bool hasModalWindowOpen(uint32_t modalWindowId) const;
@@ -1298,7 +1298,7 @@ private:
 	BedItem* bedItem = nullptr;
 	Guild_ptr guild = nullptr;
 	GuildRank_ptr guildRank = nullptr;
-	Group* group = nullptr;
+	std::shared_ptr<Group> group;
 	Item* tradeItem = nullptr;
 	Item* inventory[CONST_SLOT_LAST + 1] = {};
 	Item* writeItem = nullptr;
@@ -1307,8 +1307,8 @@ private:
 	std::weak_ptr<Party> party;
 	std::weak_ptr<Player> tradePartner;
 	std::unique_ptr<SchedulerTask> walkTask;
-	Town* town = nullptr;
-	Vocation* vocation = nullptr;
+	std::shared_ptr<Town> town;
+	std::shared_ptr<Vocation> vocation;
 	std::shared_ptr<RewardChest> rewardChest = nullptr;
 
 	uint32_t attackSpeed = 0;

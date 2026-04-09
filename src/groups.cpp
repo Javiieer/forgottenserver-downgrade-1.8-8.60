@@ -61,13 +61,13 @@ bool Groups::load()
 	}
 
 	for (auto& groupNode : doc.child("groups").children()) {
-		Group group;
-		group.id = pugi::cast<uint16_t>(groupNode.attribute("id").value());
-		group.name = groupNode.attribute("name").as_string();
-		group.access = groupNode.attribute("access").as_bool();
-		group.maxDepotItems = pugi::cast<uint32_t>(groupNode.attribute("maxdepotitems").value());
-		group.maxVipEntries = pugi::cast<uint32_t>(groupNode.attribute("maxvipentries").value());
-		group.flags = pugi::cast<uint64_t>(groupNode.attribute("flags").value());
+		auto group = std::make_shared<Group>();
+		group->id = pugi::cast<uint16_t>(groupNode.attribute("id").value());
+		group->name = groupNode.attribute("name").as_string();
+		group->access = groupNode.attribute("access").as_bool();
+		group->maxDepotItems = pugi::cast<uint32_t>(groupNode.attribute("maxdepotitems").value());
+		group->maxVipEntries = pugi::cast<uint32_t>(groupNode.attribute("maxvipentries").value());
+		group->flags = pugi::cast<uint64_t>(groupNode.attribute("flags").value());
 		if (pugi::xml_node node = groupNode.child("flags")) {
 			for (auto& flagNode : node.children()) {
 				pugi::xml_attribute attr = flagNode.first_attribute();
@@ -77,12 +77,12 @@ bool Groups::load()
 
 				auto parseFlag = ParsePlayerFlagMap.find(attr.name());
 				if (parseFlag != ParsePlayerFlagMap.end()) {
-					group.flags |= parseFlag->second;
+					group->flags |= parseFlag->second;
 				}
 			}
 		}
 
-		groupsMap[group.id] = group;
+		groupsMap[group->id] = group;
 	}
 	return true;
 }
@@ -91,7 +91,16 @@ Group* Groups::getGroup(uint16_t id)
 {
 	auto it = groupsMap.find(id);
 	if (it != groupsMap.end()) {
-		return &it->second;
+		return it->second.get();
+	}
+	return nullptr;
+}
+
+std::shared_ptr<Group> Groups::getSharedGroup(uint16_t id)
+{
+	auto it = groupsMap.find(id);
+	if (it != groupsMap.end()) {
+		return it->second;
 	}
 	return nullptr;
 }

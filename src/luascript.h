@@ -285,6 +285,11 @@ enum class LuaErrorCode
 	CALLBACK_NOT_FOUND,
 };
 
+struct LuaStateDeleter {
+	void operator()(lua_State* L) const { lua_close(L); }
+};
+using LuaStatePtr = std::unique_ptr<lua_State, LuaStateDeleter>;
+
 class LuaScriptInterface
 {
 public:
@@ -606,6 +611,7 @@ private:
 	std::unordered_map<LuaScriptInterface*, std::vector<uint32_t>> areaIdMap;
 
 	std::unique_ptr<LuaScriptInterface> testInterface;
+	LuaStatePtr ownedLuaState_;
 
 	uint32_t lastEventTimerId = 1;
 	uint32_t lastCombatId = 0;

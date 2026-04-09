@@ -93,7 +93,7 @@ private:
 	bool skillLoss = true;
 };
 
-using VocationMap = std::map<uint16_t, Vocation>;
+using VocationMap = std::map<uint16_t, std::shared_ptr<Vocation>>;
 
 class Vocations
 {
@@ -104,10 +104,11 @@ public:
 	bool loadFromXml();
 
 	Vocation* getVocation(uint16_t id);
+	std::shared_ptr<Vocation> getSharedVocation(uint16_t id);
 	std::optional<uint16_t> getVocationId(std::string_view name) const;
 	uint16_t getPromotedVocation(uint16_t vocationId) const;
 	const VocationMap& getVocations() const { return vocationsMap; }
-	const std::map<uint16_t, Vocation>& getVocationsMap() const {
+	const std::map<uint16_t, std::shared_ptr<Vocation>>& getVocationsMap() const {
 		return vocationsMap;
 	}
 

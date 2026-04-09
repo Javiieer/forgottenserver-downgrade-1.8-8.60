@@ -9,6 +9,7 @@
 #include "game.h"
 #include "logger.h"
 #include "lua.hpp"
+#include "luascript.h"
 #include "monster.h"
 #include "pugicast.h"
 
@@ -226,11 +227,12 @@ TokenProtectionExceptions loadLuaTokenProtectionExceptions(lua_State* L)
 
 bool ConfigManager::load()
 {
-	lua_State* L = luaL_newstate();
-	if (!L) {
+	LuaStatePtr ownedL(luaL_newstate());
+	if (!ownedL) {
 		throw std::runtime_error("Failed to allocate memory");
 	}
 
+	lua_State* L = ownedL.get();
 	luaL_openlibs(L);
 
 	if (strings[CONFIG_FILE].empty()) {
@@ -238,7 +240,6 @@ bool ConfigManager::load()
 	}
 	if (luaL_dofile(L, getString(String::CONFIG_FILE).data())) {
 		g_logger().error("{}", lua_tostring(L, -1));
-		lua_close(L);
 		return false;
 	}
 
@@ -509,7 +510,7 @@ bool ConfigManager::load()
 	integers[Integer::CONNECTION_RATE_LIMIT_MS] = getGlobalInteger(L, "connectionRateLimitMS", 500);
 
 	loaded = true;
-	lua_close(L);
+	// ownedL destructor calls lua_close via LuaStateDeleter
 
 	return true;
 }

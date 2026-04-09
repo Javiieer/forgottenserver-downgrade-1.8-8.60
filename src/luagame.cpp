@@ -185,7 +185,7 @@ int luaGameGetMonsterTypes(lua_State* L)
 	lua_createtable(L, type.size(), 0);
 
 	for (auto& mType : type) {
-		pushUserdata<MonsterType>(L, &mType.second);
+		pushUserdata<MonsterType>(L, mType.second.get());
 		setMetatable(L, -1, "MonsterType");
 		lua_setfield(L, -2, mType.first.c_str());
 	}
@@ -318,7 +318,7 @@ int luaGameGetVocations(lua_State* L)
 
 	int index = 0;
 	for (const auto& [id, vocation] : vocations) {
-		pushUserdata<const Vocation>(L, &vocation);
+		pushUserdata<const Vocation>(L, vocation.get());
 		setMetatable(L, -1, "Vocation");
 		lua_rawseti(L, -2, ++index);
 	}
@@ -650,7 +650,11 @@ int luaGameCreateMonsterType(lua_State* L)
 
 	MonsterType* monsterType = g_monsters.getMonsterType(name);
 	if (!monsterType) {
-		monsterType = &g_monsters.monsters[boost::algorithm::to_lower_copy<std::string>(name)];
+		auto& ptr = g_monsters.monsters[boost::algorithm::to_lower_copy<std::string>(name)];
+		if (!ptr) {
+			ptr = std::make_shared<MonsterType>();
+		}
+		monsterType = ptr.get();
 		monsterType->name = name;
 		monsterType->nameDescription = "a " + name;
 	} else {

@@ -825,7 +825,8 @@ int luaPlayerSetTown(lua_State* L)
 
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		player->setTown(town);
+		auto sharedTown = g_game.map.towns.getSharedTown(town->getID());
+		player->setTown(sharedTown);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -990,7 +991,8 @@ int luaPlayerSetGroup(lua_State* L)
 
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		player->setGroup(group);
+		auto sharedGroup = g_game.groups.getSharedGroup(group->id);
+		player->setGroup(sharedGroup);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

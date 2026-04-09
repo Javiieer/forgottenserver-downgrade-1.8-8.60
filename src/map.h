@@ -103,7 +103,7 @@ struct Floor
 
 	// Pair: <Tile (real), BasicTile (cache)>
 	// BasicTile is stored during map load, real Tile is created on first access (lazy loading)
-	std::pair<std::unique_ptr<Tile>, std::shared_ptr<BasicTile>> tiles[FLOOR_SIZE][FLOOR_SIZE];
+	std::pair<std::shared_ptr<Tile>, std::shared_ptr<BasicTile>> tiles[FLOOR_SIZE][FLOOR_SIZE];
 
 	// Get tile, creating from cache if needed (z is needed for tile creation)
 	Tile* getTile(uint16_t x, uint16_t y, uint8_t z);

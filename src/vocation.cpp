@@ -28,8 +28,8 @@ bool Vocations::loadFromXml()
 		}
 
 		uint16_t id = pugi::cast<uint16_t>(attr.value());
-		auto res = vocationsMap.emplace(std::piecewise_construct, std::forward_as_tuple(id), std::forward_as_tuple(id));
-		Vocation& voc = res.first->second;
+		auto [it, inserted] = vocationsMap.emplace(id, std::make_shared<Vocation>(id));
+		Vocation& voc = *it->second;
 
 		vocationNode.remove_attribute("id");
 		for (auto attrNode : vocationNode.attributes()) {
@@ -126,14 +126,23 @@ Vocation* Vocations::getVocation(uint16_t id)
 		LOG_WARN(fmt::format("[Warning - Vocations::getVocation] Vocation {} not found.", id));
 		return nullptr;
 	}
-	return &it->second;
+	return it->second.get();
+}
+
+std::shared_ptr<Vocation> Vocations::getSharedVocation(uint16_t id)
+{
+	auto it = vocationsMap.find(id);
+	if (it == vocationsMap.end()) {
+		return nullptr;
+	}
+	return it->second;
 }
 
 std::optional<uint16_t> Vocations::getVocationId(std::string_view name) const
 {
-	auto it = std::find_if(vocationsMap.begin(), vocationsMap.end(), [&name](auto it) {
-		return name.size() == it.second.name.size() &&
-		       std::equal(name.begin(), name.end(), it.second.name.begin(),
+	auto it = std::find_if(vocationsMap.begin(), vocationsMap.end(), [&name](const auto& it) {
+		return name.size() == it.second->name.size() &&
+		       std::equal(name.begin(), name.end(), it.second->name.begin(),
 		                  [](char a, char b) { return std::tolower(a) == std::tolower(b); });
 	});
 
@@ -146,7 +155,7 @@ std::optional<uint16_t> Vocations::getVocationId(std::string_view name) const
 uint16_t Vocations::getPromotedVocation(uint16_t id) const
 {
 	auto it = std::find_if(vocationsMap.begin(), vocationsMap.end(),
-	                       [id](auto it) { return it.second.fromVocation == id && it.first != id; });
+	                       [id](const auto& it) { return it.second->fromVocation == id && it.first != id; });
 	return it != vocationsMap.end() ? it->first : static_cast<uint16_t>(VOCATION_NONE);
 }
 

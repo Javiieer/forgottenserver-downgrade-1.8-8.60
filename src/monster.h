@@ -29,7 +29,7 @@ public:
 	static int32_t despawnRange;
 	static int32_t despawnRadius;
 
-	explicit Monster(MonsterType* mType);
+	explicit Monster(const std::shared_ptr<MonsterType>& mType);
 	~Monster();
 
 	using Creature::onWalk;
@@ -140,7 +140,7 @@ public:
 	static uint32_t monsterAutoID;
 
 	// for lua module
-	auto getMonsterType() const { return mType; }
+	auto getMonsterType() const { return mType.get(); }
 
 	bool isInSpawnRange(const Position& pos) const;
 
@@ -151,7 +151,7 @@ public:
 	bool isOpponent(const Creature* creature) const;
 
 	void addFriend(Creature* creature);
-	bool setType(MonsterType* newType, bool restoreHealth = false);
+	bool setType(const std::shared_ptr<MonsterType>& newType, bool restoreHealth = false);
 	void removeFriend(Creature* creature);
 	void addTarget(Creature* creature, bool pushFront = false);
 	void removeTarget(Creature* creature);
@@ -163,7 +163,7 @@ private:
 	std::string name;
 	std::string nameDescription;
 
-	MonsterType* mType;
+	std::shared_ptr<MonsterType> mType;
 	std::weak_ptr<Spawn> spawn;
 
 	int64_t lastMeleeAttack = 0;

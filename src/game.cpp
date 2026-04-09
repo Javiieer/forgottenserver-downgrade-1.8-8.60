@@ -5246,7 +5246,7 @@ void Game::updateWorldTime()
 
 void Game::shutdown()
 {
-	LOG_INFO("Shutting down...");
+	LOG_INFO(">> Shutting down...");
 
 	{
 		std::vector<Player*> toRemove;

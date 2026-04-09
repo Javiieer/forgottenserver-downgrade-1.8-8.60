@@ -19,9 +19,10 @@ class Groups
 public:
 	bool load();
 	Group* getGroup(uint16_t id);
+	std::shared_ptr<Group> getSharedGroup(uint16_t id);
 
 private:
-	std::map<uint16_t, Group> groupsMap;
+	std::map<uint16_t, std::shared_ptr<Group>> groupsMap;
 };
 
 #endif

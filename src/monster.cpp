@@ -25,7 +25,7 @@ uint32_t Monster::monsterAutoID = 0x40000000;
 
 std::unique_ptr<Monster> Monster::createMonster(const std::string& name)
 {
-	MonsterType* mType = g_monsters.getMonsterType(name);
+	auto mType = g_monsters.getSharedMonsterType(name);
 	if (!mType) {
 		return nullptr;
 	}
@@ -46,7 +46,7 @@ void Monster::setInfluenced(bool v)
 	g_game.updateCreatureSkull(this);
 }
 
-Monster::Monster(MonsterType* mType) : Creature(), nameDescription(mType->nameDescription), mType(mType)
+Monster::Monster(const std::shared_ptr<MonsterType>& mType) : Creature(), nameDescription(mType->nameDescription), mType(mType)
 {
 	defaultOutfit = mType->info.outfit;
 	currentOutfit = mType->info.outfit;
@@ -362,7 +362,7 @@ void Monster::addFriend(Creature* creature)
 	}
 }
 
-bool Monster::setType(MonsterType* newType, bool restoreHealth)
+bool Monster::setType(const std::shared_ptr<MonsterType>& newType, bool restoreHealth)
 {
 	// Adapted from Canary's luaMonsterSetType
 	if (!newType) {

@@ -103,7 +103,7 @@ bool Spawns::loadFromXml(std::string_view filename)
 						continue;
 					}
 
-					MonsterType* mType = g_monsters.getMonsterType(nameAttribute.as_string());
+					auto mType = g_monsters.getSharedMonsterType(nameAttribute.as_string());
 					if (!mType) {
 						LOG_WARN(fmt::format("[Warning - Spawn::loadFromXml] {} can not find {}", pos, nameAttribute.as_string()));
 						continue;
@@ -134,7 +134,7 @@ bool Spawns::loadFromXml(std::string_view filename)
 				sb.mTypes.shrink_to_fit();
 				if (sb.mTypes.size() > 1) {
 					std::ranges::sort(sb.mTypes,
-					          [](std::pair<MonsterType*, uint16_t> a, std::pair<MonsterType*, uint16_t> b) {
+					          [](const std::pair<std::shared_ptr<MonsterType>, uint16_t>& a, const std::pair<std::shared_ptr<MonsterType>, uint16_t>& b) {
 						          return a.second > b.second;
 					          });
 				}
@@ -329,7 +329,7 @@ bool Spawn::spawnMonster(uint32_t spawnId, const spawnBlock_t& sb, bool startup 
 	return spawnFunc(false);
 }
 
-bool Spawn::spawnMonster(uint32_t spawnId, MonsterType* mType, const Position& pos, Direction dir,
+bool Spawn::spawnMonster(uint32_t spawnId, const std::shared_ptr<MonsterType>& mType, const Position& pos, Direction dir,
                          bool startup /*= false*/)
 {
 	auto monster_ptr = std::make_unique<Monster>(mType);
@@ -553,7 +553,7 @@ bool Spawn::addBlock(const spawnBlock_t& sb)
 
 bool Spawn::addMonster(const std::string& name, const Position& pos, Direction dir, uint32_t interval)
 {
-	MonsterType* mType = g_monsters.getMonsterType(name);
+	auto mType = g_monsters.getSharedMonsterType(name);
 	if (!mType) {
 		LOG_WARN(fmt::format("[Warning - Spawn::addMonster] Can not find {}", name));
 		return false;

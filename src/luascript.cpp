@@ -3656,7 +3656,8 @@ LuaEnvironment::~LuaEnvironment()
 
 bool LuaEnvironment::initState()
 {
-	luaState = luaL_newstate();
+	ownedLuaState_.reset(luaL_newstate());
+	luaState = ownedLuaState_.get();
 	if (!luaState) {
 		return false;
 	}
@@ -3712,7 +3713,7 @@ bool LuaEnvironment::closeState()
         eventTableRef = -1;
     }
 
-	lua_close(luaState);
+	ownedLuaState_.reset(); // lua_close via deleter
 	luaState = nullptr;
 	return true;
 }

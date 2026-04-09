@@ -36,7 +36,7 @@ function boostedStartup.onStartup()
 	if savedIdx and savedDay and savedDay == today and savedIdx >= 1 and savedIdx <= #BOOSTED_MONSTER_LIST then
 		local restored = BOOSTED_MONSTER_LIST[savedIdx]
 		Game.setBoostedCreature(restored)
-		logInfo("Boosted Creature restored: " .. restored)
+		logInfo(">> Boosted Creature restored: " .. restored)
 	else
 		pickNewBoosted()
 	end

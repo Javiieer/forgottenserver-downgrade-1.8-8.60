@@ -67,14 +67,14 @@ Player::~Player()
 
 bool Player::setVocation(uint16_t vocId)
 {
-	Vocation* voc = g_vocations.getVocation(vocId);
+	auto voc = g_vocations.getSharedVocation(vocId);
 	if (!voc) {
 		return false;
 	}
-	vocation = voc;
+	vocation = std::move(voc);
 
 	updateRegeneration();
-	setBaseSpeed(voc->getBaseSpeed()); 
+	setBaseSpeed(vocation->getBaseSpeed()); 
 	updateBaseSpeed();
 	g_game.changeSpeed(this, 0);
 	return true;
@@ -477,7 +477,7 @@ uint16_t Player::getClientIcons() const
 		icons |= ICON_REDSWORDS;
 	}
 
-	if (tile && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+	if (const Tile* playerTile = getTile(); playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 		icons |= ICON_PIGEON;
 
 		/* Don't show ICON_SWORDS if player is in protection zone.
@@ -4616,7 +4616,7 @@ bool Player::toggleMount(bool mount)
 			return false;
 		}
 
-		if (!group->access && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+		if (!group->access && getTile() && getTile()->hasFlag(TILESTATE_PROTECTIONZONE)) {
 			sendCancelMessage(RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE);
 			return false;
 		}
@@ -5781,7 +5781,7 @@ void Player::handleAccountManager(const std::string& text, std::ostringstream& m
 			const auto& vocationsMap = g_vocations.getVocationsMap();
 
 			for (const auto& it : vocationsMap) {
-				const Vocation& voc = it.second;
+				const Vocation& voc = *it.second;
 				if (voc.getFromVocation() == voc.getId() && voc.getId() != 0) {
 					count++;
 				}
@@ -5789,7 +5789,7 @@ void Player::handleAccountManager(const std::string& text, std::ostringstream& m
 
 			size_t current = 0;
 			for (const auto& it : vocationsMap) {
-				const Vocation& voc = it.second;
+				const Vocation& voc = *it.second;
 				if (voc.getFromVocation() == voc.getId() && voc.getId() != 0) {
 					if (!firstPart) {
 						current++;
