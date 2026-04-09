@@ -16,14 +16,20 @@ local function spawnBoostedDisplay()
 		return
 	end
 
-	local monster = Game.createMonster(boosted, BOOSTED_DISPLAY_POS, false, true)
-	if not monster then
+	local mType = MonsterType(boosted)
+	if not mType then
 		return
 	end
 
-	monster:setDropLoot(false)
-	monster:changeSpeed(-monster:getSpeed())
-	BOOSTED_DISPLAY_ID = monster:getId()
+	local statue = Game.createMonster("Boosted Statue", BOOSTED_DISPLAY_POS, false, true)
+	if not statue then
+		return
+	end
+
+	statue:setOutfit(mType:getOutfit())
+	statue:rename(mType:getName(), "the boosted creature of the day")
+	statue:setDropLoot(false)
+	BOOSTED_DISPLAY_ID = statue:getId()
 end
 
 local startupEvent = GlobalEvent("BoostedDisplayStartup")
