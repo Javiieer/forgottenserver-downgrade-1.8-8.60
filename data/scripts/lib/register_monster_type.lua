@@ -19,6 +19,12 @@ end
 registerMonsterType.description = function(mtype, mask)
 	if mask.description then mtype:nameDescription(mask.description) end
 end
+registerMonsterType.faction = function(mtype, mask)
+	if mask.faction then mtype:faction(mask.faction) end
+end
+registerMonsterType.enemyFactions = function(mtype, mask)
+	if mask.enemyFactions then mtype:enemyFactions(mask.enemyFactions) end
+end
 registerMonsterType.experience = function(mtype, mask)
 	if mask.experience then mtype:experience(mask.experience) end
 end

@@ -1190,6 +1190,53 @@ int luaMonsterTypeStrategiesTarget(lua_State* L)
 	}
 	return 1;
 }
+
+int luaMonsterTypeFaction(lua_State* L)
+{
+	// get: monsterType:faction() set: monsterType:faction(faction)
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			lua_pushinteger(L, monsterType->info.faction);
+		} else {
+			monsterType->info.faction = getInteger<Faction_t>(L, 2);
+			pushBoolean(L, true);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int luaMonsterTypeEnemyFactions(lua_State* L)
+{
+	// get: monsterType:enemyFactions() set: monsterType:enemyFactions({faction1, faction2, ...})
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (!monsterType) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		lua_newtable(L);
+		int index = 1;
+		for (Faction_t f : monsterType->info.enemyFactions) {
+			lua_pushinteger(L, f);
+			lua_rawseti(L, -2, index++);
+		}
+	} else {
+		monsterType->info.enemyFactions.clear();
+		if (lua_istable(L, 2)) {
+			lua_pushnil(L);
+			while (lua_next(L, 2) != 0) {
+				monsterType->info.enemyFactions.insert(getInteger<Faction_t>(L, -1));
+				lua_pop(L, 1);
+			}
+		}
+		pushBoolean(L, true);
+	}
+	return 1;
+}
 } // namespace
 
 void LuaScriptInterface::registerMonsterType()
@@ -1277,4 +1324,7 @@ void LuaScriptInterface::registerMonsterType()
 	registerMethod("MonsterType", "changeTargetChance", luaMonsterTypeChangeTargetChance);
 	registerMethod("MonsterType", "changeTargetSpeed", luaMonsterTypeChangeTargetSpeed);
 	registerMethod("MonsterType", "strategiesTarget", luaMonsterTypeStrategiesTarget);
+
+	registerMethod("MonsterType", "faction", luaMonsterTypeFaction);
+	registerMethod("MonsterType", "enemyFactions", luaMonsterTypeEnemyFactions);
 }

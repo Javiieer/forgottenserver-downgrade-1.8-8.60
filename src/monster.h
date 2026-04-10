@@ -65,6 +65,7 @@ public:
 
 	const Position& getMasterPos() const { return masterPos; }
 	void setMasterPos(Position pos) { masterPos = pos; }
+	Faction_t getFaction() const override { return mType->info.faction; }
 
 	RaceType_t getRace() const override { return mType->info.race; }
 	int32_t getArmor() const override { return mType->info.armor; }

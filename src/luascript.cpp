@@ -1814,6 +1814,17 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(CREATURETYPE_NPC);
 	registerEnum(CREATURETYPE_SUMMON_OWN);
 	registerEnum(CREATURETYPE_SUMMON_OTHERS);
+ 
+	registerEnum(FACTION_DEFAULT);
+	registerEnum(FACTION_PLAYER);
+	registerEnum(FACTION_LION);
+	registerEnum(FACTION_LIONUSURPERS);
+	registerEnum(FACTION_MARID);
+	registerEnum(FACTION_EFREET);
+	registerEnum(FACTION_DEEPLING);
+	registerEnum(FACTION_DEATHLING);
+	registerEnum(FACTION_ANUMA);
+	registerEnum(FACTION_FAFNAR);
 
 	registerEnum(CLIENTOS_LINUX);
 	registerEnum(CLIENTOS_WINDOWS);

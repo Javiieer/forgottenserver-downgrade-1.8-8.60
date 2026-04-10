@@ -520,6 +520,14 @@ void Monster::onCreatureEnter(Creature* creature)
 
 bool Monster::isFriend(const Creature* creature) const
 {
+	if (creature == this) {
+		return true;
+	}
+
+	if (mType->info.faction != FACTION_DEFAULT && mType->info.faction == creature->getFaction()) {
+		return true;
+	}
+
 	if (isSummon() && getMaster()->getPlayer()) {
 		const Player* masterPlayer = getMaster()->getPlayer();
 		const Player* tmpPlayer = nullptr;
@@ -538,6 +546,9 @@ bool Monster::isFriend(const Creature* creature) const
 			return true;
 		}
 	} else if (creature->getMonster() && !creature->isSummon()) {
+		if (isOpponent(creature)) {
+			return false;
+		}
 		return true;
 	}
 
@@ -546,6 +557,14 @@ bool Monster::isFriend(const Creature* creature) const
 
 bool Monster::isOpponent(const Creature* creature) const
 {
+	if (creature == this) {
+		return false;
+	}
+
+	if (mType->info.enemyFactions.count(creature->getFaction()) > 0) {
+		return true;
+	}
+
 	if (isSummon() && getMaster()->getPlayer()) {
 		if (creature != getMaster()) {
 			return true;

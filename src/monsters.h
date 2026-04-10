@@ -152,6 +152,8 @@ class MonsterType
 		float mitigation = 0.0f;
 
 		targetStrategies_t targetStrategies = {};
+		Faction_t faction = FACTION_DEFAULT;
+		std::set<Faction_t> enemyFactions;
 
 		bool canPushItems = false;
 		bool canPushCreatures = false;
