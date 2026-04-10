@@ -669,6 +669,72 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 			break;
 		}
 
+		case TARGETSEARCH_HEALTH: {
+			Creature* target = nullptr;
+			int32_t minHealth = std::numeric_limits<int32_t>::max();
+			if (!resultList.empty()) {
+				for (Creature* creature : resultList) {
+					if (int32_t health = creature->getHealth(); health < minHealth) {
+						target = creature;
+						minHealth = health;
+					}
+				}
+			} else {
+				for (const auto& weakRef : targetList) {
+					auto creature = weakRef.lock();
+					if (!creature || creature->isRemoved() || !creature->getTile() || !isTarget(creature.get())) {
+						continue;
+					}
+
+					if (int32_t health = creature->getHealth(); health < minHealth) {
+						target = creature.get();
+						minHealth = health;
+					}
+				}
+			}
+
+			if (target && selectTarget(target)) {
+				return true;
+			}
+			break;
+		}
+
+		case TARGETSEARCH_DAMAGE: {
+			Creature* target = nullptr;
+			int32_t maxDamage = -1;
+			if (!resultList.empty()) {
+				for (Creature* creature : resultList) {
+					auto it = damageMap.find(creature->getID());
+					if (it != damageMap.end()) {
+						if (it->second.total > maxDamage) {
+							target = creature;
+							maxDamage = it->second.total;
+						}
+					}
+				}
+			} else {
+				for (const auto& weakRef : targetList) {
+					auto creature = weakRef.lock();
+					if (!creature || creature->isRemoved() || !creature->getTile() || !isTarget(creature.get())) {
+						continue;
+					}
+
+					auto it = damageMap.find(creature->getID());
+					if (it != damageMap.end()) {
+						if (it->second.total > maxDamage) {
+							target = creature.get();
+							maxDamage = it->second.total;
+						}
+					}
+				}
+			}
+
+			if (target && selectTarget(target)) {
+				return true;
+			}
+			break;
+		}
+
 		case TARGETSEARCH_DEFAULT:
 		case TARGETSEARCH_ATTACKRANGE:
 		case TARGETSEARCH_RANDOM:
@@ -1109,10 +1175,27 @@ void Monster::onThinkTarget(uint32_t interval)
 					}
 
 					if (mType->info.changeTargetChance >= uniform_random(1, 100)) {
-						if (mType->info.targetDistance <= 1) {
-							searchTarget(TARGETSEARCH_RANDOM);
+						const targetStrategies_t& strategies = mType->info.targetStrategies;
+						uint32_t totalWeight = strategies.nearest + strategies.health + strategies.damage + strategies.random;
+						if (totalWeight > 0) {
+							uint32_t roll = uniform_random(1, totalWeight);
+							uint32_t currentWeight = 0;
+
+							if (roll <= (currentWeight += strategies.nearest)) {
+								searchTarget(TARGETSEARCH_NEAREST);
+							} else if (roll <= (currentWeight += strategies.health)) {
+								searchTarget(TARGETSEARCH_HEALTH);
+							} else if (roll <= (currentWeight += strategies.damage)) {
+								searchTarget(TARGETSEARCH_DAMAGE);
+							} else {
+								searchTarget(TARGETSEARCH_RANDOM);
+							}
 						} else {
-							searchTarget(TARGETSEARCH_NEAREST);
+							if (mType->info.targetDistance <= 1) {
+								searchTarget(TARGETSEARCH_RANDOM);
+							} else {
+								searchTarget(TARGETSEARCH_NEAREST);
+							}
 						}
 					}
 				}

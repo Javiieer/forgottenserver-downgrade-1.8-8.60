@@ -130,6 +130,11 @@ registerMonsterType.changeTarget = function(mtype, mask)
 		end
 	end
 end
+registerMonsterType.strategiesTarget = function(mtype, mask)
+	if mask.strategiesTarget then
+		mtype:strategiesTarget(mask.strategiesTarget)
+	end
+end
 registerMonsterType.voices = function(mtype, mask)
 	if type(mask.voices) == "table" then
 		local interval, chance
@@ -309,8 +314,7 @@ local function AbilityTableToSpell(ability)
 				startDamage = ability.condition.startDamage
 			end
 			if ability.condition.minDamage and ability.condition.maxDamage then
-				spell:setConditionDamage(ability.condition.minDamage,
-				                         ability.condition.maxDamage, startDamage)
+				spell:setConditionDamage(ability.condition.minDamage, ability.condition.maxDamage, startDamage)
 			end
 			if ability.condition.duration then
 				spell:setConditionDuration(ability.condition.duration)

@@ -94,6 +94,14 @@ struct voiceBlock_t
 	bool yellText;
 };
 
+struct targetStrategies_t
+{
+	uint32_t nearest = 0;
+	uint32_t health = 0;
+	uint32_t damage = 0;
+	uint32_t random = 0;
+};
+
 class MonsterType
 {
 	struct MonsterInfo
@@ -142,6 +150,8 @@ class MonsterType
 		int32_t defense = 0;
 		int32_t armor = 0;
 		float mitigation = 0.0f;
+
+		targetStrategies_t targetStrategies = {};
 
 		bool canPushItems = false;
 		bool canPushCreatures = false;

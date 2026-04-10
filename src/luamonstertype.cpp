@@ -1162,6 +1162,34 @@ int luaMonsterTypeChangeTargetSpeed(lua_State* L)
 	}
 	return 1;
 }
+
+int luaMonsterTypeStrategiesTarget(lua_State* L)
+{
+	// get: monsterType:strategiesTarget() set: monsterType:strategiesTarget(table)
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			lua_newtable(L);
+			setField(L, "nearest", monsterType->info.targetStrategies.nearest);
+			setField(L, "health", monsterType->info.targetStrategies.health);
+			setField(L, "damage", monsterType->info.targetStrategies.damage);
+			setField(L, "random", monsterType->info.targetStrategies.random);
+		} else {
+			if (lua_istable(L, 2)) {
+				monsterType->info.targetStrategies.nearest = getField<uint32_t>(L, 2, "nearest");
+				monsterType->info.targetStrategies.health = getField<uint32_t>(L, 2, "health");
+				monsterType->info.targetStrategies.damage = getField<uint32_t>(L, 2, "damage");
+				monsterType->info.targetStrategies.random = getField<uint32_t>(L, 2, "random");
+				pushBoolean(L, true);
+			} else {
+				pushBoolean(L, false);
+			}
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
 } // namespace
 
 void LuaScriptInterface::registerMonsterType()
@@ -1248,4 +1276,5 @@ void LuaScriptInterface::registerMonsterType()
 	registerMethod("MonsterType", "yellSpeedTicks", luaMonsterTypeYellSpeedTicks);
 	registerMethod("MonsterType", "changeTargetChance", luaMonsterTypeChangeTargetChance);
 	registerMethod("MonsterType", "changeTargetSpeed", luaMonsterTypeChangeTargetSpeed);
+	registerMethod("MonsterType", "strategiesTarget", luaMonsterTypeStrategiesTarget);
 }
