@@ -188,17 +188,24 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 			}
 			combat->setParam(COMBAT_PARAM_TYPE, spell->combatType);
 		} else if (tmpName == "speed") {
-			int32_t minSpeedChange = 0;
-			int32_t maxSpeedChange = 0;
 			int32_t duration = 10000;
 
 			if (spell->duration != 0) {
 				duration = spell->duration;
 			}
 
-			if (spell->minSpeedChange != 0) {
-				minSpeedChange = spell->minSpeedChange;
-			} else {
+			int32_t minSpeedChange = spell->minSpeedChange;
+			int32_t maxSpeedChange = spell->maxSpeedChange;
+
+			if (minSpeedChange == 0) {
+				minSpeedChange = sb.minCombatValue;
+			}
+
+			if (maxSpeedChange == 0) {
+				maxSpeedChange = sb.maxCombatValue;
+			}
+
+			if (minSpeedChange == 0) {
 				LOG_ERROR(fmt::format("[Error - Monsters::deserializeSpell] - {} - missing speedchange/minspeedchange value", description));
 				return false;
 			}
@@ -208,9 +215,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 				minSpeedChange = -1000;
 			}
 
-			if (spell->maxSpeedChange != 0) {
-				maxSpeedChange = spell->maxSpeedChange;
-			} else {
+			if (maxSpeedChange == 0) {
 				maxSpeedChange = minSpeedChange; // static speedchange value
 			}
 

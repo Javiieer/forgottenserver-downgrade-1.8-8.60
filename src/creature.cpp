@@ -1306,12 +1306,12 @@ int64_t Creature::getStepDuration() const
 		return 0;
 	}
 
-	uint32_t groundSpeed = 150;
+	uint32_t groundSpeed = 100;
 	if (const Tile* tile = getTile()) {
 		if (const Item* ground = tile->getGround()) {
 			groundSpeed = Item::items[ground->getID()].speed;
 			if (groundSpeed == 0) {
-				groundSpeed = 150;
+				groundSpeed = 100;
 			}
 		}
 	}
@@ -1320,11 +1320,6 @@ int64_t Creature::getStepDuration() const
 
 	if (stepDuration < SCHEDULER_MINTICKS) {
 		stepDuration = SCHEDULER_MINTICKS;
-	}
-
-	const Monster* monster = getMonster();
-	if (monster && monster->isTargetNearby() && !monster->isFleeing() && !monster->getMaster()) {
-		stepDuration *= 3;
 	}
 
 	return stepDuration * lastStepCost;

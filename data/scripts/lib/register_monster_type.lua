@@ -281,12 +281,13 @@ local function AbilityTableToSpell(ability)
 			if ability.chance then spell:setChance(ability.chance) end
 			if ability.range then spell:setRange(ability.range) end
 			if ability.duration then spell:setConditionDuration(ability.duration) end
-			if ability.speed then
-				if type(ability.speed) ~= "table" then
-					spell:setConditionSpeedChange(ability.speed)
-				elseif type(ability.speed) == "table" then
-					if ability.speed.min and ability.speed.max then
-						spell:setConditionSpeedChange(ability.speed.min, ability.speed.max)
+			local speed = ability.speed or ability.speedChange or ability.minChange
+			if speed then
+				if type(speed) ~= "table" then
+					spell:setConditionSpeedChange(speed, ability.maxChange or speed)
+				elseif type(speed) == "table" then
+					if speed.min and speed.max then
+						spell:setConditionSpeedChange(speed.min, speed.max)
 					end
 				end
 			end
