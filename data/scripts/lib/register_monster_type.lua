@@ -13,6 +13,17 @@ MonsterType.register = function(self, mask)
 	return registerMonsterType(self, mask)
 end
 
+local conditionToCombat = {
+	[CONDITION_POISON] = COMBAT_EARTHDAMAGE,
+	[CONDITION_FIRE] = COMBAT_FIREDAMAGE,
+	[CONDITION_ENERGY] = COMBAT_ENERGYDAMAGE,
+	[CONDITION_DROWN] = COMBAT_DROWNDAMAGE,
+	[CONDITION_FREEZING] = COMBAT_ICEDAMAGE,
+	[CONDITION_DAZZLED] = COMBAT_HOLYDAMAGE,
+	[CONDITION_CURSED] = COMBAT_DEATHDAMAGE,
+	[CONDITION_BLEEDING] = COMBAT_PHYSICALDAMAGE,
+}
+
 registerMonsterType.name = function(mtype, mask)
 	if mask.name then mtype:name(mask.name) end
 end
@@ -276,7 +287,17 @@ local function AbilityTableToSpell(ability)
 			if ability.effect then spell:setCombatEffect(ability.effect) end
 		else
 			spell:setType(ability.name)
-			if ability.type then spell:setCombatType(ability.type) end
+			if ability.type then
+				if ability.name == "condition" then
+					spell:setConditionType(ability.type)
+					local combatType = conditionToCombat[ability.type]
+					if combatType then
+						spell:setCombatType(combatType)
+					end
+				else
+					spell:setCombatType(ability.type)
+				end
+			end
 			if ability.interval then spell:setInterval(ability.interval) end
 			if ability.chance then spell:setChance(ability.chance) end
 			if ability.range then spell:setRange(ability.range) end
@@ -298,6 +319,12 @@ local function AbilityTableToSpell(ability)
 			if ability.ring then spell:setCombatRing(ability.ring) end
 			if ability.minDamage and ability.maxDamage then
 				spell:setCombatValue(ability.minDamage, ability.maxDamage)
+				if ability.name == "condition" then
+					spell:setConditionDamage(ability.minDamage, ability.maxDamage, ability.startDamage or 0)
+				end
+			end
+			if ability.totalDamage and ability.name == "condition" then
+				spell:setConditionDamage(ability.totalDamage, ability.totalDamage, ability.startDamage or 0)
 			end
 			if ability.effect then spell:setCombatEffect(ability.effect) end
 			if ability.outfit and spell.setOutfit then
@@ -324,6 +351,8 @@ local function AbilityTableToSpell(ability)
 			end
 			if ability.condition.minDamage and ability.condition.maxDamage then
 				spell:setConditionDamage(ability.condition.minDamage, ability.condition.maxDamage, startDamage)
+			elseif ability.condition.totalDamage then
+				spell:setConditionDamage(ability.condition.totalDamage, ability.condition.totalDamage, startDamage)
 			end
 			if ability.condition.duration then
 				spell:setConditionDuration(ability.condition.duration)

@@ -103,8 +103,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 
 	if (spell->isScripted) {
 		std::unique_ptr<CombatSpell> combatSpellPtr(new CombatSpell(nullptr, spell->needTarget, spell->needDirection));
-		if (!combatSpellPtr->loadScript(
-		        fmt::format("data/{}/scripts/{}", g_spells->getScriptBaseName(), spell->scriptName))) {
+		if (!combatSpellPtr->loadScript(fmt::format("data/{}/scripts/{}", g_spells->getScriptBaseName(), spell->scriptName))) {
 			LOG_WARN("cannot find file");
 			return false;
 		}
@@ -114,8 +113,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 		}
 
 		combatSpell = combatSpellPtr.release();
-		combatSpell->getCombat()->setPlayerCombatValues(COMBAT_FORMULA_DAMAGE, sb.minCombatValue, 0, sb.maxCombatValue,
-		                                                0);
+		combatSpell->getCombat()->setPlayerCombatValues(COMBAT_FORMULA_DAMAGE, sb.minCombatValue, 0, sb.maxCombatValue, 0);
 	} else {
 		Combat_ptr combat = std::make_shared<Combat>();
 		sb.combatSpell = true;
@@ -154,8 +152,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 			int32_t conMaxDamage = std::abs(spell->conditionMaxDamage);
 			int32_t startDamage = std::abs(spell->conditionStartDamage);
 
-			auto condition =
-			    getDamageCondition(conditionType, conMaxDamage, conMinDamage, startDamage, tickInterval);
+			auto condition = getDamageCondition(conditionType, conMaxDamage, conMinDamage, startDamage, tickInterval);
 			combat->addCondition(std::move(condition));
 		}
 
@@ -174,10 +171,16 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 			combat->setParam(COMBAT_PARAM_BLOCKARMOR, 1);
 			combat->setParam(COMBAT_PARAM_BLOCKSHIELD, 1);
 			combat->setOrigin(ORIGIN_MELEE);
-		} else if (tmpName == "combat") {
+		} else if (tmpName == "combat" || tmpName == "condition") {
+			if (tmpName == "condition" && spell->conditionType == CONDITION_NONE) {
+				LOG_ERROR(fmt::format("[Error - Monsters::deserializeSpell] - {} - Condition is not set for: {}", description, spell->name));
+			}
+
 			if (spell->combatType == COMBAT_UNDEFINEDDAMAGE) {
-				LOG_WARN(fmt::format("[Warning - Monsters::deserializeSpell] - {} - spell has undefined damage", description));
-				combat->setParam(COMBAT_PARAM_TYPE, COMBAT_PHYSICALDAMAGE);
+				if (tmpName == "combat") {
+					LOG_WARN(fmt::format("[Warning - Monsters::deserializeSpell] - {} - spell has undefined damage", description));
+				}
+				spell->combatType = COMBAT_PHYSICALDAMAGE;
 			}
 
 			if (spell->combatType == COMBAT_PHYSICALDAMAGE) {
@@ -205,7 +208,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 				maxSpeedChange = sb.maxCombatValue;
 			}
 
-			if (minSpeedChange == 0) {
+			if (minSpeedChange == 0 && maxSpeedChange == 0) {
 				LOG_ERROR(fmt::format("[Error - Monsters::deserializeSpell] - {} - missing speedchange/minspeedchange value", description));
 				return false;
 			}
@@ -263,8 +266,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 				drunkenness = spell->drunkenness;
 			}
 
-			auto condition =
-			    Condition::createCondition(CONDITIONID_COMBAT, CONDITION_DRUNK, duration, drunkenness);
+			auto condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_DRUNK, duration, drunkenness);
 			combat->addCondition(std::move(condition));
 		} else if (tmpName == "firefield") {
 			combat->setParam(COMBAT_PARAM_CREATEITEM, ITEM_FIREFIELD_PVP_FULL);
@@ -272,11 +274,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 			combat->setParam(COMBAT_PARAM_CREATEITEM, ITEM_POISONFIELD_PVP);
 		} else if (tmpName == "energyfield") {
 			combat->setParam(COMBAT_PARAM_CREATEITEM, ITEM_ENERGYFIELD_PVP);
-		} else if (tmpName == "condition") {
-			if (spell->conditionType == CONDITION_NONE) {
-				LOG_ERROR(fmt::format("[Error - Monsters::deserializeSpell] - {} - Condition is not set for: {}", description, spell->name));
-			}
-		} else if (tmpName == "strength") {
+		} else if (tmpName == "outfit") {
 			//
 		} else if (tmpName == "effect") {
 			//
