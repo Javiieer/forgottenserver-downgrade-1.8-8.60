@@ -191,8 +191,10 @@ if not NpcEvents then
                     if message == word then
                         focus:addFocus(creature)
                         doNpcSetCreatureFocus(creature:getId())
-                        local msg = handler:getTalkState(creature).greetResponses[math.random(1, #handler:getTalkState(creature).greetResponses)]:replaceTags({playerName = creature:getName()})
-                        talkQueue:addToQueue(creature, msg, TALK.defaultDelay)
+                        if handler:getTalkState(creature).greetResponses and #handler:getTalkState(creature).greetResponses > 0 then
+                            local msg = handler:getTalkState(creature).greetResponses[math.random(1, #handler:getTalkState(creature).greetResponses)]:replaceTags({playerName = creature:getName()})
+                            talkQueue:addToQueue(creature, msg, TALK.defaultDelay)
+                        end
                         greeted = true
                         break
                     end
