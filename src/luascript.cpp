@@ -59,6 +59,22 @@ template const Container* getItemUserdata<const Container>(lua_State*, int32_t);
 extern Game g_game;
 extern Vocations g_vocations;
 
+namespace {
+std::shared_ptr<Npc> makeScriptNpcHandle(Npc* npc)
+{
+	if (!npc) {
+		return nullptr;
+	}
+
+	if (auto creatureRef = g_game.getCreatureSharedRef(npc)) {
+		return std::static_pointer_cast<Npc>(creatureRef);
+	}
+
+	// XML NPC scripts may execute before the NPC is registered in g_game.
+	return std::shared_ptr<Npc>(npc, [](Npc*) {});
+}
+} // namespace
+
 ScriptEnvironment::DBResultMap ScriptEnvironment::tempResults;
 uint32_t ScriptEnvironment::lastResultId = 0;
 
@@ -76,6 +92,7 @@ void ScriptEnvironment::resetEnv()
 	callbackId = 0;
 	timerEvent = false;
 	interface = nullptr;
+	curNpc = nullptr;
 	localMap.clear();
 	tempResults.clear();
 
@@ -99,6 +116,11 @@ void ScriptEnvironment::clearTempItems()
 		}
 		it = tempItems.erase(it);
 	}
+}
+
+void ScriptEnvironment::setNpc(Npc* npc)
+{
+	curNpc = makeScriptNpcHandle(npc);
 }
 
 bool ScriptEnvironment::setCallbackId(int32_t callbackId, LuaScriptInterface* scriptInterface)
@@ -336,6 +358,11 @@ int LuaScriptInterface::protectedCall(lua_State* L, int nargs, int nresults)
 }
 
 int32_t LuaScriptInterface::loadFile(std::string_view file, Npc* npc /* = nullptr*/)
+{
+	return loadFile(file, makeScriptNpcHandle(npc));
+}
+
+int32_t LuaScriptInterface::loadFile(std::string_view file, const std::shared_ptr<Npc>& npc)
 {
 	// loads file as a chunk at stack top
 	int ret = luaL_loadfile(luaState, file.data());

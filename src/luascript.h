@@ -231,8 +231,9 @@ public:
 	static uint32_t addResult(DBResult_ptr res);
 	static bool removeResult(uint32_t id);
 
-	void setNpc(Npc* npc) { curNpc = npc; }
-	Npc* getNpc() const { return curNpc; }
+	void setNpc(Npc* npc);
+	void setNpc(const std::shared_ptr<Npc>& npc) { curNpc = npc; }
+	Npc* getNpc() const { return curNpc.get(); }
 
 	Thing* getThingByUID(uint32_t uid);
 	Item* getItemByUID(uint32_t uid);
@@ -246,7 +247,7 @@ private:
 	LuaScriptInterface* interface;
 
 	// for npc scripts
-	Npc* curNpc = nullptr;
+	std::shared_ptr<Npc> curNpc;
 
 	// temporary item list
 	static std::multimap<ScriptEnvironment*, std::shared_ptr<Item>> tempItems;
@@ -307,6 +308,7 @@ public:
 	bool reInitState();
 
 	int32_t loadFile(std::string_view file, Npc* npc = nullptr);
+	int32_t loadFile(std::string_view file, const std::shared_ptr<Npc>& npc);
 
 	std::string_view getFileById(int32_t scriptId);
 	const std::string& getFileByIdForStats(int32_t scriptId);

@@ -209,6 +209,21 @@ NpcScriptInterface* getScriptInterface()
 
 } // namespace Npcs
 
+namespace {
+std::shared_ptr<Npc> makeNpcScriptHandle(Npc* npc)
+{
+	if (!npc) {
+		return nullptr;
+	}
+
+	if (auto creatureRef = g_game.getCreatureSharedRef(npc)) {
+		return std::static_pointer_cast<Npc>(creatureRef);
+	}
+
+	return std::shared_ptr<Npc>(npc, [](Npc*) {});
+}
+} // namespace
+
 // ─── Npc ──────────────────────────────────────────────────────────────────────
 
 std::unique_ptr<Npc> Npc::createNpc(const std::string& name)
@@ -1333,9 +1348,9 @@ int NpcScriptInterface::luaNpcCloseShopWindow(lua_State* L)
 }
 
 NpcEventsHandler::NpcEventsHandler(const std::string& file, Npc* npc) :
-    scriptInterface(Npcs::scriptInterface), npc(npc)
+    scriptInterface(Npcs::scriptInterface), npc(makeNpcScriptHandle(npc))
 {
-	loaded = scriptInterface->loadFile("data/npc/scripts/" + file, npc) == 0;
+	loaded = scriptInterface->loadFile("data/npc/scripts/" + file, this->npc) == 0;
 	if (!loaded) {
 		LOG_WARN(fmt::format("[Warning - NpcScript::NpcScript] Can not load script: {}", file));
 		LOG_WARN(scriptInterface->getLastLuaError());
@@ -1351,6 +1366,11 @@ NpcEventsHandler::NpcEventsHandler(const std::string& file, Npc* npc) :
 }
 
 NpcEventsHandler::NpcEventsHandler() : scriptInterface(Npcs::scriptInterface) {}
+
+void NpcEventsHandler::setNpc(Npc* n)
+{
+	npc = makeNpcScriptHandle(n);
+}
 
 NpcEventsHandler::~NpcEventsHandler()
 {

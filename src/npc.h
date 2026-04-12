@@ -71,7 +71,8 @@ public:
 	void onPlayerEndTrade(Player* player) const;
 	void onThink() const;
 
-	void setNpc(Npc* n) { npc = n; }
+	void setNpc(Npc* n);
+	void setNpc(const std::shared_ptr<Npc>& n) { npc = n; }
 
 	bool isLoaded() const;
 
@@ -90,7 +91,7 @@ public:
 	bool loaded = false;
 
 private:
-	Npc* npc = nullptr;
+	std::shared_ptr<Npc> npc;
 };
 
 class NpcType
