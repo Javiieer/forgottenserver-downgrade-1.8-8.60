@@ -481,6 +481,9 @@ do
 			self:eventType(MONSTERS_EVENT_SAY)
 			self:onSay(value)
 			return
+		elseif key == "onPlayerAttack" then
+			self:onPlayerAttack(value)
+			return
 		end
 		rawset(self, key, value)
 	end

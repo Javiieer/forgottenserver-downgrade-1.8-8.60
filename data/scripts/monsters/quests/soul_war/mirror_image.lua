@@ -106,8 +106,7 @@ monster.immunities = {
 
 monster.events = {}
 
---[[mType.onPlayerAttack = function(monster, attackerPlayer)
-	logger.info("Player {}, attacking monster {}", attackerPlayer:getName(), monster:getName())
+mType.onPlayerAttack = function(monster, attackerPlayer)
 
 	local apparitionType = ""
 
@@ -136,6 +135,6 @@ monster.events = {}
 
 	Game.createMonster(apparitionType, monster:getPosition(), true, true)
 	monster:remove()
-end]]
+end
 
 mType:register(monster)

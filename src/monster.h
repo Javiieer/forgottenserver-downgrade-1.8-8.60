@@ -159,6 +159,8 @@ public:
 	void addTarget(Creature* creature, bool pushFront = false);
 	void removeTarget(Creature* creature);
 
+	void callPlayerAttackEvent(Player* player);
+
 private:
 	CreatureWeakHashSet friendList;
 	CreatureWeakList targetList;

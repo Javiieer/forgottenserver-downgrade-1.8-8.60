@@ -4859,6 +4859,13 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 
 		target->drainHealth(attacker, realDamage);
 		addCreatureHealth(spectators, target);
+
+		// onPlayerAttack callback
+		if (attackerPlayer) {
+			if (Monster* targetMonster = target->getMonster()) {
+				targetMonster->callPlayerAttackEvent(attackerPlayer);
+			}
+		}
 	}
 
 	return true;

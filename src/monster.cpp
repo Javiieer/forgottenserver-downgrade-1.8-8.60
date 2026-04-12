@@ -10,6 +10,7 @@
 #include "game.h"
 #include "iologindata.h"
 #include "logger.h"
+#include "player.h"
 #include "scriptmanager.h"
 #include "spells.h"
 
@@ -1349,6 +1350,34 @@ void Monster::onThinkYell(uint32_t interval)
 			}
 		}
 	}
+}
+
+void Monster::callPlayerAttackEvent(Player* player)
+{
+	if (mType->info.playerAttackEvent == -1) {
+		return;
+	}
+
+	// onPlayerAttack(self, attackerPlayer)
+	LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
+	if (!scriptInterface->reserveScriptEnv()) {
+		LOG_ERROR("[Error - Monster::callPlayerAttackEvent] Call stack overflow");
+		return;
+	}
+
+	ScriptEnvironment* env = scriptInterface->getScriptEnv();
+	env->setScriptId(mType->info.playerAttackEvent, scriptInterface);
+
+	lua_State* L = scriptInterface->getLuaState();
+	scriptInterface->pushFunction(mType->info.playerAttackEvent);
+
+	Lua::pushUserdata<Monster>(L, this);
+	Lua::setMetatable(L, -1, "Monster");
+
+	Lua::pushUserdata<Player>(L, player);
+	Lua::setMetatable(L, -1, "Player");
+
+	scriptInterface->callFunction(2);
 }
 
 bool Monster::walkToSpawn()
