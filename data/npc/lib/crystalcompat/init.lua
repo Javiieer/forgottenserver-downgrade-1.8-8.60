@@ -6,39 +6,43 @@ MESSAGE_GREET = MESSAGE_GREET or 1
 MESSAGE_FAREWELL = MESSAGE_FAREWELL or 2
 MESSAGE_WALKAWAY = MESSAGE_WALKAWAY or 16
 
-local function getTimestamp()
-    return os.date("%Y-%m-%d %H:%M:%S") .. string.format(".%03d", math.random(1, 999))
+if VOCATION and VOCATION.ID and not VOCATION.BASE_ID then
+	VOCATION.BASE_ID = {
+		SORCERER = VOCATION.ID.SORCERER,
+		DRUID = VOCATION.ID.DRUID,
+		PALADIN = VOCATION.ID.PALADIN,
+		KNIGHT = VOCATION.ID.KNIGHT,
+		MONK = VOCATION.ID.MONK,
+	}
 end
-print(string.format("[%s] [\27[32minfo\27[0m] >> Loading smart proxy layer for Jiddo...", getTimestamp()))
+
+if Vocation and not Vocation.getBaseId then
+	function Vocation.getBaseId(self)
+		local base = self.getBase and self:getBase() or self
+		return base and base:getId() or 0
+	end
+end
+
+Storage = Storage or {}
+if PlayerStorageKeys and PlayerStorageKeys.firstRod and not Storage.FirstMageWeapon then
+	Storage.FirstMageWeapon = PlayerStorageKeys.firstRod
+end
+
 dofile('data/npc/lib/crystalcompat/keywordhandler.lua')
 dofile('data/npc/lib/crystalcompat/npchandler.lua')
+dofile('data/npc/lib/crystalcompat/stdmodule.lua')
+dofile('data/npc/lib/crystalcompat/focusmodule.lua')
 dofile('data/npc/lib/crystalcompat/npctype.lua')
 
 if KeywordHandler and NpcHandler then
 	if not _G.OriginalKeywordHandlerNew then _G.OriginalKeywordHandlerNew = KeywordHandler.new end
 	if not _G.OriginalNpcHandlerNew then _G.OriginalNpcHandlerNew = NpcHandler.new end
-	
-	-- Hijack keyword handler globally
+
 	function KeywordHandler:new(...)
-		local info = debug.getinfo(2, "S")
-		local isRevScript = info and info.source and (info.source:match("[\\/]npc[\\/]lua") or info.source:match("crystalcompat"))
-		
-		if isRevScript then
-			return CrystalKeywordHandler:new()
-		else
-			return _G.OriginalKeywordHandlerNew(self, ...)
-		end
+		return CrystalKeywordHandler:new(...)
 	end
 
-	-- Hijack NpcHandler globally
 	function NpcHandler:new(...)
-		local info = debug.getinfo(2, "S")
-		local isRevScript = info and info.source and (info.source:match("[\\/]npc[\\/]lua") or info.source:match("crystalcompat"))
-		
-		if isRevScript then
-			return CrystalNpcHandler:new(...)
-		else
-			return _G.OriginalNpcHandlerNew(self, ...)
-		end
+		return CrystalNpcHandler:new(...)
 	end
 end

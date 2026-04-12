@@ -679,6 +679,17 @@ do
 			end
 		end
 
+		local npcTypeMeta = getmetatable(self)
+		local npcTypeIndex = npcTypeMeta and npcTypeMeta.__index or nil
+
+		local function getNativeNpcTypeMethod(methodName)
+			if type(npcTypeIndex) == "table" and type(npcTypeIndex[methodName]) == "function" then
+				return npcTypeIndex[methodName]
+			end
+
+			return nil
+		end
+
 		-- Map modern RevScript fields to C++ event registration
 		local events = {
 			["onSay"] = "onSay",
@@ -691,15 +702,20 @@ do
 		}
 
 		for luaField, cppMethod in pairs(events) do
+			local nativeMethod = getNativeNpcTypeMethod(cppMethod)
 			if self[luaField] then
 				-- Register the actual callback found in the script
 				local eventName = (luaField == "onEndTrade" and "endtrade") or (luaField == "onCloseChannel" and "closechannel") or luaField:gsub("on", ""):lower()
 				self:eventType(eventName)
-				self[cppMethod](self, self[luaField])
+				if nativeMethod then
+					nativeMethod(self, self[luaField])
+				end
 			elseif luaField == "onSay" or luaField == "onAppear" or luaField == "onThink" then
 				-- Provide empty stubs for essential events to silence engine warnings
 				self:eventType(luaField:gsub("on", ""):lower())
-				self[cppMethod](self, function() end)
+				if nativeMethod then
+					nativeMethod(self, function() end)
+				end
 			end
 		end
 
