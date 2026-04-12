@@ -10,6 +10,7 @@
 #include "game.h"
 #include "instance_utils.h"
 #include "matrixarea.h"
+#include "monster.h"
 #include "scriptmanager.h"
 #include "weapons.h"
 
@@ -354,7 +355,11 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target)
 			if (target->isSummon() && target->getMaster()->getPlayer() && target->getZone() == ZONE_NOPVP) {
 				return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 			}
-		} else if (attacker->getMonster()) {
+		} else if (const Monster* attackerMonster = attacker->getMonster()) {
+			if (attackerMonster->isOpponent(target)) {
+				return g_events->eventCreatureOnTargetCombat(attacker, target);
+			}
+
 			const Creature* targetMaster = target->getMaster();
 
 			if (!targetMaster || !targetMaster->getPlayer()) {

@@ -19,6 +19,30 @@ function Player.feed(self, food)
 	return true
 end
 
+function Player.isSorcerer(self)
+	return table.contains({ VOCATION.ID.SORCERER, VOCATION.ID.MASTER_SORCERER }, self:getVocation():getId())
+end
+
+function Player.isDruid(self)
+	return table.contains({ VOCATION.ID.DRUID, VOCATION.ID.ELDER_DRUID }, self:getVocation():getId())
+end
+
+function Player.isKnight(self)
+	return table.contains({ VOCATION.ID.KNIGHT, VOCATION.ID.ELITE_KNIGHT }, self:getVocation():getId())
+end
+
+function Player.isPaladin(self)
+	return table.contains({ VOCATION.ID.PALADIN, VOCATION.ID.ROYAL_PALADIN }, self:getVocation():getId())
+end
+
+function Player.isMage(self)
+	return table.contains({ VOCATION.ID.SORCERER, VOCATION.ID.MASTER_SORCERER, VOCATION.ID.DRUID, VOCATION.ID.ELDER_DRUID }, self:getVocation():getId())
+end
+
+function Player.isMonk(self)
+	return table.contains({ VOCATION.ID.MONK, VOCATION.ID.EXALTED_MONK }, self:getVocation():getId())
+end
+
 function Player.getClosestFreePosition(self, position, extended)
 	if self:getGroup():getAccess() and self:getAccountType() >= ACCOUNT_TYPE_GOD then return position end
 	return Creature.getClosestFreePosition(self, position, extended)
@@ -423,6 +447,4 @@ do
 		end
 		return guild:getBankBalance()
 	end
-	
-
 end

@@ -104,15 +104,15 @@ int luaMonsterTypeIsSummonable(lua_State* L)
 	return 1;
 }
 
-int luaMonsterTypeIsIgnoringSpawnBlock(lua_State* L)
+int luaMonsterTypeIsBlockable(lua_State* L)
 {
-	// get: monsterType:isIgnoringSpawnBlock() set: monsterType:isIgnoringSpawnBlock(bool)
+	// get: monsterType:isBlockable() set: monsterType:isBlockable(bool)
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (monsterType) {
 		if (lua_gettop(L) == 1) {
-			pushBoolean(L, monsterType->info.isIgnoringSpawnBlock);
+			pushBoolean(L, monsterType->info.isBlockable);
 		} else {
-			monsterType->info.isIgnoringSpawnBlock = getBoolean(L, 2);
+			monsterType->info.isBlockable = getBoolean(L, 2);
 			pushBoolean(L, true);
 		}
 	} else {
@@ -579,9 +579,14 @@ int luaMonsterTypeGetAttackList(lua_State* L)
 		setField(L, "minCombatValue", spellBlock.minCombatValue);
 		setField(L, "maxCombatValue", spellBlock.maxCombatValue);
 		setField(L, "range", spellBlock.range);
-		setField(L, "speed", spellBlock.speed);
-		pushUserdata<CombatSpell>(L, static_cast<CombatSpell*>(spellBlock.spell));
-		lua_setfield(L, -2, "spell");
+		if (spellBlock.spell) {
+			if (spellBlock.combatSpell) {
+				pushUserdata<CombatSpell>(L, static_cast<CombatSpell*>(spellBlock.spell));
+			} else {
+				pushUserdata<Spell>(L, static_cast<Spell*>(spellBlock.spell));
+			}
+			lua_setfield(L, -2, "spell");
+		}
 
 		lua_rawseti(L, -2, ++index);
 	}
@@ -631,9 +636,14 @@ int luaMonsterTypeGetDefenseList(lua_State* L)
 		setField(L, "minCombatValue", spellBlock.minCombatValue);
 		setField(L, "maxCombatValue", spellBlock.maxCombatValue);
 		setField(L, "range", spellBlock.range);
-		setField(L, "speed", spellBlock.speed);
-		pushUserdata<CombatSpell>(L, static_cast<CombatSpell*>(spellBlock.spell));
-		lua_setfield(L, -2, "spell");
+		if (spellBlock.spell) {
+			if (spellBlock.combatSpell) {
+				pushUserdata<CombatSpell>(L, static_cast<CombatSpell*>(spellBlock.spell));
+			} else {
+				pushUserdata<Spell>(L, static_cast<Spell*>(spellBlock.spell));
+			}
+			lua_setfield(L, -2, "spell");
+		}
 
 		lua_rawseti(L, -2, ++index);
 	}
@@ -793,16 +803,110 @@ int luaMonsterTypeRegisterEvent(lua_State* L)
 	return 1;
 }
 
-int luaMonsterTypeEventOnCallback(lua_State* L)
+int luaMonsterTypeOnThink(lua_State* L)
 {
 	// monsterType:onThink(callback)
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (monsterType) {
+		int32_t id = g_scripts->getScriptInterface().getEvent();
+		if (id != -1) {
+			monsterType->info.thinkEvent = id;
+			monsterType->info.scriptInterface = &g_scripts->getScriptInterface();
+			pushBoolean(L, true);
+			return 1;
+		}
+		pushBoolean(L, false);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int luaMonsterTypeOnAppear(lua_State* L)
+{
 	// monsterType:onAppear(callback)
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (monsterType) {
+		int32_t id = g_scripts->getScriptInterface().getEvent();
+		if (id != -1) {
+			monsterType->info.creatureAppearEvent = id;
+			monsterType->info.scriptInterface = &g_scripts->getScriptInterface();
+			pushBoolean(L, true);
+			return 1;
+		}
+		pushBoolean(L, false);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int luaMonsterTypeOnDisappear(lua_State* L)
+{
 	// monsterType:onDisappear(callback)
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (monsterType) {
+		int32_t id = g_scripts->getScriptInterface().getEvent();
+		if (id != -1) {
+			monsterType->info.creatureDisappearEvent = id;
+			monsterType->info.scriptInterface = &g_scripts->getScriptInterface();
+			pushBoolean(L, true);
+			return 1;
+		}
+		pushBoolean(L, false);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int luaMonsterTypeOnMove(lua_State* L)
+{
 	// monsterType:onMove(callback)
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (monsterType) {
+		int32_t id = g_scripts->getScriptInterface().getEvent();
+		if (id != -1) {
+			monsterType->info.creatureMoveEvent = id;
+			monsterType->info.scriptInterface = &g_scripts->getScriptInterface();
+			pushBoolean(L, true);
+			return 1;
+		}
+		pushBoolean(L, false);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int luaMonsterTypeOnSay(lua_State* L)
+{
 	// monsterType:onSay(callback)
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (monsterType) {
-		if (monsterType->loadCallback(&g_scripts->getScriptInterface())) {
+		int32_t id = g_scripts->getScriptInterface().getEvent();
+		if (id != -1) {
+			monsterType->info.creatureSayEvent = id;
+			monsterType->info.scriptInterface = &g_scripts->getScriptInterface();
+			pushBoolean(L, true);
+			return 1;
+		}
+		pushBoolean(L, false);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int luaMonsterTypeOnPlayerAttack(lua_State* L)
+{
+	// monsterType:onPlayerAttack(callback)
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (monsterType) {
+		int32_t id = g_scripts->getScriptInterface().getEvent();
+		if (id != -1) {
+			monsterType->info.playerAttackEvent = id;
+			monsterType->info.scriptInterface = &g_scripts->getScriptInterface();
 			pushBoolean(L, true);
 			return 1;
 		}
@@ -1162,6 +1266,81 @@ int luaMonsterTypeChangeTargetSpeed(lua_State* L)
 	}
 	return 1;
 }
+
+int luaMonsterTypeStrategiesTarget(lua_State* L)
+{
+	// get: monsterType:strategiesTarget() set: monsterType:strategiesTarget(table)
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			lua_newtable(L);
+			setField(L, "nearest", monsterType->info.targetStrategies.nearest);
+			setField(L, "health", monsterType->info.targetStrategies.health);
+			setField(L, "damage", monsterType->info.targetStrategies.damage);
+			setField(L, "random", monsterType->info.targetStrategies.random);
+		} else {
+			if (lua_istable(L, 2)) {
+				monsterType->info.targetStrategies.nearest = getField<uint32_t>(L, 2, "nearest");
+				monsterType->info.targetStrategies.health = getField<uint32_t>(L, 2, "health");
+				monsterType->info.targetStrategies.damage = getField<uint32_t>(L, 2, "damage");
+				monsterType->info.targetStrategies.random = getField<uint32_t>(L, 2, "random");
+				pushBoolean(L, true);
+			} else {
+				pushBoolean(L, false);
+			}
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int luaMonsterTypeFaction(lua_State* L)
+{
+	// get: monsterType:faction() set: monsterType:faction(faction)
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			lua_pushinteger(L, monsterType->info.faction);
+		} else {
+			monsterType->info.faction = getInteger<Faction_t>(L, 2);
+			pushBoolean(L, true);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int luaMonsterTypeEnemyFactions(lua_State* L)
+{
+	// get: monsterType:enemyFactions() set: monsterType:enemyFactions({faction1, faction2, ...})
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (!monsterType) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		lua_newtable(L);
+		int index = 1;
+		for (Faction_t f : monsterType->info.enemyFactions) {
+			lua_pushinteger(L, f);
+			lua_rawseti(L, -2, index++);
+		}
+	} else {
+		monsterType->info.enemyFactions.clear();
+		if (lua_istable(L, 2)) {
+			lua_pushnil(L);
+			while (lua_next(L, 2) != 0) {
+				monsterType->info.enemyFactions.insert(getInteger<Faction_t>(L, -1));
+				lua_pop(L, 1);
+			}
+		}
+		pushBoolean(L, true);
+	}
+	return 1;
+}
 } // namespace
 
 void LuaScriptInterface::registerMonsterType()
@@ -1174,7 +1353,7 @@ void LuaScriptInterface::registerMonsterType()
 	registerMethod("MonsterType", "isChallengeable", luaMonsterTypeIsChallengeable);
 	registerMethod("MonsterType", "isConvinceable", luaMonsterTypeIsConvinceable);
 	registerMethod("MonsterType", "isSummonable", luaMonsterTypeIsSummonable);
-	registerMethod("MonsterType", "isIgnoringSpawnBlock", luaMonsterTypeIsIgnoringSpawnBlock);
+	registerMethod("MonsterType", "isBlockable", luaMonsterTypeIsBlockable);
 	registerMethod("MonsterType", "isIllusionable", luaMonsterTypeIsIllusionable);
 	registerMethod("MonsterType", "isHostile", luaMonsterTypeIsHostile);
 	registerMethod("MonsterType", "isPushable", luaMonsterTypeIsPushable);
@@ -1221,11 +1400,12 @@ void LuaScriptInterface::registerMonsterType()
 	registerMethod("MonsterType", "registerEvent", luaMonsterTypeRegisterEvent);
 
 	registerMethod("MonsterType", "eventType", luaMonsterTypeEventType);
-	registerMethod("MonsterType", "onThink", luaMonsterTypeEventOnCallback);
-	registerMethod("MonsterType", "onAppear", luaMonsterTypeEventOnCallback);
-	registerMethod("MonsterType", "onDisappear", luaMonsterTypeEventOnCallback);
-	registerMethod("MonsterType", "onMove", luaMonsterTypeEventOnCallback);
-	registerMethod("MonsterType", "onSay", luaMonsterTypeEventOnCallback);
+	registerMethod("MonsterType", "onThink", luaMonsterTypeOnThink);
+	registerMethod("MonsterType", "onAppear", luaMonsterTypeOnAppear);
+	registerMethod("MonsterType", "onDisappear", luaMonsterTypeOnDisappear);
+	registerMethod("MonsterType", "onMove", luaMonsterTypeOnMove);
+	registerMethod("MonsterType", "onSay", luaMonsterTypeOnSay);
+	registerMethod("MonsterType", "onPlayerAttack", luaMonsterTypeOnPlayerAttack);
 
 	registerMethod("MonsterType", "getSummonList", luaMonsterTypeGetSummonList);
 	registerMethod("MonsterType", "addSummon", luaMonsterTypeAddSummon);
@@ -1248,4 +1428,8 @@ void LuaScriptInterface::registerMonsterType()
 	registerMethod("MonsterType", "yellSpeedTicks", luaMonsterTypeYellSpeedTicks);
 	registerMethod("MonsterType", "changeTargetChance", luaMonsterTypeChangeTargetChance);
 	registerMethod("MonsterType", "changeTargetSpeed", luaMonsterTypeChangeTargetSpeed);
+	registerMethod("MonsterType", "strategiesTarget", luaMonsterTypeStrategiesTarget);
+
+	registerMethod("MonsterType", "faction", luaMonsterTypeFaction);
+	registerMethod("MonsterType", "enemyFactions", luaMonsterTypeEnemyFactions);
 }

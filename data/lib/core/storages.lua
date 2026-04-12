@@ -31,6 +31,14 @@ PlayerStorageKeys = {
 
     -- Influenced creatures
     influencedSpawnTime = 10050,
+
+    -- The Oracle NPC
+    oracleVisits = 90001,
+    oracleTrialWisdom = 90002,
+    oracleTrialCourage = 90003,
+    oracleTrialPatience = 90004,
+    oracleRiddleId = 90005,
+    oracleRewardGiven = 90006,
 }
 
 

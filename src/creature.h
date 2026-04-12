@@ -145,6 +145,7 @@ public:
 	virtual bool canSeeInvisibility() const { return false; }
 	virtual bool isInGhostMode() const { return false; }
 	virtual bool canSeeGhostMode(const Creature*) const { return false; }
+	virtual Faction_t getFaction() const { return FACTION_PLAYER; }
 
 	int32_t getWalkDelay(Direction dir) const;
 	int32_t getWalkDelay() const;
@@ -153,7 +154,7 @@ public:
 	int64_t getEventStepTicks(bool onlyDelay = false) const;
 	int64_t getStepDuration(Direction dir) const;
 	int64_t getStepDuration() const;
-	virtual int32_t getStepSpeed() const { return getSpeed(); }
+	virtual int32_t getStepSpeed() const { return getSpeed() * 2; }
 	int32_t getSpeed() const { return baseSpeed + varSpeed; }
 	void setSpeed(int32_t varSpeedDelta)
 	{

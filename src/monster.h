@@ -20,6 +20,8 @@ enum TargetSearchType_t
 	TARGETSEARCH_RANDOM,
 	TARGETSEARCH_ATTACKRANGE,
 	TARGETSEARCH_NEAREST,
+	TARGETSEARCH_HEALTH,
+	TARGETSEARCH_DAMAGE,
 };
 
 class Monster final : public Creature
@@ -63,6 +65,7 @@ public:
 
 	const Position& getMasterPos() const { return masterPos; }
 	void setMasterPos(Position pos) { masterPos = pos; }
+	Faction_t getFaction() const override { return mType->info.faction; }
 
 	RaceType_t getRace() const override { return mType->info.race; }
 	int32_t getArmor() const override { return mType->info.armor; }
@@ -156,6 +159,8 @@ public:
 	void addTarget(Creature* creature, bool pushFront = false);
 	void removeTarget(Creature* creature);
 
+	void callPlayerAttackEvent(Player* player);
+
 private:
 	CreatureWeakHashSet friendList;
 	CreatureWeakList targetList;
@@ -190,6 +195,7 @@ private:
 
 	void onCreatureEnter(Creature* creature);
 	void onCreatureLeave(Creature* creature);
+	bool selectBlockerTarget();
 	void onCreatureFound(Creature* creature, bool pushFront = false);
 
 	void updateLookDirection();

@@ -1814,6 +1814,17 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(CREATURETYPE_NPC);
 	registerEnum(CREATURETYPE_SUMMON_OWN);
 	registerEnum(CREATURETYPE_SUMMON_OTHERS);
+ 
+	registerEnum(FACTION_DEFAULT);
+	registerEnum(FACTION_PLAYER);
+	registerEnum(FACTION_LION);
+	registerEnum(FACTION_LIONUSURPERS);
+	registerEnum(FACTION_MARID);
+	registerEnum(FACTION_EFREET);
+	registerEnum(FACTION_DEEPLING);
+	registerEnum(FACTION_DEATHLING);
+	registerEnum(FACTION_ANUMA);
+	registerEnum(FACTION_FAFNAR);
 
 	registerEnum(CLIENTOS_LINUX);
 	registerEnum(CLIENTOS_WINDOWS);
@@ -2497,6 +2508,7 @@ void LuaScriptInterface::registerFunctions()
 	registerModalWindow();
 	registerMonster();
 	registerNpc();
+	registerNpcType();
 	registerGuild();
 	registerGroup();
 	registerVocation();
@@ -2592,6 +2604,7 @@ void LuaScriptInterface::registerClass(const std::string& className, const std::
 	    {"ItemType", LuaData_ItemType},
 	    {"ModalWindow", LuaData_ModalWindow},
 	    {"MonsterType", LuaData_MonsterType},
+		{"NpcType", LuaData_NpcType},
 	    {"NetworkMessage", LuaData_NetworkMessage},
 	    {"Party", LuaData_Party},
 	    {"Vocation", LuaData_Vocation},

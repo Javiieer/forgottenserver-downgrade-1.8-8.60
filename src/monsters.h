@@ -94,6 +94,14 @@ struct voiceBlock_t
 	bool yellText;
 };
 
+struct targetStrategies_t
+{
+	uint32_t nearest = 0;
+	uint32_t health = 0;
+	uint32_t damage = 0;
+	uint32_t random = 0;
+};
+
 class MonsterType
 {
 	struct MonsterInfo
@@ -134,6 +142,7 @@ class MonsterType
 		int32_t creatureMoveEvent = -1;
 		int32_t creatureSayEvent = -1;
 		int32_t thinkEvent = -1;
+		int32_t playerAttackEvent = -1;
 		int32_t targetDistance = 1;
 		int32_t runAwayHealth = 0;
 		int32_t health = 100;
@@ -142,6 +151,10 @@ class MonsterType
 		int32_t defense = 0;
 		int32_t armor = 0;
 		float mitigation = 0.0f;
+
+		targetStrategies_t targetStrategies = {};
+		Faction_t faction = FACTION_DEFAULT;
+		std::set<Faction_t> enemyFactions;
 
 		bool canPushItems = false;
 		bool canPushCreatures = false;
@@ -152,7 +165,7 @@ class MonsterType
 		bool isChallengeable = true;
 		bool isConvinceable = false;
 		bool isHostile = true;
-		bool isIgnoringSpawnBlock = false;
+		bool isBlockable = true;
 		bool isIllusionable = false;
 		bool isSummonable = false;
 		bool hiddenHealth = false;

@@ -10,6 +10,7 @@
 #include "game.h"
 #include "iologindata.h"
 #include "logger.h"
+#include "player.h"
 #include "scriptmanager.h"
 #include "spells.h"
 
@@ -301,17 +302,8 @@ void Monster::onCreatureMove(Creature* creature, const Tile* newTile, const Posi
 
 					int32_t offset_x = followPosition.getDistanceX(position);
 					int32_t offset_y = followPosition.getDistanceY(position);
-					if ((offset_x > 1 || offset_y > 1) && mType->info.changeTargetChance > 0) {
-						Direction dir = getDirectionTo(position, followPosition);
-						const Position& checkPosition = getNextPosition(dir, position);
-
-						Tile* tile = g_game.map.getTile(checkPosition);
-						if (tile) {
-							Creature* topCreature = tile->getTopCreature();
-							if (topCreature && fc.get() != topCreature && isOpponent(topCreature)) {
-								selectTarget(topCreature);
-							}
-						}
+					if (offset_x > 1 || offset_y > 1) {
+						selectBlockerTarget();
 					}
 				}
 			} else if (isOpponent(creature)) {
@@ -529,6 +521,14 @@ void Monster::onCreatureEnter(Creature* creature)
 
 bool Monster::isFriend(const Creature* creature) const
 {
+	if (creature == this) {
+		return true;
+	}
+
+	if (mType->info.faction != FACTION_DEFAULT && mType->info.faction == creature->getFaction()) {
+		return true;
+	}
+
 	if (isSummon() && getMaster()->getPlayer()) {
 		const Player* masterPlayer = getMaster()->getPlayer();
 		const Player* tmpPlayer = nullptr;
@@ -547,6 +547,9 @@ bool Monster::isFriend(const Creature* creature) const
 			return true;
 		}
 	} else if (creature->getMonster() && !creature->isSummon()) {
+		if (isOpponent(creature)) {
+			return false;
+		}
 		return true;
 	}
 
@@ -555,6 +558,14 @@ bool Monster::isFriend(const Creature* creature) const
 
 bool Monster::isOpponent(const Creature* creature) const
 {
+	if (creature == this) {
+		return false;
+	}
+
+	if (mType->info.enemyFactions.count(creature->getFaction()) > 0) {
+		return true;
+	}
+
 	if (isSummon() && getMaster()->getPlayer()) {
 		if (creature != getMaster()) {
 			return true;
@@ -669,6 +680,72 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 			break;
 		}
 
+		case TARGETSEARCH_HEALTH: {
+			Creature* target = nullptr;
+			int32_t minHealth = std::numeric_limits<int32_t>::max();
+			if (!resultList.empty()) {
+				for (Creature* creature : resultList) {
+					if (int32_t health = creature->getHealth(); health < minHealth) {
+						target = creature;
+						minHealth = health;
+					}
+				}
+			} else {
+				for (const auto& weakRef : targetList) {
+					auto creature = weakRef.lock();
+					if (!creature || creature->isRemoved() || !creature->getTile() || !isTarget(creature.get())) {
+						continue;
+					}
+
+					if (int32_t health = creature->getHealth(); health < minHealth) {
+						target = creature.get();
+						minHealth = health;
+					}
+				}
+			}
+
+			if (target && selectTarget(target)) {
+				return true;
+			}
+			break;
+		}
+
+		case TARGETSEARCH_DAMAGE: {
+			Creature* target = nullptr;
+			int32_t maxDamage = -1;
+			if (!resultList.empty()) {
+				for (Creature* creature : resultList) {
+					auto it = damageMap.find(creature->getID());
+					if (it != damageMap.end()) {
+						if (it->second.total > maxDamage) {
+							target = creature;
+							maxDamage = it->second.total;
+						}
+					}
+				}
+			} else {
+				for (const auto& weakRef : targetList) {
+					auto creature = weakRef.lock();
+					if (!creature || creature->isRemoved() || !creature->getTile() || !isTarget(creature.get())) {
+						continue;
+					}
+
+					auto it = damageMap.find(creature->getID());
+					if (it != damageMap.end()) {
+						if (it->second.total > maxDamage) {
+							target = creature.get();
+							maxDamage = it->second.total;
+						}
+					}
+				}
+			}
+
+			if (target && selectTarget(target)) {
+				return true;
+			}
+			break;
+		}
+
 		case TARGETSEARCH_DEFAULT:
 		case TARGETSEARCH_ATTACKRANGE:
 		case TARGETSEARCH_RANDOM:
@@ -696,6 +773,45 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 			return true;
 		}
 	}
+	return false;
+}
+
+bool Monster::selectBlockerTarget()
+{
+	if (isRemoved() || isDead() || isSummon() || challengeFocusDuration > 0) {
+		return false;
+	}
+
+	auto fc = followCreature.lock();
+	if (!fc) {
+		return false;
+	}
+
+	const Position& myPos = getPosition();
+	const Position& targetPos = fc->getPosition();
+
+	if (myPos.z != targetPos.z || !canSee(targetPos)) {
+		return false;
+	}
+
+	// Only for monsters that want to be close (melee)
+	if (mType->info.targetDistance > 1) {
+		return false;
+	}
+
+	Direction dir = getDirectionTo(myPos, targetPos);
+	Position nextPos = getNextPosition(dir, myPos);
+
+	Tile* tile = g_game.map.getTile(nextPos);
+	if (!tile) {
+		return false;
+	}
+
+	Creature* blocker = tile->getTopCreature();
+	if (blocker && blocker != fc.get() && isOpponent(blocker)) {
+		return selectTarget(blocker);
+	}
+
 	return false;
 }
 
@@ -965,7 +1081,12 @@ void Monster::doAttacking(uint32_t interval)
 			continue;
 		}
 
-		const Position& targetPos = attackedCreature.lock()->getPosition();
+		auto victim = attackedCreature.lock();
+		if (!victim) {
+			continue;
+		}
+
+		const Position& targetPos = victim->getPosition();
 
 		if (canUseSpell(myPos, targetPos, spellBlock, interval, inRange, resetTicks)) {
 			if (spellBlock.chance >= static_cast<uint32_t>(uniform_random(1, 100))) {
@@ -983,7 +1104,7 @@ void Monster::doAttacking(uint32_t interval)
 				minCombatValue = minVal;
 				maxCombatValue = maxVal;
 
-				spellBlock.spell->castSpell(this, attackedCreature.lock().get());
+				spellBlock.spell->castSpell(this, victim.get());
 
 				// Check after cast — this is the only place state can actually change
 				if (isRemoved() || isDead() || attackedCreature.expired() || attackedCreature.lock()->isRemoved() || attackedCreature.lock()->isDead()) {
@@ -1050,7 +1171,7 @@ bool Monster::canUseSpell(const Position& pos, const Position& targetPos, const 
 			return false;
 		}
 
-		if (attackTicks % sb.speed >= interval) {
+		if (sb.speed == 0 || attackTicks % sb.speed >= interval) {
 			// already used this spell for this round
 			return false;
 		}
@@ -1109,10 +1230,27 @@ void Monster::onThinkTarget(uint32_t interval)
 					}
 
 					if (mType->info.changeTargetChance >= uniform_random(1, 100)) {
-						if (mType->info.targetDistance <= 1) {
-							searchTarget(TARGETSEARCH_RANDOM);
+						const targetStrategies_t& strategies = mType->info.targetStrategies;
+						uint32_t totalWeight = strategies.nearest + strategies.health + strategies.damage + strategies.random;
+						if (totalWeight > 0) {
+							uint32_t roll = uniform_random(1, totalWeight);
+							uint32_t currentWeight = 0;
+
+							if (roll <= (currentWeight += strategies.nearest)) {
+								searchTarget(TARGETSEARCH_NEAREST);
+							} else if (roll <= (currentWeight += strategies.health)) {
+								searchTarget(TARGETSEARCH_HEALTH);
+							} else if (roll <= (currentWeight += strategies.damage)) {
+								searchTarget(TARGETSEARCH_DAMAGE);
+							} else {
+								searchTarget(TARGETSEARCH_RANDOM);
+							}
 						} else {
-							searchTarget(TARGETSEARCH_NEAREST);
+							if (mType->info.targetDistance <= 1) {
+								searchTarget(TARGETSEARCH_RANDOM);
+							} else {
+								searchTarget(TARGETSEARCH_NEAREST);
+							}
 						}
 					}
 				}
@@ -1132,7 +1270,7 @@ void Monster::onThinkDefense(uint32_t interval)
 			continue;
 		}
 
-		if (defenseTicks % spellBlock.speed >= interval) {
+		if (spellBlock.speed == 0 || defenseTicks % spellBlock.speed >= interval) {
 			// already used this spell for this round
 			continue;
 		}
@@ -1160,7 +1298,7 @@ void Monster::onThinkDefense(uint32_t interval)
 				continue;
 			}
 
-			if (defenseTicks % summonBlock.speed >= interval) {
+			if (summonBlock.speed == 0 || defenseTicks % summonBlock.speed >= interval) {
 				// already used this spell for this round
 				continue;
 			}
@@ -1217,6 +1355,34 @@ void Monster::onThinkYell(uint32_t interval)
 			}
 		}
 	}
+}
+
+void Monster::callPlayerAttackEvent(Player* player)
+{
+	if (mType->info.playerAttackEvent == -1) {
+		return;
+	}
+
+	// onPlayerAttack(self, attackerPlayer)
+	LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
+	if (!scriptInterface->reserveScriptEnv()) {
+		LOG_ERROR("[Error - Monster::callPlayerAttackEvent] Call stack overflow");
+		return;
+	}
+
+	ScriptEnvironment* env = scriptInterface->getScriptEnv();
+	env->setScriptId(mType->info.playerAttackEvent, scriptInterface);
+
+	lua_State* L = scriptInterface->getLuaState();
+	scriptInterface->pushFunction(mType->info.playerAttackEvent);
+
+	Lua::pushUserdata<Monster>(L, this);
+	Lua::setMetatable(L, -1, "Monster");
+
+	Lua::pushUserdata<Player>(L, player);
+	Lua::setMetatable(L, -1, "Player");
+
+	scriptInterface->callFunction(2);
 }
 
 bool Monster::walkToSpawn()
@@ -1371,6 +1537,10 @@ bool Monster::getNextStep(Direction& direction, uint32_t& flags)
 			if (result) {
 				flags |= FLAG_PATHFINDING;
 			} else {
+				if (selectBlockerTarget()) {
+					return false;
+				}
+
 				if (ignoreFieldDamage) {
 					ignoreFieldDamage = false;
 				}

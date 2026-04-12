@@ -335,6 +335,18 @@ int luaPlayerGetDeathPenalty(lua_State* L)
 	return 1;
 }
 
+int luaPlayerGetDropBonus(lua_State* L)
+{
+	// player:getDropBonus()
+	const Player* player = getUserdata<const Player>(L, 1);
+	if (player) {
+		lua_pushinteger(L, player->totalDropBonus);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int luaPlayerGetExperience(lua_State* L)
 {
 	// player:getExperience()
@@ -673,7 +685,7 @@ int luaPlayerAddSpecialSkill(lua_State* L)
 
 int luaPlayerGetItemCount(lua_State* L)
 {
-	// player:getItemCount(itemId[, subType = -1])
+	// player:getItemCount(itemId[, subType = -1[, ignoreEquipped = false]])
 	const Player* player = getUserdata<const Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
@@ -692,7 +704,8 @@ int luaPlayerGetItemCount(lua_State* L)
 	}
 
 	int32_t subType = getInteger<int32_t>(L, 3, -1);
-	lua_pushinteger(L, player->getItemTypeCount(itemId, subType));
+	bool ignoreEquipped = getBoolean(L, 4, false);
+	lua_pushinteger(L, player->getItemTypeCount(itemId, subType, ignoreEquipped));
 	return 1;
 }
 
@@ -3305,6 +3318,7 @@ void LuaScriptInterface::registerPlayer()
 	registerMethod("Player", "getSkullTime", luaPlayerGetSkullTime);
 	registerMethod("Player", "setSkullTime", luaPlayerSetSkullTime);
 	registerMethod("Player", "getDeathPenalty", luaPlayerGetDeathPenalty);
+	registerMethod("Player", "getDropBonus", luaPlayerGetDropBonus);
 
 	registerMethod("Player", "getExperience", luaPlayerGetExperience);
 	registerMethod("Player", "addExperience", luaPlayerAddExperience);

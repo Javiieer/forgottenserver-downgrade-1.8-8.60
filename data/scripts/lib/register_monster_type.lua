@@ -19,6 +19,12 @@ end
 registerMonsterType.description = function(mtype, mask)
 	if mask.description then mtype:nameDescription(mask.description) end
 end
+registerMonsterType.faction = function(mtype, mask)
+	if mask.faction then mtype:faction(mask.faction) end
+end
+registerMonsterType.enemyFactions = function(mtype, mask)
+	if mask.enemyFactions then mtype:enemyFactions(mask.enemyFactions) end
+end
 registerMonsterType.experience = function(mtype, mask)
 	if mask.experience then mtype:experience(mask.experience) end
 end
@@ -77,8 +83,10 @@ registerMonsterType.flags = function(mtype, mask)
 		if mask.flags.summonable ~= nil then
 			mtype:isSummonable(mask.flags.summonable)
 		end
-		if mask.flags.ignoreSpawnBlock ~= nil then
-			mtype:isIgnoringSpawnBlock(mask.flags.ignoreSpawnBlock)
+		if mask.flags.isBlockable ~= nil then
+			mtype:isBlockable(mask.flags.isBlockable)
+		elseif mask.flags.ignoreSpawnBlock ~= nil then
+			mtype:isBlockable(not mask.flags.ignoreSpawnBlock)
 		end
 		if mask.flags.illusionable ~= nil then
 			mtype:isIllusionable(mask.flags.illusionable)
@@ -128,6 +136,11 @@ registerMonsterType.changeTarget = function(mtype, mask)
 		if mask.changeTarget.interval then
 			mtype:changeTargetSpeed(mask.changeTarget.interval)
 		end
+	end
+end
+registerMonsterType.strategiesTarget = function(mtype, mask)
+	if mask.strategiesTarget then
+		mtype:strategiesTarget(mask.strategiesTarget)
 	end
 end
 registerMonsterType.voices = function(mtype, mask)
@@ -263,17 +276,24 @@ local function AbilityTableToSpell(ability)
 			if ability.effect then spell:setCombatEffect(ability.effect) end
 		else
 			spell:setType(ability.name)
-			if ability.type then spell:setCombatType(ability.type) end
+			if ability.type then
+				if ability.name == "condition" then
+					spell:setConditionType(ability.type)
+				else
+					spell:setCombatType(ability.type)
+				end
+			end
 			if ability.interval then spell:setInterval(ability.interval) end
 			if ability.chance then spell:setChance(ability.chance) end
 			if ability.range then spell:setRange(ability.range) end
 			if ability.duration then spell:setConditionDuration(ability.duration) end
-			if ability.speed then
-				if type(ability.speed) ~= "table" then
-					spell:setConditionSpeedChange(ability.speed)
-				elseif type(ability.speed) == "table" then
-					if ability.speed.min and ability.speed.max then
-						spell:setConditionSpeedChange(ability.speed.min, ability.speed.max)
+			local speed = ability.speed or ability.speedChange or ability.minChange
+			if speed then
+				if type(speed) ~= "table" then
+					spell:setConditionSpeedChange(speed, ability.maxChange or speed)
+				elseif type(speed) == "table" then
+					if speed.min and speed.max then
+						spell:setConditionSpeedChange(speed.min, speed.max)
 					end
 				end
 			end
@@ -284,6 +304,12 @@ local function AbilityTableToSpell(ability)
 			if ability.ring then spell:setCombatRing(ability.ring) end
 			if ability.minDamage and ability.maxDamage then
 				spell:setCombatValue(ability.minDamage, ability.maxDamage)
+				if ability.name == "condition" then
+					spell:setConditionDamage(ability.minDamage, ability.maxDamage, ability.startDamage or 0)
+				end
+			end
+			if ability.totalDamage and ability.name == "condition" then
+				spell:setConditionDamage(ability.totalDamage, ability.totalDamage, ability.startDamage or 0)
 			end
 			if ability.effect then spell:setCombatEffect(ability.effect) end
 			if ability.outfit and spell.setOutfit then
@@ -309,8 +335,9 @@ local function AbilityTableToSpell(ability)
 				startDamage = ability.condition.startDamage
 			end
 			if ability.condition.minDamage and ability.condition.maxDamage then
-				spell:setConditionDamage(ability.condition.minDamage,
-				                         ability.condition.maxDamage, startDamage)
+				spell:setConditionDamage(ability.condition.minDamage, ability.condition.maxDamage, startDamage)
+			elseif ability.condition.totalDamage then
+				spell:setConditionDamage(ability.condition.totalDamage, ability.condition.totalDamage, startDamage)
 			end
 			if ability.condition.duration then
 				spell:setConditionDuration(ability.condition.duration)
