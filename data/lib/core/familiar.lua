@@ -6,8 +6,8 @@ FAMILIAR_ID = {
 }
 
 FAMILIAR_TIMER = {
-	[1] = { storage = 845230, countdown = 10, message = "10 seconds" },
-	[2] = { storage = 845231, countdown = 60, message = "one minute" },
+	[1] = { storage = PlayerStorageKeys.familiarTimer10, countdown = 10, message = "10 seconds" },
+	[2] = { storage = PlayerStorageKeys.familiarTimer60, countdown = 60, message = "one minute" },
 }
 
 function SendMessageFunction(playerId, message)
@@ -72,7 +72,7 @@ function Player:createFamiliar(familiarName, timeLeft)
 	playerPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 	myFamiliar:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 
-	self:setStorageValue(845232, os.time() + timeLeft)
+	self:setStorageValue(PlayerStorageKeys.familiarSummonTime, os.time() + timeLeft)
 	addEvent(RemoveFamiliar, timeLeft * 1000, myFamiliar:getId(), self:getId())
 
 	for sendMessage = 1, #FAMILIAR_TIMER do

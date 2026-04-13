@@ -6,7 +6,7 @@ function Player:onLook(thing, position, distance)
 		local master = thing:getMaster()
 		local summons = { "sorcerer familiar", "knight familiar", "druid familiar", "paladin familiar", "monk familiar" }
 		if master and table.contains(summons, thing:getName():lower()) then
-			local familiarSummonTime = master:getStorageValue(845232) or 0
+			local familiarSummonTime = master:getStorageValue(PlayerStorageKeys.familiarSummonTime) or 0
 			description = description .. " (Master: " .. master:getName() .. "). \z
 				It will disappear in " .. Game.getTimeInWords(familiarSummonTime - os.time())
 		end
