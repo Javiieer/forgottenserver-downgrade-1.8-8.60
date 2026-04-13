@@ -61,7 +61,7 @@ struct summonBlock_t
 class BaseSpell;
 struct spellBlock_t
 {
-	constexpr spellBlock_t() = default;
+	spellBlock_t();
 	~spellBlock_t();
 	spellBlock_t(const spellBlock_t& other) = delete;
 	spellBlock_t& operator=(const spellBlock_t& other) = delete;

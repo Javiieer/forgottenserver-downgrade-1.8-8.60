@@ -19,6 +19,7 @@
 extern Game g_game;
 extern Monsters g_monsters;
 
+spellBlock_t::spellBlock_t() = default;
 spellBlock_t::~spellBlock_t() = default;
 
 spellBlock_t::spellBlock_t(spellBlock_t&& other) noexcept :
