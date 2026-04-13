@@ -247,6 +247,7 @@
     <ClCompile Include="..\src\luavocation.cpp" />
     <ClCompile Include="..\src\luaweapons.cpp" />
     <ClCompile Include="..\src\luaxml.cpp" />
+    <ClCompile Include="..\src\luazone.cpp" />
     <ClCompile Include="..\src\mailbox.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\map.cpp" />
@@ -303,6 +304,7 @@
     <ClCompile Include="..\src\weapons.cpp" />
     <ClCompile Include="..\src\wildcardtree.cpp" />
     <ClCompile Include="..\src\xtea.cpp" />
+    <ClCompile Include="..\src\zones.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\account.h" />
@@ -400,6 +402,7 @@
     <ClInclude Include="..\src\weapons.h" />
     <ClInclude Include="..\src\wildcardtree.h" />
     <ClInclude Include="..\src\xtea.h" />
+    <ClInclude Include="..\src\zones.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="theforgottenserver.rc" />

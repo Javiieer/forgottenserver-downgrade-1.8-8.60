@@ -1629,24 +1629,15 @@ void ProtocolGame::sendCreatureEmblem(const Creature* creature)
 	if (!canSee(creature)) {
 		return;
 	}
-
-	// Re-add the creature as "unknown" so AddCreature serializes the guild emblem again.
+	// Remove creature from client and re-add to update
 	Position pos = creature->getPosition();
 	int32_t stackpos = creature->getTile()->getClientIndexOfCreature(player, creature);
-	if (stackpos == -1 || stackpos >= MAX_STACKPOS_THINGS) {
-		return;
-	}
-
 	sendRemoveTileThing(pos, stackpos);
-
-	knownCreatureSet.erase(creature->getID());
-
 	NetworkMessage msg;
 	msg.addByte(0x6A);
 	msg.addPosition(pos);
-	msg.addByte(static_cast<uint8_t>(stackpos));
-	auto [known, removedKnown] = isKnownCreature(creature->getID());
-	AddCreature(msg, creature, known, removedKnown);
+	msg.addByte(stackpos);
+	AddCreature(msg, creature, false, creature->getID());
 	writeToOutputBuffer(msg);
 }
 
