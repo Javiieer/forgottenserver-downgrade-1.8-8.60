@@ -1,6 +1,6 @@
 local npc = Game.createNpcType("Banker")
 npc:speechBubble(SPEECHBUBBLE_TRADE)
-npc:outfit({lookType = 472, lookHead = 40, lookBody = 95, lookLegs = 114, lookFeet = 27, addons = 1})
+npc:outfit({ lookType = 472, lookHead = 40, lookBody = 95, lookLegs = 114, lookFeet = 27, addons = 1 })
 npc:defaultBehavior()
 
 local handler = NpcsHandler(npc)
@@ -8,33 +8,41 @@ local greet = handler:keyword(handler.greetWords)
 greet:setGreetResponse("Welcome to the bank, |PLAYERNAME|! Need some help with your {bank account}?")
 
 local help = greet:keyword("help")
-help:respond("You can check the {balance} of your bank account, {deposit} money or {withdraw} it. You can {transfer} money to other characters, provided that they have a vocation, or {change} the coins in your inventory.")
+help:respond(
+"You can check the {balance} of your bank account, {deposit} money or {withdraw} it. You can {transfer} money to other characters, provided that they have a vocation, or {change} the coins in your inventory.")
 
 local bankAccount = greet:keyword("bank account")
-bankAccount:respond("Would you like to know more about the {basic} functions of your bank account, the {advanced} functions, or are you already bored, perhaps?")
+bankAccount:respond(
+"Would you like to know more about the {basic} functions of your bank account, the {advanced} functions, or are you already bored, perhaps?")
 
-local basic = bankAccount:keyword({"basic", "functions", "job"})
+local basic = bankAccount:keyword({ "basic", "functions", "job" })
 basic:respond("I work in this bank. I can {change} money for you and help you with your {bank account}.")
 
 local advanced = bankAccount:keyword("advanced")
-advanced:respond("Your bank account will be used automatically when you want to {rent} a house or place an offer on an item on the {market}. Let me know if you want to know about how either one works.")
+advanced:respond(
+"Your bank account will be used automatically when you want to {rent} a house or place an offer on an item on the {market}. Let me know if you want to know about how either one works.")
 
 local rent = advanced:keyword("rent")
-rent:respond("Once you have acquired a house the rent will be charged automatically from your {bank account} every month.")
+rent:respond(
+"Once you have acquired a house the rent will be charged automatically from your {bank account} every month.")
 
 local market = advanced:keyword("market")
-market:respond("If you buy an item from the market, the required gold will be deducted from your bank account automatically. On the other hand, money you earn for selling items via the market will be added to your account. It's easy!")
+market:respond(
+"If you buy an item from the market, the required gold will be deducted from your bank account automatically. On the other hand, money you earn for selling items via the market will be added to your account. It's easy!")
 
 -- Bank Balance
 local balance = greet:keyword("balance")
 function balance:callback(npc, player, message, handler)
     local balance = player:getBankBalance()
     if balance >= 100000000 then
-        return true, "I think you must be one of the richest inhabitants in the world! Your account balance is " .. balance .. " gold."
+        return true,
+            "I think you must be one of the richest inhabitants in the world! Your account balance is " ..
+            balance .. " gold."
     elseif balance >= 10000000 then
         return true, "You have made ten millions and it still grows! Your account balance is " .. balance .. " gold."
     elseif balance >= 1000000 then
-        return true, "Wow, you have reached the magic number of a million gp!!! Your account balance is " .. balance.. " gold!"
+        return true,
+            "Wow, you have reached the magic number of a million gp!!! Your account balance is " .. balance .. " gold!"
     elseif balance >= 100000 then
         return true, "You certainly have made a pretty penny. Your account balance is " .. balance .. " gold."
     end
@@ -57,7 +65,8 @@ function answer:callback(npc, player, message, handler)
     end
     return false, "I'm sorry, but you can't deposit a negative amount of money or no money at all."
 end
-local accept = answer:keyword({"yes"})
+
+local accept = answer:keyword({ "yes" })
 function accept:callback(npc, player, message, handler)
     local money = handler:getData(player, "money")
     if player:getMoney() < money then
@@ -67,7 +76,8 @@ function accept:callback(npc, player, message, handler)
     handler:resetData(player)
     return true, "You have deposited " .. money .. " gold coins into your bank account."
 end
-local decline = answer:keyword({"no"})
+
+local decline = answer:keyword({ "no" })
 decline:respond("Ok then, not.")
 
 -- Bank Withdraw
@@ -89,14 +99,16 @@ function answer:callback(npc, player, message, handler)
     end
     return false, "I'm sorry, but you can't withdraw a negative amount of money or no money at all."
 end
-local accept = answer:keyword({"yes"})
+
+local accept = answer:keyword({ "yes" })
 function accept:callback(npc, player, message, handler)
     local money = handler:getData(player, "money")
     player:withdrawMoney(money)
     handler:resetData(player)
     return true, "You have withdrawn " .. money .. " gold coins from your bank account."
 end
-local decline = answer:keyword({"no"})
+
+local decline = answer:keyword({ "no" })
 decline:respond("Ok then, not.")
 
 -- Bank Transfer
@@ -111,12 +123,12 @@ function answer:callback(npc, player, message, handler)
         if tonumber(data[i]) then
             money = tonumber(data[i])
         else
-            playerName = playerName ~= "" and playerName .." ".. data[i] or data[i]
+            playerName = playerName ~= "" and playerName .. " " .. data[i] or data[i]
         end
     end
     local receiver = getPlayerDatabaseInfo(playerName)
     if not receiver then
-        return false, "There is no one named like ".. playerName
+        return false, "There is no one named like " .. playerName
     end
     if receiver.vocation == VOCATION_NONE or player:getVocation() == VOCATION_NONE then
         return false, "You can't transfer money to or from a player without a vocation."
@@ -128,29 +140,32 @@ function answer:callback(npc, player, message, handler)
         return false, "You can't transfer a negative amount of money or no money at all."
     end
     if player:getBankBalance() < money then
-        return false, "You don't have enough money to transfer ".. money .." gold coins to ".. playerName
+        return false, "You don't have enough money to transfer " .. money .. " gold coins to " .. playerName
     end
     handler:addData(player, "money", money)
     handler:addData(player, "playerName", playerName)
-    return true, "You want to transfer money to ".. playerName .." in the amount of ".. money .." gold coins?"
+    return true, "You want to transfer money to " .. playerName .. " in the amount of " .. money .. " gold coins?"
 end
-local accept = answer:keyword({"yes"})
+
+local accept = answer:keyword({ "yes" })
 function accept:callback(npc, player, message, handler)
     local money = handler:getData(player, "money")
     local playerName = handler:getData(player, "playerName")
     local receiver = getPlayerDatabaseInfo(playerName)
     if not player:transferMoneyTo(receiver, money) then
-        return false, "You don't have enough money to transfer ".. money .." gold coins to ".. playerName
+        return false, "You don't have enough money to transfer " .. money .. " gold coins to " .. playerName
     end
     handler:resetData(player)
-    return true, "You have transferred ".. money .." gold coins to ".. playerName
+    return true, "You have transferred " .. money .. " gold coins to " .. playerName
 end
-local decline = answer:keyword({"no"})
+
+local decline = answer:keyword({ "no" })
 decline:respond("Ok then, not.")
 
 -- Bank Change
 local change = greet:keyword("change")
-change:respond("Would you like to change your coins? You can change {gold} coins into {platinum} coins, {platinum} coins into {gold} coins, {platinum} coins into {crystal} coins, or {crystal} coins into {platinum} coins.")
+change:respond(
+"Would you like to change your coins? You can change {gold} coins into {platinum} coins, {platinum} coins into {gold} coins, {platinum} coins into {crystal} coins, or {crystal} coins into {platinum} coins.")
 
 -- Change Gold to Platinum
 local gold = change:keyword("gold")
@@ -161,29 +176,36 @@ function answer:callback(npc, player, message, handler)
     local valid = isValidMoney(money)
     if valid then
         if player:getItemCount(ITEM_GOLD_COIN) < money then
-            return false, "You don't have enough money to change " .. money .. " gold coins, into ".. message .." platinum coins."
+            return false,
+                "You don't have enough money to change " .. money .. " gold coins, into " .. message ..
+                " platinum coins."
         end
         handler:addData(player, "money", money)
-        return true, "You want to change " .. money .. " gold coins, into ".. message .." platinum coins?"
+        return true, "You want to change " .. money .. " gold coins, into " .. message .. " platinum coins?"
     end
     return false, "I'm sorry, but you can't change a negative amount of money or no money at all."
 end
-local accept = answer:keyword({"yes"})
+
+local accept = answer:keyword({ "yes" })
 function accept:callback(npc, player, message, handler)
     local money = handler:getData(player, "money")
     if not player:removeItem(ITEM_GOLD_COIN, money) then
-        return false, "You don't have enough money to change " .. money .. " gold coins, into ".. math.floor(money / 100) .." platinum coins."
+        return false,
+            "You don't have enough money to change " ..
+            money .. " gold coins, into " .. math.floor(money / 100) .. " platinum coins."
     end
     player:addItem(ITEM_PLATINUM_COIN, math.floor(money / 100))
     handler:resetData(player)
-    return true, "You have changed " .. money .. " gold coins, into ".. math.floor(money / 100) .." platinum coins."
+    return true, "You have changed " .. money .. " gold coins, into " .. math.floor(money / 100) .. " platinum coins."
 end
-local decline = answer:keyword({"no"})
+
+local decline = answer:keyword({ "no" })
 decline:respond("Ok then, not.")
 
 -- Change Platinum to Gold
 local platinum = change:keyword("platinum")
-platinum:respond("Would you like to change your platinum coins into {gold} coins? or would you like to change them into {crystal} coins?")
+platinum:respond(
+"Would you like to change your platinum coins into {gold} coins? or would you like to change them into {crystal} coins?")
 local gold = platinum:keyword("gold")
 gold:respond("How many gold coins would you like to get?")
 local answer = gold:onAnswer()
@@ -195,21 +217,25 @@ function answer:callback(npc, player, message, handler)
             return false, "You don't have enough platinum coins to change " .. money .. " gold coins."
         end
         handler:addData(player, "money", money)
-        return true, "You want to change " .. money / 100 .. " platinum coins, into ".. money .." gold coins?"
+        return true, "You want to change " .. money / 100 .. " platinum coins, into " .. money .. " gold coins?"
     end
     return false, "I'm sorry, but you can't change a negative amount of money or no money at all."
 end
-local accept = answer:keyword({"yes"})
+
+local accept = answer:keyword({ "yes" })
 function accept:callback(npc, player, message, handler)
     local money = handler:getData(player, "money")
     if not player:removeItem(ITEM_PLATINUM_COIN, math.floor(money / 100)) then
-        return false, "You don't have enough platinum coins to change " .. money / 100 .. " platinum coins, into ".. money .." gold coins."
+        return false,
+            "You don't have enough platinum coins to change " ..
+            money / 100 .. " platinum coins, into " .. money .. " gold coins."
     end
     player:addItem(ITEM_GOLD_COIN, money)
     handler:resetData(player)
-    return true, "You have changed " .. money / 100 .. " platinum coins, into ".. money .." gold coins."
+    return true, "You have changed " .. money / 100 .. " platinum coins, into " .. money .. " gold coins."
 end
-local decline = answer:keyword({"no"})
+
+local decline = answer:keyword({ "no" })
 decline:respond("Ok then, not.")
 
 -- Change Platinum to Crystal
@@ -224,21 +250,25 @@ function answer:callback(npc, player, message, handler)
             return false, "You don't have enough platinum coins to change " .. money .. " crystal coins."
         end
         handler:addData(player, "money", money)
-        return true, "You want to change " .. money * 100 .. " platinum coins, into ".. money .." crystal coins?"
+        return true, "You want to change " .. money * 100 .. " platinum coins, into " .. money .. " crystal coins?"
     end
     return false, "I'm sorry, but you can't change a negative amount of money or no money at all."
 end
-local accept = answer:keyword({"yes"})
+
+local accept = answer:keyword({ "yes" })
 function accept:callback(npc, player, message, handler)
     local money = handler:getData(player, "money")
     if not player:removeItem(ITEM_PLATINUM_COIN, math.floor(money * 100)) then
-        return false, "You don't have enough platinum coins to change " .. money * 100 .. " platinum coins, into ".. money .." crystal coins."
+        return false,
+            "You don't have enough platinum coins to change " ..
+            money * 100 .. " platinum coins, into " .. money .. " crystal coins."
     end
     player:addItem(ITEM_CRYSTAL_COIN, money)
     handler:resetData(player)
-    return true, "You have changed " .. money * 100 .. " platinum coins, into ".. money .." crystal coins."
+    return true, "You have changed " .. money * 100 .. " platinum coins, into " .. money .. " crystal coins."
 end
-local decline = answer:keyword({"no"})
+
+local decline = answer:keyword({ "no" })
 decline:respond("Ok then, not.")
 
 -- Change Crystal to Platinum
@@ -253,23 +283,27 @@ function answer:callback(npc, player, message, handler)
             return false, "You don't have enough crystal coins to change into " .. money .. " platinum coins."
         end
         handler:addData(player, "money", money)
-        return true, "You want to change " .. money / 100 .. " crystal coins, into ".. money .." platinum coins?"
+        return true, "You want to change " .. money / 100 .. " crystal coins, into " .. money .. " platinum coins?"
     end
     return false, "I'm sorry, but you can't change a negative amount of money or no money at all."
 end
-local accept = answer:keyword({"yes"})
+
+local accept = answer:keyword({ "yes" })
 function accept:callback(npc, player, message, handler)
     local money = handler:getData(player, "money") -- platinum coins wanted
     -- FIX: remover crystal corretamente (1 crystal = 100 platinum)
     if not player:removeItem(ITEM_CRYSTAL_COIN, math.floor(money / 100)) then
-        return false, "You don't have enough crystal coins to change " .. money / 100 .. " crystal coins, into ".. money .." platinum coins."
+        return false,
+            "You don't have enough crystal coins to change " ..
+            money / 100 .. " crystal coins, into " .. money .. " platinum coins."
     end
     -- FIX: adicionar a quantidade correta de platinum
     player:addItem(ITEM_PLATINUM_COIN, money)
     handler:resetData(player)
-    return true, "You have changed " .. money / 100 .. " crystal coins, into ".. money .." platinum coins."
+    return true, "You have changed " .. money / 100 .. " crystal coins, into " .. money .. " platinum coins."
 end
-local decline = answer:keyword({"no"})
+
+local decline = answer:keyword({ "no" })
 decline:respond("Ok then, not.")
 
 -- Fast transfer / deposit / withdraw
@@ -285,12 +319,12 @@ function fast:callback(npc, player, message, handler)
             if tonumber(data[i]) then
                 money = tonumber(data[i])
             else
-                playerName = playerName ~= "" and playerName .." ".. data[i] or data[i]
+                playerName = playerName ~= "" and playerName .. " " .. data[i] or data[i]
             end
         end
         local receiver = getPlayerDatabaseInfo(playerName)
         if not receiver then
-            return false, "There is no one named like '".. playerName .."'"
+            return false, "There is no one named like '" .. playerName .. "'"
         end
         if receiver.name == player:getName() then
             return false, "You can't transfer money to yourself."
@@ -302,12 +336,12 @@ function fast:callback(npc, player, message, handler)
             return false, "You can't transfer a negative amount of money or no money at all."
         end
         if player:getBankBalance() < money then
-            return false, "You don't have enough money to transfer ".. money .." gold coins to ".. playerName
+            return false, "You don't have enough money to transfer " .. money .. " gold coins to " .. playerName
         end
         handler:addData(player, "money", money)
         handler:addData(player, "playerName", playerName)
         handler:addData(player, "type", "transfer")
-        return true, "You want to transfer money to ".. playerName .." in the amount of ".. money .." gold coins?"
+        return true, "You want to transfer money to " .. playerName .. " in the amount of " .. money .. " gold coins?"
     end
 
     local deposit = string.find(message, "deposit")
@@ -349,7 +383,7 @@ end
 
 fast.failureResponse = "I don't understand what you mean. Do you want to {deposit}, {withdraw}, or {transfer} money?"
 
-local accept = fast:keyword({"yes"})
+local accept = fast:keyword({ "yes" })
 function accept:callback(npc, player, message, handler)
     local money = handler:getData(player, "money")
     local playerName = handler:getData(player, "playerName")
@@ -357,10 +391,10 @@ function accept:callback(npc, player, message, handler)
     local type = handler:getData(player, "type")
     if type == "transfer" then
         if not player:transferMoneyTo(receiver, money) then
-            return false, "You don't have enough money to transfer ".. money .." gold coins to ".. playerName
+            return false, "You don't have enough money to transfer " .. money .. " gold coins to " .. playerName
         end
         handler:resetData(player)
-        return true, "You have transferred ".. money .." gold coins to ".. playerName
+        return true, "You have transferred " .. money .. " gold coins to " .. playerName
     elseif type == "deposit" then
         if player:getMoney() < money then
             return false, "You don't have enough money to deposit " .. money .. " gold."
@@ -376,7 +410,7 @@ function accept:callback(npc, player, message, handler)
     return false, "Something went wrong, please try again."
 end
 
-local decline = fast:keyword({"no"})
+local decline = fast:keyword({ "no" })
 decline:respond("Ok then, not.")
 
 --[[

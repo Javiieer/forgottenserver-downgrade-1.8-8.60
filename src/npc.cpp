@@ -135,45 +135,67 @@ bool loadScripts(bool reload /* = false */)
 
 void reload()
 {
-	// 1. Reload the library and the Lua scripts
+	// 1. Reload the NPC Lua library (creates fresh scriptInterface)
 	load(true);
-	loadScripts(true);
 
-	const auto& npcs = g_game.getNpcs();
-	
-	// 2. Clear shop windows for all NPCs before reloading
-	for (const auto& it : npcs) {
+	// 2. Close all active shop windows before modifying types
+	const auto& npcsMap = g_game.getNpcs();
+	for (const auto& it : npcsMap) {
 		if (auto npc = it.second.lock()) {
 			npc->closeAllShopWindows();
 		}
 	}
 
-	// 3. Reload NPC Types
-	for (const auto& it : getNpcTypes()) {
-		if (!it.second->fromLua) {
-			// XML NPCs reload their XML definition
-			it.second->loadFromXml();
+	// 3. Clear Lua NPC types from registry (preserve XML types)
+	for (auto it = npcTypes.begin(); it != npcTypes.end(); ) {
+		if (it->second && it->second->fromLua) {
+			it = npcTypes.erase(it);
+		} else {
+			++it;
 		}
-		// Lua NPCs are re-registered/updated during loadScripts(true)
 	}
 
-	// 4. Refresh all active NPC instances on the map
-	for (const auto& it : npcs) {
+	// 4. Reload XML NPC definitions
+	for (const auto& it : npcTypes) {
+		if (!it.second->fromLua) {
+			it.second->loadFromXml();
+		}
+	}
+
+	// 5. Re-execute Lua NPC scripts (re-registers fromLua types)
+	loadScripts(true);
+
+	// 6. Refresh all active NPC instances on the map
+	for (const auto& it : npcsMap) {
 		auto npcRef = it.second.lock();
 		if (!npcRef) {
 			continue;
 		}
 
 		Npc* npc = npcRef.get();
-		if (npc->npcType->fromLua) {
-			// For Lua NPCs: Refresh the event handler and info
-			npc->loadNpcTypeInfo();
-			npc->npcEventHandler = std::make_unique<NpcEventsHandler>(*npc->npcType->npcEventHandler);
-			npc->npcEventHandler->loaded = true;
-			npc->npcEventHandler->setNpc(npc);
-			LOG_DEBUG(fmt::format(">> [Hybrid] Reloaded Lua NPC instance: '{}'", npc->getName()));
+		if (npc->npcType && npc->npcType->fromLua) {
+			// Re-lookup type from refreshed registry
+			auto freshType = getNpcType(npc->getName());
+			if (freshType && freshType->fromLua) {
+				npc->npcType = freshType;
+				npc->loadNpcTypeInfo();
+
+				// Create fresh event handler from template (avoids stale callback IDs)
+				npc->npcEventHandler = std::make_unique<NpcEventsHandler>(*freshType->npcEventHandler);
+				npc->npcEventHandler->loaded = true;
+				npc->npcEventHandler->setNpc(npc);
+
+				// Re-initialize runtime state: re-populate spectators, set idle,
+				// start walk events, and fire onCreatureAppear to bootstrap Lua state.
+				// Npc::reload() already skips reset(true) for fromLua NPCs.
+				npc->reload();
+			} else {
+				// Lua NPC type was removed — clear handler
+				LOG_WARN(fmt::format(">> [Reload] Lua NPC '{}' type no longer registered.", npc->getName()));
+				npc->npcEventHandler.reset();
+			}
 		} else {
-			// For XML NPCs: standard reload
+			// XML NPC: standard reload path
 			npc->reload();
 		}
 	}
