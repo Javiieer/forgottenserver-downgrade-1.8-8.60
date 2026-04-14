@@ -1005,12 +1005,12 @@ int luaCreatureGetPathTo(lua_State* L)
 
 	std::vector<Direction> dirList;
 	if (creature->getPathTo(position, dirList, fpp)) {
-		int len = dirList.size();
-		lua_createtable(L, len, 0);
+		lua_createtable(L, dirList.size(), 0);
 
-		for (auto dir : dirList) {
-			lua_pushinteger(L, dir);
-			lua_rawseti(L, -2, len--);
+		int index = 1;
+		for (auto it = dirList.rbegin(); it != dirList.rend(); ++it) {
+			lua_pushinteger(L, *it);
+			lua_rawseti(L, -2, index++);
 		}
 	} else {
 		pushBoolean(L, false);
