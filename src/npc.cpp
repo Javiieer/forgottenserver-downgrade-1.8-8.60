@@ -647,7 +647,7 @@ void Npc::onThink(uint32_t interval)
 		npcEventHandler->onThink();
 	}
 
-	if (getTimeSinceLastMove() >= walkTicks) {
+	if (focusCreature == 0 && getTimeSinceLastMove() >= walkTicks) {
 		addEventWalk();
 	}
 
@@ -694,15 +694,16 @@ void Npc::onPlayerEndTrade(Player* player, int32_t buyCallback, int32_t sellCall
 
 bool Npc::getNextStep(Direction& dir, uint32_t& flags)
 {
+	if (focusCreature != 0) {
+		listWalkDir.clear();
+		return false;
+	}
+
 	if (Creature::getNextStep(dir, flags)) {
 		return true;
 	}
 
 	if (walkTicks == 0) {
-		return false;
-	}
-
-	if (focusCreature != 0) {
 		return false;
 	}
 
@@ -772,6 +773,10 @@ bool Npc::getRandomStep(Direction& direction) const
 bool Npc::doMoveTo(const Position& pos, int32_t minTargetDist /* = 1*/, int32_t maxTargetDist /* = 1*/,
                    bool fullPathSearch /* = true*/, bool clearSight /* = true*/, int32_t maxSearchDist /* = 0*/)
 {
+	if (focusCreature != 0) {
+		return false;
+	}
+
 	listWalkDir.clear();
 	if (getPathTo(pos, listWalkDir, minTargetDist, maxTargetDist, fullPathSearch, clearSight, maxSearchDist)) {
 		startAutoWalk();
@@ -815,6 +820,8 @@ void Npc::setCreatureFocus(Creature* creature)
 {
 	if (creature) {
 		focusCreature = creature->getID();
+		stopEventWalk();
+		listWalkDir.clear();
 		turnToCreature(creature);
 	} else {
 		focusCreature = 0;

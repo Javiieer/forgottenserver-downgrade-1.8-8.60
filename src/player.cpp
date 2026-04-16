@@ -1495,7 +1495,8 @@ void Player::onCreatureMove(Creature* creature, const Tile* newTile, const Posit
 {
 	Creature::onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
 
-	if (hasFollowPath && (creature == followCreature.lock().get() || (creature == this && !followCreature.expired()))) {
+	auto follow = followCreature.lock();
+	if (hasFollowPath && (creature == follow.get() || (creature == this && follow))) {
 		isUpdatingPath = false;
 		g_dispatcher.addTask([id = getID()]() { g_game.updateCreatureWalk(id); });
 	}
@@ -3523,7 +3524,8 @@ bool Player::setAttackedCreature(Creature* creature)
 	}
 
 	if (chaseMode && creature) {
-		if (followCreature.lock().get() != creature) {
+		auto follow = followCreature.lock();
+		if (follow.get() != creature) {
 			// chase opponent
 			setFollowCreature(creature);
 		}
@@ -3651,9 +3653,11 @@ void Player::setChaseMode(bool mode)
 
 	if (prevChaseMode != chaseMode) {
 		if (chaseMode) {
-			if (followCreature.expired() && !attackedCreature.expired()) {
+			auto follow = followCreature.lock();
+			auto attacked = attackedCreature.lock();
+			if (!follow && attacked) {
 				// chase opponent
-				setFollowCreature(attackedCreature.lock().get());
+				setFollowCreature(attacked.get());
 			}
 		} else if (!attackedCreature.expired()) {
 			setFollowCreature(nullptr);

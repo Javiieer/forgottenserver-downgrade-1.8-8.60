@@ -13,9 +13,13 @@
 #include "tile.h"
 
 #include <memory>
+#include <vector>
+
+class Creature;
 
 using ConditionList = std::list<Condition_ptr>;
 using CreatureEventList = std::list<CreatureEvent*>;
+using SummonList = std::vector<std::weak_ptr<Creature>>;
 
 enum slots_t : uint8_t
 {
@@ -198,7 +202,12 @@ public:
 	virtual void onWalkComplete() {}
 
 	// follow functions
-	Creature* getFollowCreature() const { return followCreature.lock().get(); }
+	std::shared_ptr<Creature> getFollowCreatureShared() const { return followCreature.lock(); }
+	Creature* getFollowCreature() const
+	{
+		auto creature = getFollowCreatureShared();
+		return creature.get();
+	}
 	virtual bool setFollowCreature(Creature* creature);
 
 	// follow events
@@ -206,7 +215,12 @@ public:
 	virtual void onFollowCreatureComplete(const Creature*) {}
 
 	// combat functions
-	Creature* getAttackedCreature() const { return attackedCreature.lock().get(); }
+	std::shared_ptr<Creature> getAttackedCreatureShared() const { return attackedCreature.lock(); }
+	Creature* getAttackedCreature() const
+	{
+		auto creature = getAttackedCreatureShared();
+		return creature.get();
+	}
 	virtual bool setAttackedCreature(Creature* creature);
 	virtual BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int32_t& damage,
 	                             bool checkDefense = false, bool checkArmor = false, bool field = false,
@@ -220,9 +234,14 @@ public:
 	}
 
 	bool isSummon() const { return !master.expired(); }
-	Creature* getMaster() const { return master.lock().get(); }
+	std::shared_ptr<Creature> getMasterShared() const { return master.lock(); }
+	Creature* getMaster() const
+	{
+		auto creature = getMasterShared();
+		return creature.get();
+	}
 
-	const std::list<std::shared_ptr<Creature>>& getSummons() const { return summons; }
+	const SummonList& getSummons() const { return summons; }
 
 	virtual int32_t getArmor() const { return 0; }
 	virtual int32_t getDefense() const { return 0; }
@@ -308,7 +327,7 @@ public:
 
 	virtual bool getCombatValues(int32_t&, int32_t&) { return false; }
 
-	size_t getSummonCount() const { return summons.size(); }
+	size_t getSummonCount() const;
 	void setDropLoot(bool lootDrop) { this->lootDrop = lootDrop; }
 	void setUseDefense(bool useDefense) { canUseDefense = useDefense; }
 	void setMovementBlocked(bool state)
@@ -377,7 +396,7 @@ protected:
 	using CountMap = std::unordered_map<uint32_t, CountBlock_t>;
 	CountMap damageMap;
 
-	std::list<std::shared_ptr<Creature>> summons;
+	SummonList summons;
 	CreatureEventList eventsList;
 	ConditionList conditions;
 

@@ -624,7 +624,8 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 			continue;
 		}
 
-		if (followCreature.lock().get() != creature.get() && isTarget(creature.get())) {
+		auto follow = followCreature.lock();
+		if (follow.get() != creature.get() && isTarget(creature.get())) {
 			if (searchType == TARGETSEARCH_RANDOM || canUseAttack(myPos, creature.get())) {
 				resultList.push_back(creature.get());
 			}
@@ -769,7 +770,8 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 			continue;
 		}
 
-		if (followCreature.lock().get() != target.get() && isTarget(target.get()) && selectTarget(target.get())) {
+		auto follow = followCreature.lock();
+		if (follow.get() != target.get() && isTarget(target.get()) && selectTarget(target.get())) {
 			return true;
 		}
 	}
@@ -1010,9 +1012,12 @@ void Monster::onThink(uint32_t interval)
 					if (master && master->getAttackedCreature()) {
 						// This happens if the monster is summoned during combat
 						selectTarget(master->getAttackedCreature());
-					} else if (getMaster() != followCreature.lock().get()) {
-						// Our master has not ordered us to attack anything, lets follow him around instead.
-						setFollowCreature(getMaster());
+					} else {
+						auto follow = followCreature.lock();
+						if (getMaster() != follow.get()) {
+							// Our master has not ordered us to attack anything, lets follow him around instead.
+							setFollowCreature(getMaster());
+						}
 					}
 				} else if (ac.get() == this) {
 					setFollowCreature(nullptr);
@@ -1296,10 +1301,12 @@ void Monster::onThinkDefense(uint32_t interval)
 		}
 	}
 
-	if (!isSummon() && summons.size() < mType->info.maxSummons && hasFollowPath) {
+	if (!isSummon() && getSummonCount() < mType->info.maxSummons && hasFollowPath) {
 		std::unordered_map<std::string, uint32_t> summonCounts;
-		for (const auto& summon : summons) {
-			++summonCounts[summon->getName()];
+		for (const auto& summonRef : summons) {
+			if (auto summon = summonRef.lock()) {
+				++summonCounts[summon->getName()];
+			}
 		}
 
 		for (const summonBlock_t& summonBlock : mType->info.summons) {
@@ -1308,7 +1315,7 @@ void Monster::onThinkDefense(uint32_t interval)
 				continue;
 			}
 
-			if (summons.size() >= mType->info.maxSummons) {
+			if (getSummonCount() >= mType->info.maxSummons) {
 				continue;
 			}
 
@@ -1602,10 +1609,15 @@ bool Monster::getRandomStep(const Position& creaturePos, Direction& direction) c
 bool Monster::getDanceStep(const Position& creaturePos, Direction& direction, bool keepAttack /*= true*/,
                            bool keepDistance /*= true*/)
 {
-	bool canDoAttackNow = canUseAttack(creaturePos, attackedCreature.lock().get());
+	auto attacked = attackedCreature.lock();
+	if (!attacked) {
+		return false;
+	}
 
-	assert(attackedCreature.lock() != nullptr);
-	const Position& centerPos = attackedCreature.lock()->getPosition();
+	bool canDoAttackNow = canUseAttack(creaturePos, attacked.get());
+
+	assert(attacked != nullptr);
+	const Position& centerPos = attacked->getPosition();
 
 	int32_t offset_x = creaturePos.getOffsetX(centerPos);
 	int32_t offset_y = creaturePos.getOffsetY(centerPos);
@@ -1624,8 +1636,8 @@ bool Monster::getDanceStep(const Position& creaturePos, Direction& direction, bo
 			bool result = true;
 
 			if (keepAttack) {
-				result = (!canDoAttackNow ||
-				          canUseAttack(Position(creaturePos.x, creaturePos.y - 1, creaturePos.z), attackedCreature.lock().get()));
+				result =
+				    (!canDoAttackNow || canUseAttack(Position(creaturePos.x, creaturePos.y - 1, creaturePos.z), attacked.get()));
 			}
 
 			if (result) {
@@ -1640,8 +1652,8 @@ bool Monster::getDanceStep(const Position& creaturePos, Direction& direction, bo
 			bool result = true;
 
 			if (keepAttack) {
-				result = (!canDoAttackNow ||
-				          canUseAttack(Position(creaturePos.x, creaturePos.y + 1, creaturePos.z), attackedCreature.lock().get()));
+				result =
+				    (!canDoAttackNow || canUseAttack(Position(creaturePos.x, creaturePos.y + 1, creaturePos.z), attacked.get()));
 			}
 
 			if (result) {
@@ -1656,8 +1668,8 @@ bool Monster::getDanceStep(const Position& creaturePos, Direction& direction, bo
 			bool result = true;
 
 			if (keepAttack) {
-				result = (!canDoAttackNow ||
-				          canUseAttack(Position(creaturePos.x + 1, creaturePos.y, creaturePos.z), attackedCreature.lock().get()));
+				result =
+				    (!canDoAttackNow || canUseAttack(Position(creaturePos.x + 1, creaturePos.y, creaturePos.z), attacked.get()));
 			}
 
 			if (result) {
@@ -1672,8 +1684,8 @@ bool Monster::getDanceStep(const Position& creaturePos, Direction& direction, bo
 			bool result = true;
 
 			if (keepAttack) {
-				result = (!canDoAttackNow ||
-				          canUseAttack(Position(creaturePos.x - 1, creaturePos.y, creaturePos.z), attackedCreature.lock().get()));
+				result =
+				    (!canDoAttackNow || canUseAttack(Position(creaturePos.x - 1, creaturePos.y, creaturePos.z), attacked.get()));
 			}
 
 			if (result) {
@@ -2103,9 +2115,11 @@ void Monster::death(Creature*)
 
 	setAttackedCreature(nullptr);
 
-	for (const auto& summon : summons) {
-		summon->changeHealth(-summon->getHealth());
-		summon->removeMaster();
+	for (const auto& summonRef : summons) {
+		if (auto summon = summonRef.lock()) {
+			summon->changeHealth(-summon->getHealth());
+			summon->removeMaster();
+		}
 	}
 
 	summons.clear();

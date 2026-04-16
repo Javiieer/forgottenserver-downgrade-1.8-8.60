@@ -680,7 +680,16 @@ bool Game::removeCreature(Creature* creature, bool isLogout /* = true*/)
 	// removeCreature(summon) would skip setMaster(nullptr) because 'creature'
 	// is already marked removed. Clearing here avoids relying on destructor
 	// ordering for the master ref decrement.
-	for (const auto& summon : creature->summons) {
+	std::vector<std::shared_ptr<Creature>> summonRefs;
+	summonRefs.reserve(creature->summons.size());
+	for (const auto& summonRef : creature->summons) {
+		if (auto summon = summonRef.lock()) {
+			summonRefs.push_back(std::move(summon));
+		}
+	}
+	creature->summons.clear();
+
+	for (const auto& summon : summonRefs) {
 		summon->setSkillLoss(false);
 		if (summon->getMaster() == creature) {
 			summon->removeMaster();
@@ -688,7 +697,7 @@ bool Game::removeCreature(Creature* creature, bool isLogout /* = true*/)
 		removeCreature(summon.get());
 	}
 
-	// Drop the shared_ptr anchor – all outstanding weak_ptrs now expire.
+	// Drop the shared_ptr anchor from the global creature registry.
 	creatureSharedRefs.erase(creature->getID());
 
 	return true;

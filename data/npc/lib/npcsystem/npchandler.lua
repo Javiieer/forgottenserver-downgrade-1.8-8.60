@@ -156,13 +156,24 @@ if NpcHandler == nil then
     -- This function should be called on each onThink and makes sure the npc faces the player it is talking to.
     --	Should also be called whenever a new player is focused.
     function NpcHandler:updateFocus()
+        local function setNativeFocus(focus)
+            doNpcSetCreatureFocus(focus or 0)
+
+            if Npc and getNpcCid then
+                local npc = Npc(getNpcCid())
+                if npc then
+                    npc:setFocus(focus and Player(focus) or 0)
+                end
+            end
+        end
+
         for pos, focus in pairs(self.focuses) do
             if focus then
-                doNpcSetCreatureFocus(focus)
+                setNativeFocus(focus)
                 return
             end
         end
-        doNpcSetCreatureFocus(0)
+        setNativeFocus(nil)
     end
 
     -- Used when the npc should un-focus the player.
@@ -202,8 +213,8 @@ if NpcHandler == nil then
 
         if Player(focus) then
             closeShopWindow(focus) -- Even if it can not exist, we need to prevent it.
-            self:updateFocus()
         end
+        self:updateFocus()
     end
 
     -- Returns the callback function with the specified id or nil if no such callback function exists.

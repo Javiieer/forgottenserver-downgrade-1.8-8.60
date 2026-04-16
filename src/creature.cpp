@@ -30,9 +30,11 @@ Creature::~Creature()
 	attackedCreature.reset();
 	followCreature.reset();
 
-	for (const auto& summon : summons) {
-		summon->setAttackedCreature(nullptr);
-		summon->removeMaster();
+	for (const auto& summonRef : summons) {
+		if (auto summon = summonRef.lock()) {
+			summon->setAttackedCreature(nullptr);
+			summon->removeMaster();
+		}
 	}
 
 	conditions.clear();
@@ -142,13 +144,15 @@ int32_t Creature::getWalkDelay() const
 void Creature::onThink(uint32_t interval)
 {
 	if (auto fc = followCreature.lock()) {
-		if (fc->isRemoved() || (master.lock().get() != fc.get() && !canSeeCreature(fc.get()))) {
+		auto masterCreature = master.lock();
+		if (fc->isRemoved() || (masterCreature.get() != fc.get() && !canSeeCreature(fc.get()))) {
 			onCreatureDisappear(fc.get(), false);
 		}
 	}
 
 	if (auto ac = attackedCreature.lock()) {
-		if (ac->isRemoved() || (master.lock().get() != ac.get() && !canSeeCreature(ac.get()))) {
+		auto masterCreature = master.lock();
+		if (ac->isRemoved() || (masterCreature.get() != ac.get() && !canSeeCreature(ac.get()))) {
 			onCreatureDisappear(ac.get(), false);
 		}
 	}
@@ -362,12 +366,12 @@ void Creature::onRemoveCreature(Creature* creature, bool isLogout)
 
 void Creature::onCreatureDisappear(const Creature* creature, bool isLogout)
 {
-	if (attackedCreature.lock().get() == creature) {
+	if (auto attacked = attackedCreature.lock(); attacked.get() == creature) {
 		setAttackedCreature(nullptr);
 		onAttackedCreatureDisappear(isLogout);
 	}
 
-	if (followCreature.lock().get() == creature) {
+	if (auto follow = followCreature.lock(); follow.get() == creature) {
 		setFollowCreature(nullptr);
 		onFollowCreatureDisappear(isLogout);
 	}
@@ -412,9 +416,16 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 		}
 
 		if (!summons.empty()) {
+			std::erase_if(summons, [](const std::weak_ptr<Creature>& summon) { return summon.expired(); });
+
 			// check if any of our summons is out of range (+/- 2 floors or 30 tiles away)
 			std::forward_list<Creature*> despawnList;
-			for (const auto& summon : summons) {
+			for (const auto& summonRef : summons) {
+				auto summon = summonRef.lock();
+				if (!summon) {
+					continue;
+				}
+
 				const Position& pos = summon->getPosition();
 				if (newPos.getDistanceZ(pos) > 2 || std::max(newPos.getDistanceX(pos), newPos.getDistanceY(pos)) > 30) {
 					despawnList.push_front(summon.get());
@@ -805,8 +816,10 @@ bool Creature::setAttackedCreature(Creature* creature)
 		attackedCreature.reset();
 	}
 
-	for (const auto& summon : summons) {
-		summon->setAttackedCreature(creature);
+	for (const auto& summonRef : summons) {
+		if (auto summon = summonRef.lock()) {
+			summon->setAttackedCreature(creature);
+		}
 	}
 	return true;
 }
@@ -850,13 +863,14 @@ void Creature::goToFollowCreature()
 			hasFollowPath = false;
 	}
 
-	onFollowCreatureComplete(followCreature.lock().get());
+	auto follow = followCreature.lock();
+	onFollowCreatureComplete(follow.get());
 }
 
 bool Creature::setFollowCreature(Creature* creature)
 {
 	if (creature) {
-		if (followCreature.lock().get() == creature) {
+		if (auto follow = followCreature.lock(); follow.get() == creature) {
 			return true;
 		}
 
@@ -882,6 +896,12 @@ bool Creature::setFollowCreature(Creature* creature)
 
 	onFollowCreature(creature);
 	return true;
+}
+
+size_t Creature::getSummonCount() const
+{
+	return std::count_if(summons.begin(), summons.end(),
+	                     [](const std::weak_ptr<Creature>& summon) { return !summon.expired(); });
 }
 
 double Creature::getDamageRatio(Creature* attacker) const
@@ -1040,23 +1060,38 @@ void Creature::onGainExperience(uint64_t gainExp, Creature* target)
 
 bool Creature::setMaster(Creature* newMaster)
 {
-	if (!newMaster && master.expired()) {
+	auto oldMaster = master.lock();
+	if (!newMaster && !oldMaster) {
 		return false;
 	}
 
-	if (newMaster) {
-		newMaster->summons.push_back(shared_from_this());
+	if (oldMaster.get() == newMaster) {
+		return true;
 	}
 
-	Creature* oldMaster = master.lock().get();
-	master = newMaster ? newMaster->shared_from_this() : std::weak_ptr<Creature>();
-
 	if (oldMaster) {
-		auto it = std::find_if(oldMaster->summons.begin(), oldMaster->summons.end(),
-			[this](const std::shared_ptr<Creature>& sp) { return sp.get() == this; });
-		if (it != oldMaster->summons.end()) {
-			oldMaster->summons.erase(it);
+		std::erase_if(oldMaster->summons, [this](const std::weak_ptr<Creature>& summon) {
+			auto lockedSummon = summon.lock();
+			return !lockedSummon || lockedSummon.get() == this;
+		});
+	}
+
+	if (newMaster) {
+		auto& newMasterSummons = newMaster->summons;
+		std::erase_if(newMasterSummons, [](const std::weak_ptr<Creature>& summon) { return summon.expired(); });
+
+		const bool alreadySummoned = std::any_of(newMasterSummons.begin(), newMasterSummons.end(),
+		                                         [this](const std::weak_ptr<Creature>& summon) {
+			                                         auto lockedSummon = summon.lock();
+			                                         return lockedSummon && lockedSummon.get() == this;
+		                                         });
+		if (!alreadySummoned) {
+			newMasterSummons.emplace_back(shared_from_this());
 		}
+
+		master = newMaster->shared_from_this();
+	} else {
+		master.reset();
 	}
 	return true;
 }
