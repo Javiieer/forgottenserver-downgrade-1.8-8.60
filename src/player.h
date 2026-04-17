@@ -191,10 +191,10 @@ public:
 	int32_t getOfflineTrainingSkill() const { return offlineTrainingSkill; }
 	void setOfflineTrainingSkill(int32_t skill) { offlineTrainingSkill = skill; }
 
-	Guild_ptr getGuild() const { return guild; }
+	Guild_ptr getGuild() const { return guild.lock(); }
 	void setGuild(Guild_ptr guild);
 
-	GuildRank_ptr getGuildRank() const { return guildRank; }
+	GuildRank_ptr getGuildRank() const { return guildRank.lock(); }
 	void setGuildRank(GuildRank_ptr newGuildRank) { guildRank = newGuildRank; }
 
 	bool isGuildMate(const Player* player) const;
@@ -1294,8 +1294,8 @@ private:
 	int64_t nextAction = 0;
 
 	uint32_t lastIP = 0;
-	Guild_ptr guild = nullptr;
-	GuildRank_ptr guildRank = nullptr;
+	std::weak_ptr<Guild> guild;
+	std::weak_ptr<GuildRank> guildRank;
 	std::shared_ptr<Group> group;
 	std::weak_ptr<Item> tradeItem;
 	std::shared_ptr<Item> inventory[CONST_SLOT_LAST + 1] = {};

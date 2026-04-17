@@ -503,7 +503,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
 				rank = guild->getRankById(playerRankId);
 				if (!rank) {
-					player->guild = nullptr;
+					player->guild.reset();
 					g_game.removeGuild(guildId);
 				}
 			}

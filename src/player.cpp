@@ -200,6 +200,8 @@ std::string Player::getDescription(int32_t lookDistance) const
 		}
 	}
 
+	const auto guild = getGuild();
+	const auto guildRank = getGuildRank();
 	if (!guild || !guildRank) {
 		return s.str();
 	}
@@ -1179,7 +1181,7 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin)
 		// mounted player moved to pz on login, update mount status
 		onChangeZone(getZone());
 
-		if (guild) {
+		if (auto guild = getGuild()) {
 			guild->addMember(this);
 		}
 
@@ -1420,9 +1422,9 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 
 		g_chat->removeUserFromAllChannels(*this);
 
-		if (guild) {
+		if (auto guild = getGuild()) {
 			guild->removeMember(this);
-			guild.reset();
+			this->guild.reset();
 		}
 
 		IOLoginData::removeOnlineStatus(guid);
@@ -4419,6 +4421,7 @@ bool Player::hasLearnedInstantSpell(std::string_view spellName) const
 
 bool Player::isInWar(const Player* player) const
 {
+	const auto guild = getGuild();
 	if (!player || !guild) {
 		return false;
 	}
@@ -4517,10 +4520,11 @@ bool Player::isPartner(const Player* player) const
 
 bool Player::isGuildMate(const Player* player) const
 {
+	const auto guild = getGuild();
 	if (!player || !guild) {
 		return false;
 	}
-	return guild == player->guild;
+	return guild == player->getGuild();
 }
 
 void Player::sendPlayerPartyIcons(Player* player)
@@ -4576,7 +4580,7 @@ GuildEmblems_t Player::getGuildEmblem(const Player* player) const
 		return GUILDEMBLEM_NONE;
 	}
 
-	if (guild == playerGuild) {
+	if (getGuild() == playerGuild) {
 		return GUILDEMBLEM_ALLY;
 	} else if (isInWar(player)) {
 		return GUILDEMBLEM_ENEMY;
@@ -4587,6 +4591,7 @@ GuildEmblems_t Player::getGuildEmblem(const Player* player) const
 
 void Player::reloadWarList(bool updateVisuals)
 {
+	const auto guild = getGuild();
 	if (!guild) {
 		return;
 	}
@@ -4868,15 +4873,14 @@ std::forward_list<Condition*> Player::getMuteConditions() const
 
 void Player::setGuild(Guild_ptr guild)
 {
-	if (guild == this->guild) {
+	auto oldGuild = getGuild();
+	if (guild == oldGuild) {
 		return;
 	}
 
-	auto oldGuild = this->guild;
-
 	this->guildNick.clear();
-	this->guild = nullptr;
-	this->guildRank = nullptr;
+	this->guild.reset();
+	this->guildRank.reset();
 
 	if (guild) {
 		const auto& rank = guild->getRankByLevel(Guild::MEMBER_RANK_LEVEL_DEFAULT);
