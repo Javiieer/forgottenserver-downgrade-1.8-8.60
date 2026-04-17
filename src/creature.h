@@ -12,6 +12,8 @@
 #include "position.h"
 #include "tile.h"
 
+#include <absl/container/flat_hash_map.h>
+
 #include <memory>
 #include <vector>
 
@@ -395,7 +397,7 @@ protected:
 
 	Position position;
 
-	using CountMap = std::unordered_map<uint32_t, CountBlock_t>;
+	using CountMap = absl::flat_hash_map<uint32_t, CountBlock_t>;
 	CountMap damageMap;
 
 	SummonList summons;

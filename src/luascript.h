@@ -754,28 +754,19 @@ inline T** getRawUserdata(lua_State* L, int32_t arg, const bool checkType = true
 	return static_cast<T**>(lua_touserdata(L, arg));
 }
 
+Creature* getValidatedCreatureUserdata(lua_State* L, int32_t arg);
+
 template <class T>
 inline T* getUserdata(lua_State* L, int32_t arg, const bool checkType = true)
 {
-	if constexpr (std::is_base_of_v<Creature, T>) {
+	using RawT = std::remove_const_t<T>;
+	if constexpr (std::is_base_of_v<Creature, RawT>) {
 		if (checkType && !isType<T>(L, arg)) {
 			return nullptr;
 		}
 
-		T** userdata = static_cast<T**>(lua_touserdata(L, arg));
-		if (!userdata || !*userdata) {
-			return nullptr;
-		}
-
-		if (lua_getiuservalue(L, arg, 1) != LUA_TNONE) {
-			auto* weakPtr = static_cast<std::weak_ptr<Creature>*>(lua_touserdata(L, -1));
-			auto creatureRef = weakPtr ? weakPtr->lock() : std::shared_ptr<Creature>{};
-			lua_pop(L, 1);
-			if (creatureRef) {
-				return static_cast<T*>(creatureRef.get());
-			}
-		}
-		return *userdata;
+		Creature* creature = getValidatedCreatureUserdata(L, arg);
+		return creature ? dynamic_cast<T*>(creature) : nullptr;
 	}
 
 	T** userdata = getRawUserdata<T>(L, arg, checkType);

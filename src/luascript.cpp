@@ -833,6 +833,35 @@ void Lua::setCreatureMetatable(lua_State* L, int32_t index, const Creature* crea
 	lua_setiuservalue(L, index - 1, 1);
 }
 
+Creature* Lua::getValidatedCreatureUserdata(lua_State* L, int32_t arg)
+{
+	Creature* rawCreature = nullptr;
+	if (Creature** userdata = static_cast<Creature**>(lua_touserdata(L, arg))) {
+		rawCreature = *userdata;
+	}
+
+	const int userValueType = lua_getiuservalue(L, arg, 1);
+	if (userValueType == LUA_TUSERDATA) {
+		auto* weakPtr = static_cast<std::weak_ptr<Creature>*>(lua_touserdata(L, -1));
+		auto creatureRef = weakPtr ? weakPtr->lock() : std::shared_ptr<Creature>{};
+		lua_pop(L, 1);
+
+		if (creatureRef && !creatureRef->isRemoved()) {
+			return creatureRef.get();
+		}
+
+		return nullptr;
+	}
+	if (userValueType != LUA_TNONE) {
+		lua_pop(L, 1);
+	}
+
+	if (!rawCreature || !Creature::isAlive(rawCreature) || rawCreature->isRemoved()) {
+		return nullptr;
+	}
+	return rawCreature;
+}
+
 // Is
 bool Lua::isNone(lua_State* L, int32_t arg) { return lua_isnone(L, arg); }
 bool Lua::isNumber(lua_State* L, int32_t arg) { return lua_type(L, arg) == LUA_TNUMBER; }
@@ -1024,7 +1053,11 @@ Creature* Lua::getCreature(lua_State* L, int32_t arg)
 	if (isUserdata(L, arg)) {
 		return getUserdata<Creature>(L, arg);
 	}
-	return g_game.getCreatureByID(getInteger<uint32_t>(L, arg));
+	Creature* creature = g_game.getCreatureByID(getInteger<uint32_t>(L, arg));
+	if (!creature || !Creature::isAlive(creature) || creature->isRemoved()) {
+		return nullptr;
+	}
+	return creature;
 }
 
 Player* Lua::getPlayer(lua_State* L, int32_t arg)
@@ -1032,7 +1065,11 @@ Player* Lua::getPlayer(lua_State* L, int32_t arg)
 	if (isUserdata(L, arg)) {
 		return getUserdata<Player>(L, arg);
 	}
-	return g_game.getPlayerByID(getInteger<uint32_t>(L, arg));
+	Player* player = g_game.getPlayerByID(getInteger<uint32_t>(L, arg));
+	if (!player || !Creature::isAlive(player) || player->isRemoved()) {
+		return nullptr;
+	}
+	return player;
 }
 
 std::string Lua::getFieldString(lua_State* L, int32_t arg, std::string_view key)
