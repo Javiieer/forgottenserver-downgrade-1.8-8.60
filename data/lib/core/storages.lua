@@ -39,11 +39,6 @@ PlayerStorageKeys = {
     oracleTrialPatience = 90004,
     oracleRiddleId = 90005,
     oracleRewardGiven = 90006,
-
-    -- Familiars
-    familiarSummonTime = 845232,
-    familiarTimer10 = 845230,
-    familiarTimer60 = 845231,
 }
 
 GlobalStorageKeys = {

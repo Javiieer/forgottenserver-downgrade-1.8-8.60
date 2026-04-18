@@ -2,7 +2,7 @@ local spell = Spell("instant")
 local spellId = 282
 
 function spell.onCastSpell(player, variant)
-	return player:CreateFamiliarSpell(spellId)
+	return player:createFamiliarSpell(spellId)
 end
 
 spell:group("support")

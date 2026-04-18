@@ -2969,11 +2969,29 @@ void ProtocolGame::AddCreature(NetworkMessage& msg, const Creature* creature, bo
 	msg.addByte(player->getSkullClient(creature));
 	msg.addByte(player->getPartyShield(otherPlayer));
 
-	if (!known) {
+		if (!known) {
 		if (otherPlayer) {
 			msg.addByte(player->getGuildEmblem(otherPlayer));
 		} else {
-			msg.addByte(creature->getEmblem());
+			if (creature->isSummon()) {
+				auto master = creature->getMaster();
+				if (master) {
+					Player* masterPlayer = master->getPlayer();
+					if (masterPlayer) {
+						if (player.get() == masterPlayer) {
+							msg.addByte(GUILDEMBLEM_ALLY);
+						} else {
+							msg.addByte(GUILDEMBLEM_ENEMY);
+						}
+					} else {
+						msg.addByte(creature->getEmblem());
+					}
+				} else {
+					msg.addByte(creature->getEmblem());
+				}
+			} else {
+				msg.addByte(creature->getEmblem());
+			}
 		}
 	}
 

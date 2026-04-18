@@ -1,11 +1,11 @@
-local mType = Game.createMonsterType("Knight familiar")
+local mType = Game.createMonsterType("Knight Familiar")
 local monster = {}
 
-monster.name = "Knight familiar"
+monster.name = "Knight Familiar"
 monster.description = "a knight familiar"
 monster.experience = 0
 monster.outfit = {
-	--lookType = 991,
+	lookType = 991,
 	lookHead = 0,
 	lookBody = 0,
 	lookLegs = 0,

@@ -73,6 +73,7 @@ set(tfs_SRC
     ${CMAKE_CURRENT_LIST_DIR}/luavocation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/luaweapons.cpp
     ${CMAKE_CURRENT_LIST_DIR}/luaxml.cpp
+	${CMAKE_CURRENT_LIST_DIR}/familiar.cpp
 	${CMAKE_CURRENT_LIST_DIR}/mailbox.cpp
 	${CMAKE_CURRENT_LIST_DIR}/map.cpp
 	${CMAKE_CURRENT_LIST_DIR}/mapcache.cpp
@@ -168,6 +169,7 @@ set(tfs_HDR
 	${CMAKE_CURRENT_LIST_DIR}/lockfree.h
 	${CMAKE_CURRENT_LIST_DIR}/logger.h
 	${CMAKE_CURRENT_LIST_DIR}/luascript.h
+	${CMAKE_CURRENT_LIST_DIR}/familiar.h
 	${CMAKE_CURRENT_LIST_DIR}/luavariant.h
 	${CMAKE_CURRENT_LIST_DIR}/mailbox.h
 	${CMAKE_CURRENT_LIST_DIR}/map.h

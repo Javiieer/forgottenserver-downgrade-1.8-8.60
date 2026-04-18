@@ -16,6 +16,7 @@
 #include "spells.h"
 #include "tile.h"
 #include "vocation.h"
+#include "familiar.h"
 
 extern Game g_game;
 extern Vocations g_vocations;
@@ -281,6 +282,49 @@ int luaPlayerGetProtectionTime(lua_State* L)
         lua_pushnil(L);
     }
     return 1;
+}
+
+int luaPlayerGetFamiliarName(lua_State* L)
+{
+	const Player* player = getUserdata<const Player>(L, 1);
+	if (player) {
+		std::string name = Familiar::getFamiliarName(player);
+		if (!name.empty()) Lua::pushString(L, name);
+		else lua_pushnil(L);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int luaPlayerDispellFamiliar(lua_State* L)
+{
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		Lua::pushBoolean(L, Familiar::dispellFamiliar(player));
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int luaPlayerCreateFamiliar(lua_State* L)
+{
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) { lua_pushnil(L); return 1; }
+	std::string name = Lua::getString(L, 2);
+	uint32_t timeLeft = Lua::getNumber<uint32_t>(L, 3, 0);
+	Lua::pushBoolean(L, Familiar::createFamiliar(player, name, timeLeft));
+	return 1;
+}
+
+int luaPlayerCreateFamiliarSpell(lua_State* L)
+{
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) { lua_pushnil(L); return 1; }
+	uint32_t spellId = Lua::getNumber<uint32_t>(L, 2);
+	Lua::pushBoolean(L, Familiar::createFamiliarSpell(player, spellId));
+	return 1;
 }
 
 int luaPlayerSetProtectionTime(lua_State* L)
@@ -3314,6 +3358,10 @@ void LuaScriptInterface::registerPlayer()
 
 	registerMethod("Player", "getProtectionTime", luaPlayerGetProtectionTime);
 	registerMethod("Player", "setProtectionTime", luaPlayerSetProtectionTime);
+	registerMethod("Player", "getFamiliarName", luaPlayerGetFamiliarName);
+	registerMethod("Player", "dispellFamiliar", luaPlayerDispellFamiliar);
+	registerMethod("Player", "createFamiliar", luaPlayerCreateFamiliar);
+	registerMethod("Player", "createFamiliarSpell", luaPlayerCreateFamiliarSpell);
 
 	registerMethod("Player", "getSkullTime", luaPlayerGetSkullTime);
 	registerMethod("Player", "setSkullTime", luaPlayerSetSkullTime);

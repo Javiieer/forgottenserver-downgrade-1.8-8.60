@@ -2,12 +2,12 @@ local spell = Spell("instant")
 local spellId = 195
 
 function spell.onCastSpell(player, variant)
-	return player:CreateFamiliarSpell(spellId)
+	return player:createFamiliarSpell(spellId)
 end
 
 spell:group("support")
 spell:id(spellId)
-spell:name("Paladin familiar")
+spell:name("Paladin Familiar")
 spell:words("utevo gran res sac")
 spell:level(200)
 spell:mana(2000)

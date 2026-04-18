@@ -1,11 +1,11 @@
-local mType = Game.createMonsterType("Druid familiar")
+local mType = Game.createMonsterType("Druid Familiar")
 local monster = {}
 
-monster.name = "Druid familiar"
+monster.name = "Druid Familiar"
 monster.description = "a druid familiar"
 monster.experience = 0
 monster.outfit = {
-	--lookType = 993,
+	lookType = 993,
 	lookHead = 0,
 	lookBody = 0,
 	lookLegs = 0,

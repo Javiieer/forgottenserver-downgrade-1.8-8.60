@@ -11,11 +11,20 @@ event.onLook = function(self, thing, position, distance, description)
 		-- Familiar summon time display
 		if thing:isCreature() then
 			local master = thing:getMaster()
-			local summons = { "sorcerer familiar", "knight familiar", "druid familiar", "paladin familiar", "monk familiar" }
-			if master and table.contains(summons, thing:getName():lower()) then
-				local familiarSummonTime = master:getStorageValue(PlayerStorageKeys.familiarSummonTime) or 0
-				description = description .. " (Master: " .. master:getName() .. "). \z
-					It will disappear in " .. Game.getTimeInWords(familiarSummonTime - os.time())
+			if master then
+				local isFamiliar = false
+				local ok, famName = pcall(function() return master:getFamiliarName() end)
+				if ok and famName and famName ~= "" then
+					isFamiliar = (thing:getName():lower() == famName:lower())
+				else
+					local summons = { "sorcerer familiar", "knight familiar", "druid familiar", "paladin familiar", "monk familiar" }
+					isFamiliar = table.contains(summons, thing:getName():lower())
+				end
+				if isFamiliar then
+					local familiarSummonTime = master:getStorageValue(845232) or 0
+					description = description .. " (Master: " .. master:getName() .. "). \z
+						It will disappear in " .. Game.getTimeInWords(familiarSummonTime - os.time())
+				end
 			end
 		end
 	end
