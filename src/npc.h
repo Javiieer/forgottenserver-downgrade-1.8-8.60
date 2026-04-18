@@ -264,7 +264,7 @@ private:
 
 	uint32_t walkTicks;
 	uint32_t baseSpeed;
-	int32_t focusCreature;
+	std::weak_ptr<Player> m_focusCreature;
 	int32_t masterRadius;
 
 	uint8_t speechBubble;

@@ -27,7 +27,7 @@ public:
 
 	explicit Party(Player* leader);
 
-	Player* getLeader() const { return leader.lock().get(); }
+	std::shared_ptr<Player> getLeader() const { return leader.lock(); }
 	PlayerVector& getMembers() { return memberList; }
 	const PlayerVector& getInvitees() const { return inviteList; }
 	size_t getMemberCount() const { return memberList.size(); }

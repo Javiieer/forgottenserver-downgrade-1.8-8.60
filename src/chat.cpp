@@ -14,10 +14,6 @@
 
 extern Game g_game;
 
-namespace {
-Player* getOnlinePlayer(uint32_t id) { return g_game.getPlayerByID(id); }
-}
-
 bool PrivateChatChannel::isInvited(uint32_t guid) const
 {
 	if (guid == getOwner()) {
@@ -58,7 +54,7 @@ void PrivateChatChannel::excludePlayer(const Player& player, Player& excludePlay
 void PrivateChatChannel::closeChannel()
 {
 	for (auto it = users.begin(); it != users.end();) {
-		if (Player* target = getOnlinePlayer(it->first)) {
+		if (auto target = it->second.lock()) {
 			target->sendClosePrivate(id);
 			++it;
 		} else {
@@ -67,25 +63,29 @@ void PrivateChatChannel::closeChannel()
 	}
 }
 
-bool ChatChannel::addUser(Player& player)
+bool ChatChannel::addUser(const std::shared_ptr<Player>& player)
 {
-	if (users.contains(player.getID())) {
+	if (!player) {
 		return false;
 	}
 
-	if (!executeCanJoinEvent(player)) {
+	if (users.contains(player->getID())) {
+		return false;
+	}
+
+	if (!executeCanJoinEvent(*player)) {
 		return false;
 	}
 
 	// TODO: Move to script when guild channels can be scripted
 	if (id == CHANNEL_GUILD) {
-		if (const auto& guild = player.getGuild(); guild && !guild->getMotd().empty()) {
+		if (const auto& guild = player->getGuild(); guild && !guild->getMotd().empty()) {
 			g_scheduler.addEvent(
-			    createSchedulerTask(150, [playerID = player.getID()]() { g_game.sendGuildMotd(playerID); }));
+			    createSchedulerTask(150, [playerID = player->getID()]() { g_game.sendGuildMotd(playerID); }));
 		}
 	}
 
-	users[player.getID()] = player.getID();
+	users[player->getID()] = player;
 	return true;
 }
 
@@ -107,7 +107,7 @@ bool ChatChannel::hasUser(const Player& player) { return users.contains(player.g
 void ChatChannel::sendToAll(std::string_view message, SpeakClasses type)
 {
 	for (auto it = users.begin(); it != users.end();) {
-		if (Player* target = getOnlinePlayer(it->first)) {
+		if (auto target = it->second.lock()) {
 			target->sendChannelMessage("", message, type, id);
 			++it;
 		} else {
@@ -123,7 +123,7 @@ bool ChatChannel::talk(const Player& fromPlayer, SpeakClasses type, std::string_
 	}
 
 	for (auto it = users.begin(); it != users.end();) {
-		if (Player* target = getOnlinePlayer(it->first)) {
+		if (auto target = it->second.lock()) {
 			target->sendToChannel(&fromPlayer, type, text, id);
 			++it;
 		} else {
@@ -295,8 +295,13 @@ bool Chat::load()
 
 			UsersMap tempUserMap = std::move(channel.users);
 			for (const auto& pair : tempUserMap) {
-				if (Player* player = getOnlinePlayer(pair.first)) {
-					channel.addUser(*player);
+				auto player = pair.second.lock();
+				if (!player) {
+					player = g_game.getCreatureSharedRef<Player>(pair.first);
+				}
+
+				if (player) {
+					channel.addUser(player);
 				}
 			}
 			continue;
@@ -421,7 +426,7 @@ bool Chat::deleteChannel(const Player& player, uint16_t channelId)
 ChatChannel* Chat::addUserToChannel(Player& player, uint16_t channelId)
 {
 	ChatChannel* channel = getChannel(player, channelId);
-	if (channel && channel->addUser(player)) {
+	if (channel && channel->addUser(g_game.getCreatureSharedRef<Player>(&player))) {
 		return channel;
 	}
 	return nullptr;

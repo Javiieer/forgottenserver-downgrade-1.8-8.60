@@ -2203,7 +2203,7 @@ void Game::playerCreatePrivateChannel(uint32_t playerId)
 	}
 
 	if (ChatChannel* channel = g_chat->createChannel(*player, CHANNEL_PRIVATE)) {
-		if (!channel->addUser(*player)) {
+		if (!channel->addUser(g_game.getCreatureSharedRef<Player>(player))) {
 			return;
 		}
 
@@ -4179,8 +4179,8 @@ void Game::checkSereneStatus()
 		bool hasNearbyPartyMembers = false;
 
 		if (party) {
-			const Player* leader = party->getLeader();
-			if (leader && leader != player) {
+			auto leader = party->getLeader();
+			if (leader && leader.get() != player) {
 				const Position& lpos = leader->getPosition();
 				if (pos.z == lpos.z && std::max(
 					std::abs(pos.x - lpos.x), std::abs(pos.y - lpos.y)) <= 10) {
@@ -5587,7 +5587,7 @@ void Game::playerInviteToParty(uint32_t playerId, uint32_t invitedId)
 	if (!party) {
 		Party::create(player);
 		party = player->getParty();
-	} else if (party->getLeader() != player) {
+	} else if (party->getLeader().get() != player) {
 		return;
 	}
 
@@ -5614,7 +5614,7 @@ void Game::playerJoinParty(uint32_t playerId, uint32_t leaderId)
 	}
 
 	Party* party = leader->getParty();
-	if (!party || party->getLeader() != leader) {
+	if (!party || party->getLeader().get() != leader) {
 		return;
 	}
 
@@ -5634,7 +5634,7 @@ void Game::playerRevokePartyInvitation(uint32_t playerId, uint32_t invitedId)
 	}
 
 	Party* party = player->getParty();
-	if (!party || party->getLeader() != player) {
+	if (!party || party->getLeader().get() != player) {
 		return;
 	}
 
@@ -5654,7 +5654,7 @@ void Game::playerPassPartyLeadership(uint32_t playerId, uint32_t newLeaderId)
 	}
 
 	Party* party = player->getParty();
-	if (!party || party->getLeader() != player) {
+	if (!party || party->getLeader().get() != player) {
 		return;
 	}
 

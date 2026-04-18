@@ -60,9 +60,9 @@ int luaPartyGetLeader(lua_State* L)
 		return 1;
 	}
 
-	Player* leader = party->getLeader();
+	auto leader = party->getLeader();
 	if (leader) {
-		pushUserdata<Player>(L, leader);
+		pushUserdata<Player>(L, leader.get());
 		setMetatable(L, -1, "Player");
 	} else {
 		lua_pushnil(L);
@@ -245,7 +245,7 @@ int luaPartySetSharedExperience(lua_State* L)
 	bool active = getBoolean(L, 2);
 	Party* party = getUserdata<Party>(L, 1);
 	if (party) {
-		pushBoolean(L, party->setSharedExperience(party->getLeader(), active));
+		pushBoolean(L, party->setSharedExperience(party->getLeader().get(), active));
 	} else {
 		lua_pushnil(L);
 	}

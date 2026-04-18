@@ -530,9 +530,9 @@ void Creature::onDeath()
 					attackerPlayer->removeAttacked(getPlayer());
 
 					Party* party = attackerPlayer->getParty();
-					if (party && party->getLeader() && party->isSharedExperienceActive() &&
-					    party->isSharedExperienceEnabled()) {
-						attacker = party->getLeader()->shared_from_this();
+					auto partyLeader = party ? party->getLeader() : nullptr;
+					if (partyLeader && party->isSharedExperienceActive() && party->isSharedExperienceEnabled()) {
+						attacker = std::move(partyLeader);
 					}
 				}
 

@@ -347,7 +347,7 @@ void Npc::reset(bool reload)
 	floorChange = false;
 	attackable = false;
 	ignoreHeight = false;
-	focusCreature = 0;
+	m_focusCreature.reset();
 	speechBubble = 0;
 	moneyType = 0;
 	baseSpeed = 100;
@@ -647,7 +647,7 @@ void Npc::onThink(uint32_t interval)
 		npcEventHandler->onThink();
 	}
 
-	if (focusCreature == 0 && getTimeSinceLastMove() >= walkTicks) {
+	if (m_focusCreature.expired() && getTimeSinceLastMove() >= walkTicks) {
 		addEventWalk();
 	}
 
@@ -694,7 +694,7 @@ void Npc::onPlayerEndTrade(Player* player, int32_t buyCallback, int32_t sellCall
 
 bool Npc::getNextStep(Direction& dir, uint32_t& flags)
 {
-	if (focusCreature != 0) {
+	if (!m_focusCreature.expired()) {
 		listWalkDir.clear();
 		return false;
 	}
@@ -773,7 +773,7 @@ bool Npc::getRandomStep(Direction& direction) const
 bool Npc::doMoveTo(const Position& pos, int32_t minTargetDist /* = 1*/, int32_t maxTargetDist /* = 1*/,
                    bool fullPathSearch /* = true*/, bool clearSight /* = true*/, int32_t maxSearchDist /* = 0*/)
 {
-	if (focusCreature != 0) {
+	if (!m_focusCreature.expired()) {
 		return false;
 	}
 
@@ -818,13 +818,14 @@ void Npc::turnToCreature(Creature* creature)
 
 void Npc::setCreatureFocus(Creature* creature)
 {
-	if (creature) {
-		focusCreature = creature->getID();
+	Player* player = creature ? creature->getPlayer() : nullptr;
+	if (player) {
+		m_focusCreature = g_game.getPlayerWeakRef(player);
 		stopEventWalk();
 		listWalkDir.clear();
-		turnToCreature(creature);
+		turnToCreature(player);
 	} else {
-		focusCreature = 0;
+		m_focusCreature.reset();
 	}
 }
 

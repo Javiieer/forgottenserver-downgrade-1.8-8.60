@@ -4,13 +4,15 @@
 #ifndef FS_CHAT_H
 #define FS_CHAT_H
 
+#include <memory>
+
 #include "const.h"
 #include "luascript.h"
 
 class Party;
 class Player;
 
-using UsersMap = std::unordered_map<uint32_t, uint32_t>;
+using UsersMap = std::unordered_map<uint32_t, std::weak_ptr<Player>>;
 using InvitedMap = std::unordered_map<uint32_t, uint32_t>;
 
 class ChatChannel
@@ -21,7 +23,7 @@ public:
 
 	virtual ~ChatChannel() = default;
 
-	bool addUser(Player& player);
+	bool addUser(const std::shared_ptr<Player>& player);
 	bool removeUser(const Player& player);
 	bool hasUser(const Player& player);
 

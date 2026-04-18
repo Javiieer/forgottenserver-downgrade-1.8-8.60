@@ -4467,7 +4467,7 @@ PartyShields_t Player::getPartyShield(const Player* player) const
 	}
 
 	if (auto p = party.lock()) {
-		if (p->getLeader() == player) {
+		if (p->getLeader().get() == player) {
 			if (p->isSharedExperienceActive()) {
 				if (p->isSharedExperienceEnabled()) {
 					return SHIELD_YELLOW_SHAREDEXP;
@@ -4514,7 +4514,7 @@ PartyShields_t Player::getPartyShield(const Player* player) const
 bool Player::isInviting(const Player* player) const
 {
 	auto p = party.lock();
-	if (!player || !p || p->getLeader() != this) {
+	if (!player || !p || p->getLeader().get() != this) {
 		return false;
 	}
 	return p->isPlayerInvited(player);

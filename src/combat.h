@@ -41,6 +41,12 @@ public:
 
 struct CombatParams
 {
+	CombatParams() = default;
+	CombatParams(const CombatParams&) = delete;
+	CombatParams& operator=(const CombatParams&) = delete;
+	CombatParams(CombatParams&&) noexcept = default;
+	CombatParams& operator=(CombatParams&&) noexcept = default;
+
 	std::forward_list<std::unique_ptr<const Condition>> conditionList;
 
 	std::unique_ptr<ValueCallback> valueCallback;
