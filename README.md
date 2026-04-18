@@ -49,9 +49,9 @@
 | [ClientID .dat](#-clientid-implementation) | [Forge System](#-forge-system-item-fusion) | [Instance System](#-instance-system) | [Compilation](#️-compilation) | [📖 Full Wiki Docs](https://github.com/Mateuzkl/forgottenserver-downgrade-1.8-8.60/wiki) |
 | [Overview](#-overview) | [Imbuement System](#-imbuement-system) | [Guild Halls](#-guild-halls-system) | | [Contributing](#-contributing--issues) |
 | [Extended Protocol](#-extended-options--modified-860-cip-clients) | [Reward Boss](#-reward-boss-system) | [House Protection](#️-house-protection-system) | [Client Config](#-client-configuration-otcv8--mehah) | [Project Status](#-project-status) |
-| | [Guild Wars](#️-guild-war-system) | [AutoLoot](#️-autoloot-system) | [Linux Tuning](#-linux-server-tuning) | [Downloads](#-downloads--client-updater) |
+| [System Spy](#-system-spy) | [Guild Wars](#️-guild-war-system) | [AutoLoot](#️-autoloot-system) | [Linux Tuning](#-linux-server-tuning) | [Downloads](#-downloads--client-updater) |
 | | [Harmony (Monk)](#-harmony-system--monk-vocation) | [Offline Training](#-offline-training-system) | | [Donations](#-support-the-project) |
-| [Token Protect](#-token-item-protection) | | [Live Cast](#-live-cast-system) | | |
+| [Token Protect](#-token-item-protection) | | [Live Cast](#-live-cast-system) | [Magic Roulette](#-magic-roulette-system) | |
 
 </div>
 
@@ -254,6 +254,53 @@ Prevent character theft and account hacks with the **Token Protection System**. 
 
 > [!IMPORTANT]
 > Keep your token secret! It is only required to **disable** the protection. You cannot set a new token while protection is active.
+
+</details>
+
+---
+
+### 👁️ System Spy
+
+<details>
+<summary><b>Click to expand</b></summary>
+
+The **System Spy** is a powerful administrative tool that allows GODs and Admins to silently observe players in real-time without their knowledge.
+
+**Functionality:**
+- **Silently Observe**: GM protocols are attached to the target's session. The target receives no notification.
+- **Viewport Mirroring**: The GM's client automatically redirects to the target's position, showing all tiles and creatures around the target.
+- **Inventory & Containers**: Real-time mirroring of the target's inventory slots and all open containers/backpacks.
+- **Auto-Sync**: The GM's view stays perfectly in sync with the target's movements.
+
+| Command | Permission | Description |
+|---------|------------|-------------|
+| `/spy <name>` | GOD / Admin | Start spying on the target player |
+| `/unspy` | GOD / Admin | Stop spying and return to your own view |
+
+> [!CAUTION]
+> This system is designed for server administration and debugging. Improper use may affect the gameplay experience of others.
+
+</details>
+
+---
+
+### 🎰 Magic Roulette System
+
+<details>
+<summary><b>Click to expand</b></summary>
+
+An advanced, interactive **Magic Roulette** system with rich visual effects and animations. Players can test their luck at roulette stations for a chance to win rare rewards.
+
+![Magic Roulette](https://user-images.githubusercontent.com/40324910/236821618-63cb56a4-3003-4156-a05f-02375649fe55.gif)
+
+**Features:**
+- **Interactive UI**: Lever-activated roulette with smooth visual animations on the map.
+- **Customizable Rewards**: Configure items, counts, and drop chances (including rare/legendary items).
+- **Visual Feedback**: Real-time map animations and effects during the spin.
+- **Database Tracking**: All plays are recorded in the database for auditing and statistics.
+- **Versatile Modes**: Supports both horizontal and vertical layout configurations.
+
+> **Configuration**: Can be easily customized in `data/scripts/magic-roulette-master/configroulette.lua`.
 
 </details>
 
