@@ -1756,6 +1756,8 @@ void Items::parseItemNode(const pugi::xml_node& itemNode, uint16_t id)
 							conditionDamage->setInitDamage(-initDamage);
 						} else if (initDamage == -1 && start != 0) {
 							conditionDamage->setInitDamage(start);
+						} else if (initDamage == -1 && damage != 0) {
+							conditionDamage->setInitDamage(damage);
 						}
 
 						conditionDamage->setParam(CONDITION_PARAM_FIELD, 1);
