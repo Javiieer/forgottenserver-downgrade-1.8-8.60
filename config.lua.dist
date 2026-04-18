@@ -123,6 +123,8 @@ timeBetweenExActions = 1000
 exhaustPotionMiliSeconds = 1500
 exhaustItemAtUsePotion = true
 
+protectionTime = 10
+
 -- Forge Tier Abilities
 -- Formula: chance = A * tier^2 + B * tier + C
 forgeFatalA = 0.05

@@ -18,6 +18,18 @@ bankAccount:respond(
 local basic = bankAccount:keyword({ "basic", "functions", "job" })
 basic:respond("I work in this bank. I can {change} money for you and help you with your {bank account}.")
 
+basic.keywords["balance"] = greet.keywords["balance"]
+basic.keywords["deposit"] = greet.keywords["deposit"]
+basic.keywords["withdraw"] = greet.keywords["withdraw"]
+basic.keywords["transfer"] = greet.keywords["transfer"]
+basic.keywords["change"] = greet.keywords["change"]
+
+bankAccount.keywords["balance"] = greet.keywords["balance"]
+bankAccount.keywords["deposit"] = greet.keywords["deposit"]
+bankAccount.keywords["withdraw"] = greet.keywords["withdraw"]
+bankAccount.keywords["transfer"] = greet.keywords["transfer"]
+bankAccount.keywords["change"] = greet.keywords["change"]
+
 local advanced = bankAccount:keyword("advanced")
 advanced:respond(
 "Your bank account will be used automatically when you want to {rent} a house or place an offer on an item on the {market}. Let me know if you want to know about how either one works.")
@@ -29,6 +41,8 @@ rent:respond(
 local market = advanced:keyword("market")
 market:respond(
 "If you buy an item from the market, the required gold will be deducted from your bank account automatically. On the other hand, money you earn for selling items via the market will be added to your account. It's easy!")
+
+market.keywords["rent"] = rent
 
 -- Bank Balance
 local balance = greet:keyword("balance")
@@ -54,7 +68,12 @@ local deposit = greet:keyword("deposit")
 deposit:respond("How much money would you like to deposit?")
 local answer = deposit:onAnswer()
 function answer:callback(npc, player, message, handler)
-    local money = tonumber(message)
+    local money = 0
+    if message == "all" then
+        money = player:getMoney()
+    else
+        money = tonumber(message)
+    end
     local valid = isValidMoney(money)
     if valid then
         if player:getMoney() < money then
@@ -85,7 +104,12 @@ local withdraw = greet:keyword("withdraw")
 withdraw:respond("How much money would you like to withdraw?")
 local answer = withdraw:onAnswer()
 function answer:callback(npc, player, message, handler)
-    local money = tonumber(message)
+    local money = 0
+    if message == "all" then
+        money = player:getBankBalance()
+    else
+        money = tonumber(message)
+    end
     local valid = isValidMoney(money)
     if valid then
         if player:getBankBalance() < money then
@@ -347,7 +371,12 @@ function fast:callback(npc, player, message, handler)
     local deposit = string.find(message, "deposit")
     if deposit then
         local sub = string.gsub(message, "deposit ", "")
-        local money = tonumber(sub)
+        local money = 0
+        if sub == "all" then
+            money = player:getMoney()
+        else
+            money = tonumber(sub)
+        end
         local valid = isValidMoney(money)
         if valid then
             if player:getMoney() < money then
@@ -363,7 +392,12 @@ function fast:callback(npc, player, message, handler)
     local withdraw = string.find(message, "withdraw")
     if withdraw then
         local sub = string.gsub(message, "withdraw ", "")
-        local money = tonumber(sub)
+        local money = 0
+        if sub == "all" then
+            money = player:getBankBalance()
+        else
+            money = tonumber(sub)
+        end
         local valid = isValidMoney(money)
         if valid then
             if player:getBankBalance() < money then
