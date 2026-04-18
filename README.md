@@ -51,7 +51,7 @@
 | [Extended Protocol](#-extended-options--modified-860-cip-clients) | [Reward Boss](#-reward-boss-system) | [House Protection](#️-house-protection-system) | [Client Config](#-client-configuration-otcv8--mehah) | [Project Status](#-project-status) |
 | | [Guild Wars](#️-guild-war-system) | [AutoLoot](#️-autoloot-system) | [Linux Tuning](#-linux-server-tuning) | [Downloads](#-downloads--client-updater) |
 | | [Harmony (Monk)](#-harmony-system--monk-vocation) | [Offline Training](#-offline-training-system) | | [Donations](#-support-the-project) |
-| | [Forge & Classification](#️-forge--classification-system) | [Live Cast](#-live-cast-system) | | |
+| | | [Live Cast](#-live-cast-system) | | |
 
 </div>
 
@@ -125,19 +125,6 @@ This is a **custom modified version** of The Forgotten Server, downgraded to pro
 
 ---
 
-### ⚔️ Forge & Classification System
-
-<details>
-<summary><b>Click to expand</b></summary>
-
-- Items can have **Tier** and **Classification** attributes.
-- **Forge**: Tier system allows for item upgrades via fusion and strong progression.
-- **Classification**: System for categorizing items by rarity or power.
-- Fully integrated with Lua scripting API for custom RPG systems.
-
-</details>
-
----
 
 ### 🏆 Reward Boss System
 
@@ -248,10 +235,21 @@ Enhanced decay system for better server performance. Optimized item decay proces
 
 ### 🔥 Forge System (Item Fusion)
 
-<details>
+![Forge System](forge.gif)
+
+<details open>
 <summary><b>Click to expand</b></summary>
 
 Fuse two identical items — one is consumed, the other gains **+1 Tier**. Tier is capped by item classification.
+
+### 📖 How to Use
+1. **Combine Items**: Place two identical items of the same Tier into the Forge slots.
+2. **Materials**: Ensure you have enough **Forge Dust** and **Silver Tokens**. High tiers (T5+) require **Exalted Cores**.
+3. **Fusion**: Click the fusion button. If successful, your item gains **+1 Tier**.
+4. **Failure**: On failure, one item is destroyed and the other remains at its current Tier.
+5. **Limits**: Tier upgrades are capped by the item's **Classification** (e.g., Class 1, Class 2).
+
+---
 
 | Tier | Success Rate | Extra Materials |
 |:----:|:---:|:-:|
