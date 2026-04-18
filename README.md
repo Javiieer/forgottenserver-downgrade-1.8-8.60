@@ -8,7 +8,7 @@
 &nbsp;
 [![License](https://img.shields.io/badge/license-GPL--2.0-blue?style=flat-square)](LICENSE)
 &nbsp;
-[![Commits](https://img.shields.io/badge/commits-~828-6a0dad?style=flat-square)](https://github.com/Mateuzkl/forgottenserver-downgrade-1.8-8.60/commits)
+[![Commits](https://img.shields.io/badge/commits-~900-6a0dad?style=flat-square)](https://github.com/Mateuzkl/forgottenserver-downgrade-1.8-8.60/commits)
 
 </div>
 
@@ -18,7 +18,7 @@
 
 ![Engine](https://img.shields.io/badge/ENGINE-TFS%201.8-7c3aed?style=for-the-badge)
 ![Protocol](https://img.shields.io/badge/PROTOCOL-8.60-f97316?style=for-the-badge)
-![C++](https://img.shields.io/badge/C++-17-00599C?style=for-the-badge&logo=cplusplus&logoColor=white)
+![C++](https://img.shields.io/badge/C++-23-00599C?style=for-the-badge&logo=cplusplus&logoColor=white)
 ![Lua](https://img.shields.io/badge/Lua-5.4-2C2D72?style=for-the-badge&logo=lua&logoColor=white)
 ![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white)
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-22.04%2B-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
@@ -78,7 +78,7 @@ This is a **custom modified version** of The Forgotten Server, downgraded to pro
 
 <div align="center">
 
-| 🔢 ~828 Commits | 🧩 13+ Custom Systems |
+| 🔢 ~900 Commits | 🧩 13+ Custom Systems |
 |:-:|:-:|
 | Actively maintained | Fully integrated in C++ |
 
@@ -478,13 +478,11 @@ The base is **stable** and all systems are fully working. Found a bug? You're ve
 
 | Metric | Value |
 |:------:|:-----:|
-| 📦 Commits | **~828** |
+| 📦 Commits | **~900** |
 | 🧩 Custom Systems | **13+** |
 | 🔧 Status | **Stable & Active** |
 
 </div>
-
-
 
 ---
 
