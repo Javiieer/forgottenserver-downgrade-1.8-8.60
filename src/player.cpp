@@ -945,7 +945,7 @@ void Player::sendPing()
 	}
 
 	int64_t noPongTime = timeNow - lastPong;
-	if (auto ac = attackedCreature.lock(); (hasLostConnection || noPongTime >= 7000) && ac && ac->getPlayer()) {
+	if (auto ac = attackedCreature.lock(); (hasLostConnection || noPongTime >= 7000) && ac) {
 		setAttackedCreature(nullptr);
 	}
 
@@ -1689,6 +1689,12 @@ void Player::onThink(uint32_t interval)
 	if (client && getIP() == 0) {
 		if (hasCondition(CONDITION_INFIGHT)) {
 			ghostModeStartTime = 0;
+
+			// Stop attacking if the player closes the game (Force Exit)
+			if (!attackedCreature.expired()) {
+				setAttackedCreature(nullptr);
+			}
+
 		} else {
 			if (ghostModeStartTime == 0) {
 				ghostModeStartTime = OTSYS_TIME();
@@ -1711,6 +1717,11 @@ void Player::onThink(uint32_t interval)
 		if (client) {
 			client->sendPing();
 		}
+	}
+
+	// If there is no response from the client for more than 7 seconds (loss of connection), the attack stops.
+	if (timeNow - lastPong >= 7000 && !attackedCreature.expired()) {
+		setAttackedCreature(nullptr);
 	}
 
 	if (client && client->isWaitingForUpdate()) {
