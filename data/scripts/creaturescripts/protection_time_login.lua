@@ -39,7 +39,7 @@ end
 
 local protectionMessage = CreatureEvent("protectionMessage")
 function protectionMessage.onLogin(player)
-    if player:getGroup():getAccess() then
+    if player:getGroup():getAccess() or player:getTile():hasFlag(TILESTATE_PROTECTIONZONE) then
         return true
     end
 

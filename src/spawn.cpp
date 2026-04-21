@@ -413,7 +413,7 @@ void Spawn::checkSpawn()
 	const int64_t rate = std::max<int64_t>(1, ConfigManager::getInteger(ConfigManager::RATE_SPAWN));
 	// OPTIMIZATION: Restored rate limiting from upstream to distribute
   	// spawn load over time instead of processing everything at once.
-  	uint32_t spawnCount = 0;
+	uint32_t spawnCount = 0;
 
 	for (auto& [spawnId, sb] : spawnMap) {
 		if (spawnedMap.contains(spawnId)) {
@@ -432,13 +432,20 @@ void Spawn::checkSpawn()
 		}
 		const uint32_t spawnInterval = static_cast<uint32_t>(sb.interval / currentRate);
 		if (now >= sb.lastSpawn + std::max<uint32_t>(MINSPAWN_INTERVAL, spawnInterval)) {
-			// If there is a player blocking and no monster in the set ignores the block,
-			// we show POFF and retry on the next cycle (no teleport effect).
-			if (!spawnMonster(spawnId, sb)) {
-				sb.lastSpawn = OTSYS_TIME();
-				continue;
+			if (ConfigManager::getBoolean(ConfigManager::SPAWN_START_EFFECT_ENABLED)) {
+				if (sb.effectInitialInterval == 0) {
+					uint32_t startInterval = ConfigManager::getInteger(ConfigManager::RATE_START_EFFECT);
+					sb.effectInitialInterval = startInterval;
+					scheduleSpawn(spawnId, startInterval, true);
+					sb.lastSpawn = now;
+				}
+			} else {
+				if (!spawnMonster(spawnId, sb)) {
+					sb.lastSpawn = OTSYS_TIME();
+					continue;
+				}
 			}
-			// Rate limiting: only spawn a limited number per cycle
+
 			if (++spawnCount >= static_cast<uint32_t>(rate)) {
 				break;
 			}
@@ -462,43 +469,47 @@ void Spawn::scheduleSpawn(uint32_t spawnId, uint32_t interval, bool blocked)
 		return;
 	}
 
-	spawnBlock_t &sb = it->second;
+	spawnBlock_t& sb = it->second;
 
-	if (blocked) {
-		bool playerBlocking = findPlayer(sb.pos);
-		if (playerBlocking) {
-			bool anyIgnoresBlock = false;
-			for (const auto &pair : sb.mTypes) {
-				if (!pair.first->info.isBlockable) {
-					anyIgnoresBlock = true;
-					break;
-				}
-			}
-
-			if (!anyIgnoresBlock) {
-				g_game.addMagicEffect(sb.pos, CONST_ME_POFF);
-				sb.lastSpawn = OTSYS_TIME();
-				sb.effectInitialInterval = 0;
-				return;
-			}
-		}
-	}
-
-	// OPTIMIZATION: Removed recursive event chain. If interval > 0,
-	// schedule a single delayed spawn + one teleport effect instead of
-	// N cascading scheduler events.
 	if (interval > 0) {
 		g_game.addMagicEffect(sb.pos, CONST_ME_TELEPORT);
-		uint32_t eventId =
-				g_scheduler.addEvent(interval, [this, spawnId]()
-				{
-					auto mapIt = spawnMap.find(spawnId);
-					if (mapIt != spawnMap.end()) {
-						spawnMonster(spawnId, mapIt->second);
-						mapIt->second.effectInitialInterval = 0;
+
+		uint32_t timeBetweenEffects = ConfigManager::getInteger(ConfigManager::RATE_BETWEEN_EFFECT);
+		uint32_t totalDuration = sb.effectInitialInterval;
+
+		uint32_t nextWait;
+		if (totalDuration > 0) {
+			float progress = static_cast<float>(interval) / totalDuration;
+			nextWait = std::max<uint32_t>(200, static_cast<uint32_t>(timeBetweenEffects * progress));
+		} else {
+			nextWait = timeBetweenEffects;
+		}
+
+		if (interval > nextWait) {
+			auto eventIdPtr = std::make_shared<uint32_t>(0);
+			*eventIdPtr = g_scheduler.addEvent(nextWait, [this, spawnId, interval, nextWait, eventIdPtr]() {
+				if (auto it = std::find(pendingSpawnEvents.begin(), pendingSpawnEvents.end(), *eventIdPtr); it != pendingSpawnEvents.end()) {
+					pendingSpawnEvents.erase(it);
+				}
+				scheduleSpawn(spawnId, interval - nextWait, true);
+			});
+			pendingSpawnEvents.push_back(*eventIdPtr);
+		} else {
+			auto eventIdPtr = std::make_shared<uint32_t>(0);
+			*eventIdPtr = g_scheduler.addEvent(interval, [this, spawnId, eventIdPtr]() {
+				if (auto it = std::find(pendingSpawnEvents.begin(), pendingSpawnEvents.end(), *eventIdPtr); it != pendingSpawnEvents.end()) {
+					pendingSpawnEvents.erase(it);
+				}
+				auto mapIt = spawnMap.find(spawnId);
+				if (mapIt != spawnMap.end()) {
+					if (!spawnMonster(spawnId, mapIt->second)) {
+						g_game.addMagicEffect(mapIt->second.pos, CONST_ME_SMALL_WHITE_ENERGYSHOCK);
 					}
-				});
-		pendingSpawnEvents.push_back(eventId);
+					mapIt->second.effectInitialInterval = 0;
+				}
+			});
+			pendingSpawnEvents.push_back(*eventIdPtr);
+		}
 	} else {
 		spawnMonster(spawnId, sb);
 		sb.effectInitialInterval = 0;
