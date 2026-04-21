@@ -2163,6 +2163,8 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(TEXTCOLOR_MAYABLUE);
 	registerEnum(TEXTCOLOR_DARKRED);
 	registerEnum(TEXTCOLOR_PURPLE);
+	registerEnum(TEXTCOLOR_DARKORANGE);
+	registerEnum(TEXTCOLOR_LIGHTORANGE);
 	registerEnum(TEXTCOLOR_RED);
 	registerEnum(TEXTCOLOR_ORANGE);
 	registerEnum(TEXTCOLOR_YELLOW);

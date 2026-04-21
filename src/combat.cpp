@@ -915,7 +915,7 @@ void Combat::doTargetCombat(Creature* caster, Creature* target, CombatDamage& da
 				if (skill == 0 && chance > 0) {
 					skill = 5000;
 				}
-				if (chance > 0 && skill > 0 && (normal_random(1, 100) * 100) <= chance) {
+				if (chance > 0 && skill > 0 && uniform_random(1, 10000) <= chance) {
 					damage.primary.value += std::round(damage.primary.value * (skill / 10000.));
 					damage.secondary.value += std::round(damage.secondary.value * (skill / 10000.));
 					damage.critical = true;
@@ -1051,7 +1051,10 @@ void Combat::doTargetCombat(Creature* caster, Creature* target, CombatDamage& da
 			if (casterPlayer->getHealth() < casterPlayer->getMaxHealth()) {
 				uint16_t chance = casterPlayer->getSpecialSkill(SPECIALSKILL_LIFELEECHCHANCE);
 				uint16_t skill = casterPlayer->getSpecialSkill(SPECIALSKILL_LIFELEECHAMOUNT);
-				if (chance > 0 && skill > 0 && (normal_random(1, 100) * 100) <= chance) {
+				leechCombat.primary.type = COMBAT_HEALING;
+
+				if (skill > 0 && chance == 0) { chance = 10000; }
+				if (chance > 0 && skill > 0 && uniform_random(1, 10000) <= chance) {
 					leechCombat.primary.value = std::round(totalDamage * (skill / 10000.));
 					g_game.combatChangeHealth(nullptr, casterPlayer, leechCombat);
 					casterPlayer->sendMagicEffect(casterPlayer->getPosition(), CONST_ME_MAGIC_RED);
@@ -1061,7 +1064,9 @@ void Combat::doTargetCombat(Creature* caster, Creature* target, CombatDamage& da
 			if (casterPlayer->getMana() < casterPlayer->getMaxMana()) {
 				uint16_t chance = casterPlayer->getSpecialSkill(SPECIALSKILL_MANALEECHCHANCE);
 				uint16_t skill = casterPlayer->getSpecialSkill(SPECIALSKILL_MANALEECHAMOUNT);
-				if (chance > 0 && skill > 0 && (normal_random(1, 100) * 100) <= chance) {
+
+				if (skill > 0 && chance == 0) { chance = 10000; }
+				if (chance > 0 && skill > 0 && uniform_random(1, 10000) <= chance) {
 					leechCombat.primary.value = std::round(totalDamage * (skill / 10000.));
 					g_game.combatChangeMana(nullptr, casterPlayer, leechCombat);
 					casterPlayer->sendMagicEffect(casterPlayer->getPosition(), CONST_ME_MAGIC_BLUE);
@@ -1094,10 +1099,9 @@ void Combat::doAreaCombat(Creature* caster, const Position& position, const Area
 	    damage.origin != ORIGIN_CONDITION) {
 		uint16_t chance = casterPlayer->getSpecialSkill(SPECIALSKILL_CRITICALHITCHANCE);
 		uint16_t skill = casterPlayer->getSpecialSkill(SPECIALSKILL_CRITICALHITAMOUNT);
-		if (skill == 0 && chance > 0) {
-			skill = 5000;
-		}
-		if (chance > 0 && skill > 0 && (uniform_random(1, 100) * 100) <= chance) {
+
+		if (skill == 0 && chance > 0) { skill = 5000; }
+		if (chance > 0 && skill > 0 && uniform_random(1, 10000) <= chance) {
 			criticalPrimary = std::round(damage.primary.value * (skill / 10000.));
 			criticalSecondary = std::round(damage.secondary.value * (skill / 10000.));
 			damage.critical = true;
@@ -1220,7 +1224,9 @@ void Combat::doAreaCombat(Creature* caster, const Position& position, const Area
 				if (casterPlayer->getHealth() < casterPlayer->getMaxHealth()) {
 					uint16_t chance = casterPlayer->getSpecialSkill(SPECIALSKILL_LIFELEECHCHANCE);
 					uint16_t skill = casterPlayer->getSpecialSkill(SPECIALSKILL_LIFELEECHAMOUNT);
-					if (chance > 0 && skill > 0 && (normal_random(1, 100) * 100) <= chance) {
+
+					if (skill > 0 && chance == 0) { chance = 10000; }
+					if (chance > 0 && skill > 0 && uniform_random(1, 10000) <= chance) {
 						leechCombat.primary.value = std::ceil(
 						    totalDamage * ((skill / 10000.) + ((targetsCount - 1) * ((skill / 10000.) / 10.))) /
 						    targetsCount);
@@ -1232,7 +1238,9 @@ void Combat::doAreaCombat(Creature* caster, const Position& position, const Area
 				if (casterPlayer->getMana() < casterPlayer->getMaxMana()) {
 					uint16_t chance = casterPlayer->getSpecialSkill(SPECIALSKILL_MANALEECHCHANCE);
 					uint16_t skill = casterPlayer->getSpecialSkill(SPECIALSKILL_MANALEECHAMOUNT);
-					if (chance > 0 && skill > 0 && (normal_random(1, 100) * 100) <= chance) {
+
+					if (skill > 0 && chance == 0) { chance = 10000; }
+					if (chance > 0 && skill > 0 && uniform_random(1, 10000) <= chance) {
 						leechCombat.primary.value = std::ceil(
 						    totalDamage * ((skill / 10000.) + ((targetsCount - 1) * ((skill / 10000.) / 10.))) /
 						    targetsCount);

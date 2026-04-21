@@ -4546,6 +4546,42 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 	auto attackerRef = attacker ? attacker->shared_from_this() : std::shared_ptr<Creature>();
 
 	const Position& targetPos = target->getPosition();
+	if (damage.primary.type == COMBAT_HEALING) {
+		int32_t healAmount = damage.primary.value + damage.secondary.value;
+		if (healAmount > 0) {
+			int32_t realHeal = target->getHealth();
+			target->gainHealth(attackerRef, healAmount);
+			realHeal = target->getHealth() - realHeal;
+
+			if (realHeal > 0) {
+				SpectatorVec spectators;
+				map.getSpectators(spectators, targetPos, false, true);
+				spectators = InstanceUtils::filterByInstance(spectators, target->getInstanceID());
+
+				addAnimatedText(spectators, fmt::format("{:d}", realHeal), targetPos,
+				                static_cast<TextColor_t>(getInteger(ConfigManager::HEALTH_GAIN_COLOUR)));
+
+				Player* attackerPlayer = attacker ? attacker->getPlayer() : nullptr;
+				Player* targetPlayer = target->getPlayer();
+				for (const auto& spectator : spectators) {
+					Player* tmpPlayer = static_cast<Player*>(spectator.get());
+					if (tmpPlayer == attackerPlayer && attackerPlayer != targetPlayer) {
+						tmpPlayer->sendTextMessage(MESSAGE_STATUS_DEFAULT, fmt::format("You heal {:s} for {:d} hitpoints.", target->getNameDescription(), realHeal));
+					} else if (tmpPlayer == targetPlayer) {
+						if (!attacker) {
+							tmpPlayer->sendTextMessage(MESSAGE_STATUS_DEFAULT, fmt::format("You gained {:d} hitpoints.", realHeal));
+						} else if (targetPlayer == attackerPlayer) {
+							tmpPlayer->sendTextMessage(MESSAGE_STATUS_DEFAULT, fmt::format("You healed yourself for {:d} hitpoints.", realHeal));
+						} else {
+							tmpPlayer->sendTextMessage(MESSAGE_STATUS_DEFAULT, fmt::format("You were healed by {:s} for {:d} hitpoints.", attacker->getNameDescription(), realHeal));
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
+
 	if (damage.primary.value > 0) {
 
 		Player* attackerPlayer;
@@ -4603,7 +4639,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			map.getSpectators(spectators, targetPos, false, true);
 			spectators = InstanceUtils::filterByInstance(spectators, target->getInstanceID());
 
-			addAnimatedText(spectators, fmt::format("{:+d}", realHealthChange), targetPos,
+			addAnimatedText(spectators, fmt::format("{:d}", realHealthChange), targetPos,
                       		static_cast<TextColor_t>(getInteger(ConfigManager::HEALTH_GAIN_COLOUR)));
 			for (const auto& spectator : spectators) {
 				Player* tmpPlayer = static_cast<Player*>(spectator.get());
@@ -4718,7 +4754,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				std::string spectatorMessage;
 
 				addAnimatedText(spectators, fmt::format("{:+d}", -manaDamage), targetPos,
-				                static_cast<TextColor_t>(getInteger(ConfigManager::MANA_GAIN_COLOUR)));
+				                static_cast<TextColor_t>(getInteger(ConfigManager::MANA_LOSS_COLOUR)));
 
 				for (const auto& spectator : spectators) {
 					Player* tmpPlayer = static_cast<Player*>(spectator.get());
@@ -4962,6 +4998,31 @@ bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage& 
 		int32_t realManaChange = targetPlayer->getMana();
 		targetPlayer->changeMana(manaChange);
 		realManaChange = targetPlayer->getMana() - realManaChange;
+
+		if (realManaChange > 0) {
+			SpectatorVec spectators;
+			map.getSpectators(spectators, target->getPosition(), false, true);
+			spectators = InstanceUtils::filterByInstance(spectators, target->getInstanceID());
+
+			addAnimatedText(spectators, fmt::format("{:d}", realManaChange), target->getPosition(),
+			                static_cast<TextColor_t>(getInteger(ConfigManager::MANA_GAIN_COLOUR)));
+
+			Player* attackerPlayer = attacker ? attacker->getPlayer() : nullptr;
+			for (const auto& spectator : spectators) {
+				Player* tmpPlayer = static_cast<Player*>(spectator.get());
+				if (tmpPlayer == attackerPlayer && attackerPlayer != targetPlayer) {
+					tmpPlayer->sendTextMessage(MESSAGE_STATUS_DEFAULT, fmt::format("You heal {:s} for {:d} mana.", target->getNameDescription(), realManaChange));
+				} else if (tmpPlayer == targetPlayer) {
+					if (!attacker) {
+						tmpPlayer->sendTextMessage(MESSAGE_STATUS_DEFAULT, fmt::format("You gained {:d} mana.", realManaChange));
+					} else if (targetPlayer == attackerPlayer) {
+						tmpPlayer->sendTextMessage(MESSAGE_STATUS_DEFAULT, fmt::format("You healed yourself for {:d} mana.", realManaChange));
+					} else {
+						tmpPlayer->sendTextMessage(MESSAGE_STATUS_DEFAULT, fmt::format("You were healed by {:s} for {:d} mana.", attacker->getNameDescription(), realManaChange));
+					}
+				}
+			}
+		}
 	} else {
 		const Position& targetPos = target->getPosition();
 		if (!target->isAttackable()) {
