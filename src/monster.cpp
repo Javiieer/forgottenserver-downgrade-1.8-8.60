@@ -2015,6 +2015,9 @@ bool Monster::canWalkTo(Position pos, Direction direction) const
 		if (isFamiliar()) {
 			pathFlags |= FLAG_IGNOREFIELDDAMAGE;
 		}
+		if (isSummon() && !isFamiliar() && tile && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+			return false;
+		}
 		if (tile && tile->getTopVisibleCreature(this) == nullptr &&
 		    tile->queryAdd(0, *this, 1, pathFlags) == RETURNVALUE_NOERROR) {
 			return true;

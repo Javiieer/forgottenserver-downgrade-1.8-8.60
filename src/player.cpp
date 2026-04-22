@@ -10,6 +10,7 @@
 #include "creatureevent.h"
 #include "database.h"
 #include "events.h"
+#include "familiar.h"
 #include "game.h"
 #include "house.h"
 #include "iologindata.h"
@@ -1233,6 +1234,8 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin)
 		}
 
 		IOLoginData::updateOnlineStatus(getGUID(), true, client->isBroadcasting(), client->password(), client->description(), client->spectatorList().size());
+
+		g_scheduler.addEvent(createSchedulerTask(500, std::bind(Familiar::restoreFamiliarOnLogin, getID())));
 	}
 }
 
@@ -1460,6 +1463,8 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 		}
 
 		IOLoginData::removeOnlineStatus(guid);
+
+		Familiar::onPlayerLogout(this);
 
 		bool saved = false;
 		for (uint32_t tries = 0; tries < 3; ++tries) {

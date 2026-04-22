@@ -149,7 +149,8 @@ bool createFamiliar(Player* player, const std::string& familiarName, uint32_t ti
     g_game.addMagicEffect(player->getPosition(), CONST_ME_MAGIC_BLUE, player->getInstanceID());
     g_game.addMagicEffect(monster->getPosition(), CONST_ME_TELEPORT, monster->getInstanceID());
 
-    player->setStorageValue(STORAGE_FAMILIAR_SUMMON_TIME, std::optional<int64_t>(static_cast<int64_t>(timeLeft + static_cast<uint32_t>(OTSYS_TIME()))));
+    int64_t expireAt = static_cast<int64_t>(OTSYS_TIME()) + (static_cast<int64_t>(timeLeft) * 1000LL);
+    player->setStorageValue(STORAGE_FAMILIAR_SUMMON_TIME, std::optional<int64_t>(expireAt));
 
     // schedule removal
     g_scheduler.addEvent(timeLeft * 1000, [creatureId = monster->getID(), playerId = player->getID()]() {
@@ -186,6 +187,19 @@ bool createFamiliarSpell(Player* player, uint32_t spellId)
         return false;
     }
 
+    for (const auto& summonWeak : player->getSummons()) {
+        auto summon = summonWeak.lock();
+        if (!summon) {
+            continue;
+        }
+        Monster* monster = summon->getMonster();
+        if (monster && monster->isFamiliar()) {
+            player->sendCancelMessage("You already have a familiar.");
+            g_game.addMagicEffect(player->getPosition(), CONST_ME_POFF, player->getInstanceID());
+            return false;
+        }
+    }
+
     if (player->getSummons().size() >= 1 && player->getAccountType() < ACCOUNT_TYPE_GOD) {
         player->sendCancelMessage("You can't have other summons.");
         g_game.addMagicEffect(player->getPosition(), CONST_ME_POFF, player->getInstanceID());
@@ -199,8 +213,8 @@ bool createFamiliarSpell(Player* player, uint32_t spellId)
         return false;
     }
 
-    uint32_t summonDuration = 15 * 60; // seconds
-    uint32_t cooldown = summonDuration * 2; // seconds
+    uint32_t summonDuration = 15 * 60;
+    uint32_t cooldown = summonDuration * 2;
 
     bool created = createFamiliar(player, famName, summonDuration);
     if (created) {
@@ -210,6 +224,73 @@ bool createFamiliarSpell(Player* player, uint32_t spellId)
     }
 
     return false;
+}
+
+void restoreFamiliarOnLogin(uint32_t playerId)
+{
+    Player* player = g_game.getPlayerByID(playerId);
+    if (!player) {
+        return;
+    }
+
+    auto storedExpire = player->getStorageValue(STORAGE_FAMILIAR_SUMMON_TIME);
+    if (!storedExpire || *storedExpire <= 0) {
+        return;
+    }
+
+    int64_t expireAt = *storedExpire;
+    int64_t now = static_cast<int64_t>(OTSYS_TIME());
+    int64_t remainingMs = expireAt - now;
+
+    if (remainingMs <= 0) {
+        player->setStorageValue(STORAGE_FAMILIAR_SUMMON_TIME, std::optional<int64_t>(-1));
+        return;
+    }
+
+    uint32_t remainingSecs = static_cast<uint32_t>(remainingMs / 1000LL);
+    if (remainingSecs < 5) {
+        player->setStorageValue(STORAGE_FAMILIAR_SUMMON_TIME, std::optional<int64_t>(-1));
+        return;
+    }
+
+    for (const auto& summonWeak : player->getSummons()) {
+        auto summon = summonWeak.lock();
+        if (!summon) {
+            continue;
+        }
+        Monster* monster = summon->getMonster();
+        if (monster && monster->isFamiliar()) {
+            return;
+        }
+    }
+
+    std::string familiarName = getFamiliarName(player);
+    if (familiarName.empty()) {
+        return;
+    }
+
+    createFamiliar(player, familiarName, remainingSecs);
+}
+
+void onPlayerLogout(Player* player)
+{
+    if (!player) {
+        return;
+    }
+
+    ClearFamiliarTimerEvents(player, true);
+
+    for (const auto& weakSummon : player->getSummons()) {
+        auto summon = weakSummon.lock();
+        if (!summon) {
+            continue;
+        }
+        Monster* m = summon->getMonster();
+        if (m && m->isFamiliar()) {
+            g_game.removeCreature(summon.get());
+            break;
+        }
+    }
 }
 
 }

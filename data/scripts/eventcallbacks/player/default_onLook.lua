@@ -22,8 +22,9 @@ event.onLook = function(self, thing, position, distance, description)
 				end
 				if isFamiliar then
 					local familiarSummonTime = master:getStorageValue(STORAGE_FAMILIAR_SUMMON_TIME) or 0
+					local remainingSeconds = math.floor((familiarSummonTime - os.mtime()) / 1000)
 					description = description .. " (Master: " .. master:getName() .. "). \z
-						It will disappear in " .. Game.getTimeInWords(familiarSummonTime - os.time())
+						It will disappear in " .. Game.getTimeInWords(remainingSeconds)
 				end
 			end
 		end
