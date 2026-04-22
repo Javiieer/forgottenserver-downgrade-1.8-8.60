@@ -55,13 +55,26 @@ static void SendMessageFunction(uint32_t playerId, const std::string& message)
 
 static void RemoveFamiliar(uint32_t creatureId, uint32_t playerId)
 {
-    if (Creature* creature = g_game.getCreatureByID(creatureId)) {
-        if (Player* player = g_game.getPlayerByID(playerId)) {
-            g_game.removeCreature(creature);
-            ClearFamiliarTimerEvents(player, false);
-            player->setStorageValue(STORAGE_FAMILIAR_SUMMON_TIME, std::optional<int64_t>(-1));
-        }
-    }
+	Creature* creature = g_game.getCreatureByID(creatureId);
+	Player* player = g_game.getPlayerByID(playerId);
+	if (!creature || !player) {
+		if (player) {
+			ClearFamiliarTimerEvents(player, false);
+			player->setStorageValue(STORAGE_FAMILIAR_SUMMON_TIME, std::optional<int64_t>(-1));
+		}
+		return;
+	}
+
+	Monster* monster = creature->getMonster();
+	std::shared_ptr<Creature> master;
+	if (monster) {
+		master = monster->getMaster();
+	}
+	if (master && master.get() == player) {
+		g_game.removeCreature(creature);
+		ClearFamiliarTimerEvents(player, false);
+		player->setStorageValue(STORAGE_FAMILIAR_SUMMON_TIME, std::optional<int64_t>(-1));
+	}
 }
 
 std::string getFamiliarName(const Player* player)

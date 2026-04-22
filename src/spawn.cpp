@@ -457,7 +457,7 @@ void Spawn::checkSpawn()
 	}
 }
 
-void Spawn::scheduleSpawn(uint32_t spawnId, uint32_t interval, bool blocked)
+void Spawn::scheduleSpawn(uint32_t spawnId, uint32_t interval, bool /*blocked*/)
 {
 	// Guard: if the game is shutting down, bail immediately.
 	if (g_game.getGameState() >= GAME_STATE_SHUTDOWN) {

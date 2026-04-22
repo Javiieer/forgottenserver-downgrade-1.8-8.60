@@ -337,6 +337,7 @@ bool ConfigManager::load()
 	booleans[Boolean::STAMINA_PZ] = getGlobalBoolean(L, "staminaPz", false);
 	booleans[Boolean::PUSH_CREATURE_ZONE] = getGlobalBoolean(L, "pushCreatureZone", false);
 	booleans[Boolean::REMOVE_SUMMONS_ON_PZ] = getGlobalBoolean(L, "removeSummonsOnPz", false);
+	booleans[Boolean::FAMILIAR_ENTER_PZ] = getGlobalBoolean(L, "familiarEnterPz", true);
 	booleans[Boolean::TELEPORT_SUMMON] = getGlobalBoolean(L, "teleportSummon", false);
 
 	// Admin Config
@@ -362,6 +363,7 @@ bool ConfigManager::load()
 	integers[Integer::DEFAULT_DESPAWNRANGE] = Monster::despawnRange;
 	integers[Integer::DEFAULT_DESPAWNRADIUS] = Monster::despawnRadius;
 	integers[Integer::DEFAULT_WALKTOSPAWNRADIUS] = getGlobalInteger(L, "walkToSpawnRadius", 15);
+	integers[Integer::FAMILIAR_TELEPORT_RANGE] = getGlobalInteger(L, "familiarTeleportRange", 15);
 	integers[Integer::RATE_EXPERIENCE] = getGlobalInteger(L, "rateExp", 5);
 	integers[Integer::RATE_SKILL] = getGlobalInteger(L, "rateSkill", 3);
 	integers[Integer::RATE_LOOT] = getGlobalInteger(L, "rateLoot", 2);

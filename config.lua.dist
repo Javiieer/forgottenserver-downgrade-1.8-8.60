@@ -221,8 +221,12 @@ npcsUsingBankMoney = true
 -- Summons settings
 -- removeSummonsOnPz: if true, summons will disappear when player enters Protection Zone.
 -- teleportSummon: if true, summons will teleport to the player when out of range.
+-- familiarEnterPz: if true, familiars can follow their master into Protection Zone.
+-- familiarTeleportRange: tiles before a familiar teleports to its master.
 removeSummonsOnPz = false
 teleportSummon = false
+familiarEnterPz = true
+familiarTeleportRange = 15
 
 -- Protection Zone and No-PvP pushing restrictions
 -- true = restricted (cannot push), false = unrestricted (standard behavior)

@@ -173,7 +173,11 @@ void Monster::onCreatureAppear(Creature* creature, bool isLogin)
 	if (creature == this) {
 		// We just spawned lets look around to see who is there.
 		if (isSummon()) {
-			isMasterInRange = canSee(getMaster()->getPosition());
+			auto master = getMaster();
+			if (master) {
+				const bool sameInstance = getInstanceID() == master->getInstanceID();
+				isMasterInRange = sameInstance && canSee(master->getPosition());
+			}
 		}
 
 		updateTargetList();
@@ -254,7 +258,11 @@ void Monster::onCreatureMove(Creature* creature, const Tile* newTile, const Posi
 
 	if (creature == this) {
 		if (isSummon()) {
-			isMasterInRange = canSee(getMaster()->getPosition());
+			auto master = getMaster();
+			if (master) {
+				const bool sameInstance = getInstanceID() == master->getInstanceID();
+				isMasterInRange = sameInstance && canSee(master->getPosition());
+			}
 			updateTargetList();
 		} else {
 			if (followCreature.expired()) {
@@ -281,8 +289,9 @@ void Monster::onCreatureMove(Creature* creature, const Tile* newTile, const Posi
 			}
 		}
 
-		if (canSeeNewPos && isSummon() && getMaster().get() == creature) {
-			isMasterInRange = true; // Follow master again
+		auto master = getMaster();
+		if (canSeeNewPos && master && master.get() == creature && getInstanceID() == master->getInstanceID()) {
+			isMasterInRange = true; // Follow master again.
 		}
 
 		if (isIdle) {
@@ -460,7 +469,8 @@ void Monster::updateTargetList()
 	auto targetIterator = targetList.begin();
 	while (targetIterator != targetList.end()) {
 		auto creature = targetIterator->lock();
-		if (!creature || creature->isDead() || !canSee(creature->getPosition()) || creature->getZone() == ZONE_PROTECTION) {
+		if (!creature || creature->isDead() || !canSee(creature->getPosition()) ||
+		    (!isFamiliar() && creature->getZone() == ZONE_PROTECTION)) {
 			targetIterator = targetList.erase(targetIterator);
 		} else {
 			++targetIterator;
@@ -501,7 +511,7 @@ void Monster::onCreatureFound(Creature* creature, bool pushFront /* = false*/)
 	}
 
 	if (isOpponent(creature)) {
-		if (creature->getZone() == ZONE_PROTECTION) {
+		if (!isFamiliar() && creature->getZone() == ZONE_PROTECTION) {
 			return;
 		}
 		addTarget(creature, pushFront);
@@ -514,7 +524,8 @@ void Monster::onCreatureEnter(Creature* creature)
 {
 	// LOG_INFO(fmt::format("onCreatureEnter - {}", creature->getName()));
 
-	if (getMaster().get() == creature) {
+	auto master = getMaster();
+	if (master && master.get() == creature) {
 		// Follow master again
 		isMasterInRange = true;
 	}
@@ -532,8 +543,9 @@ bool Monster::isFriend(const Creature* creature) const
 		return true;
 	}
 
-	if (isSummon() && getMaster()->getPlayer()) {
-		const Player* masterPlayer = getMaster()->getPlayer();
+	auto master = getMaster();
+	if (isSummon() && master && master->getPlayer()) {
+		const Player* masterPlayer = master->getPlayer();
 		const Player* tmpPlayer = nullptr;
 
 		if (creature->getPlayer()) {
@@ -546,7 +558,7 @@ bool Monster::isFriend(const Creature* creature) const
 			}
 		}
 
-		if (tmpPlayer && (tmpPlayer == getMaster().get() || masterPlayer->isPartner(tmpPlayer))) {
+		if (tmpPlayer && (tmpPlayer == master.get() || masterPlayer->isPartner(tmpPlayer))) {
 			return true;
 		}
 	} else if (creature->getMonster() && !creature->isSummon()) {
@@ -569,13 +581,16 @@ bool Monster::isOpponent(const Creature* creature) const
 		return true;
 	}
 
-	if (isSummon() && getMaster()->getPlayer()) {
-		if (creature != getMaster().get()) {
+	auto master = getMaster();
+	if (isSummon() && master && master->getPlayer()) {
+		// Familiars follow their master through followCreature; the master is never an opponent.
+		if (creature != master.get()) {
 			return true;
 		}
 	} else {
+		auto creatureMaster = creature->getMaster();
 		if ((creature->getPlayer() && !creature->getPlayer()->hasFlag(PlayerFlag_IgnoredByMonsters)) ||
-		    (creature->getMaster() && creature->getMaster()->getPlayer())) {
+		    (creatureMaster && creatureMaster->getPlayer())) {
 			return true;
 		}
 	}
@@ -583,11 +598,17 @@ bool Monster::isOpponent(const Creature* creature) const
 	return false;
 }
 
+bool Monster::isFamiliar() const
+{
+	return isSummon() && getEmblem() == GUILDEMBLEM_ALLY;
+}
+
 void Monster::onCreatureLeave(Creature* creature)
 {
 	// LOG_INFO(fmt::format("onCreatureLeave - {}", creature->getName()));
 
-	if (getMaster().get() == creature) {
+	auto master = getMaster();
+	if (master && master.get() == creature) {
 		// Take random steps and only use defense abilities (e.g. heal) until its master comes back
 		isMasterInRange = false;
 	}
@@ -998,16 +1019,35 @@ void Monster::onThink(uint32_t interval)
 			if (isSummon()) {
 				auto master = getMaster();
 				if (master) {
-					if (master->getTile()->hasFlag(TILESTATE_PROTECTIONZONE)) {
+					const Tile* masterTile = master->getTile();
+					const bool masterInProtectionZone = masterTile && masterTile->hasFlag(TILESTATE_PROTECTIONZONE);
+					const bool differentInstance = getInstanceID() != master->getInstanceID();
+
+					if (isFamiliar()) {
+						const int32_t familiarTeleportRange = std::max<int32_t>(
+						    1, static_cast<int32_t>(ConfigManager::getInteger(ConfigManager::FAMILIAR_TELEPORT_RANGE)));
+						const bool tooFar = !getPosition().isInRange(master->getPosition(), familiarTeleportRange,
+						                                             familiarTeleportRange, 3);
+						if ((!masterInProtectionZone || ConfigManager::getBoolean(ConfigManager::FAMILIAR_ENTER_PZ)) &&
+						    (differentInstance || tooFar)) {
+							setInstanceID(master->getInstanceID());
+							g_game.internalTeleport(this, master->getPosition(), false);
+							g_game.addMagicEffect(master->getPosition(), CONST_ME_TELEPORT, getInstanceID());
+							isMasterInRange = true;
+						}
+					} else if (masterInProtectionZone) {
 						if (ConfigManager::getBoolean(ConfigManager::REMOVE_SUMMONS_ON_PZ)) {
 							g_game.removeCreature(this, false);
 							g_game.addMagicEffect(getPosition(), CONST_ME_POFF, getInstanceID());
 							return;
 						}
-					} else {
-						if (ConfigManager::getBoolean(ConfigManager::TELEPORT_SUMMON) && !getPosition().isInRange(master->getPosition(), 7, 7, 0)) {
-							g_game.internalTeleport(this, master->getPosition());
+					} else if (ConfigManager::getBoolean(ConfigManager::TELEPORT_SUMMON)) {
+						const bool tooFar = !getPosition().isInRange(master->getPosition(), 7, 7, 0);
+						if (differentInstance || tooFar) {
+							setInstanceID(master->getInstanceID());
+							g_game.internalTeleport(this, master->getPosition(), false);
 							g_game.addMagicEffect(master->getPosition(), CONST_ME_TELEPORT, getInstanceID());
+							isMasterInRange = true;
 						}
 					}
 				}
@@ -1020,7 +1060,7 @@ void Monster::onThink(uint32_t interval)
 						selectTarget(masterTarget.get());
 					} else {
 						auto follow = followCreature.lock();
-						if (getMaster() != follow) {
+						if (master != follow) {
 							// Our master has not ordered us to attack anything, lets follow him around instead.
 							setFollowCreature(master.get());
 						}
@@ -1095,7 +1135,8 @@ void Monster::doAttacking(uint32_t interval)
 	for (const spellBlock_t& spellBlock : mType->info.attackSpells) {
 		// OPTIMIZATION: Single validity check per spell iteration instead of
 		// 5+ redundant isDead/isRemoved checks that were here before.
-		if (!attackedCreature.lock() || attackedCreature.lock()->isRemoved() || attackedCreature.lock()->isDead()) {
+		auto victim = attackedCreature.lock();
+		if (!victim || victim->isRemoved() || victim->isDead()) {
 			attackedCreature.reset();
 			return;
 		}
@@ -1103,11 +1144,6 @@ void Monster::doAttacking(uint32_t interval)
 		bool inRange = false;
 
 		if (!spellBlock.spell) {
-			continue;
-		}
-
-		auto victim = attackedCreature.lock();
-		if (!victim) {
 			continue;
 		}
 
@@ -1132,7 +1168,8 @@ void Monster::doAttacking(uint32_t interval)
 				spellBlock.spell->castSpell(this, victim.get());
 
 				// Check after cast — this is the only place state can actually change
-				if (isRemoved() || isDead() || attackedCreature.expired() || attackedCreature.lock()->isRemoved() || attackedCreature.lock()->isDead()) {
+				auto currentTarget = attackedCreature.lock();
+				if (isRemoved() || isDead() || !currentTarget || currentTarget->isRemoved() || currentTarget->isDead()) {
 					attackedCreature.reset();
 					return;
 				}
@@ -1555,7 +1592,8 @@ bool Monster::getNextStep(Direction& direction, uint32_t& flags)
 			result = getRandomStep(getPosition(), direction);
 		}
 	} else if ((isSummon() && isMasterInRange) || !followCreature.expired() || walkingToSpawn) {
-		if (!hasFollowPath && getMaster() && !getMaster()->getPlayer()) {
+		auto master = getMaster();
+		if (!hasFollowPath && master && !master->getPlayer()) {
 			randomStepping = true;
 			result = getRandomStep(getPosition(), direction);
 		} else {
@@ -1973,8 +2011,12 @@ bool Monster::canWalkTo(Position pos, Direction direction) const
 	pos = getNextPosition(direction, pos);
 	if (isInSpawnRange(pos)) {
 		Tile* tile = g_game.map.getTile(pos);
+		uint32_t pathFlags = FLAG_PATHFINDING;
+		if (isFamiliar()) {
+			pathFlags |= FLAG_IGNOREFIELDDAMAGE;
+		}
 		if (tile && tile->getTopVisibleCreature(this) == nullptr &&
-		    tile->queryAdd(0, *this, 1, FLAG_PATHFINDING) == RETURNVALUE_NOERROR) {
+		    tile->queryAdd(0, *this, 1, pathFlags) == RETURNVALUE_NOERROR) {
 			return true;
 		}
 	}
@@ -2294,7 +2336,8 @@ void Monster::getPathSearchParams(const Creature* creature, FindPathParams& fpp)
 	fpp.maxTargetDist = mType->info.targetDistance;
 
 	if (isSummon()) {
-		if (getMaster().get() == creature) {
+		auto master = getMaster();
+		if (master && master.get() == creature) {
 			fpp.maxTargetDist = 2;
 			fpp.fullPathSearch = true;
 		} else if (mType->info.targetDistance <= 1) {

@@ -510,7 +510,10 @@ ReturnValue Tile::queryAdd(int32_t, const Thing& thing, uint32_t, uint32_t flags
 		}
 
 		if (const Monster* monster = creature->getMonster()) {
-			if (hasFlag(TILESTATE_PROTECTIONZONE | TILESTATE_FLOORCHANGE | TILESTATE_TELEPORT)) {
+			const bool canEnterProtectionZone = monster->isFamiliar() &&
+			                                    getBoolean(ConfigManager::FAMILIAR_ENTER_PZ);
+			if ((!canEnterProtectionZone && hasFlag(TILESTATE_PROTECTIONZONE)) ||
+			    hasFlag(TILESTATE_FLOORCHANGE | TILESTATE_TELEPORT)) {
 				return RETURNVALUE_NOTPOSSIBLE;
 			}
 

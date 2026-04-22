@@ -152,6 +152,7 @@ public:
 
 	bool isFriend(const Creature* creature) const;
 	bool isOpponent(const Creature* creature) const;
+	bool isFamiliar() const;
 
 	void addFriend(Creature* creature);
 	bool setType(const std::shared_ptr<MonsterType>& newType, bool restoreHealth = false);
