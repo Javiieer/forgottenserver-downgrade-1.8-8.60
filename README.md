@@ -276,7 +276,8 @@ The **System Spy** is a powerful administrative tool that allows GODs and Admins
 | Command | Permission | Description |
 |---------|------------|-------------|
 | `/spy <name>` | GOD / Admin | Start spying on the target player |
-| `/unspy` | GOD / Admin | Stop spying and return to your own view |
+| `/spyinv <name>` | GOD / Admin | View the target player's current inventory slots and open containers |
+| `/unspy` | GOD / Admin | Stop spying or close the spy inventory view and return to your own state |
 
 > [!CAUTION]
 > This system is designed for server administration and debugging. Improper use may affect the gameplay experience of others.

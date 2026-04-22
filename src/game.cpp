@@ -6014,6 +6014,16 @@ bool Game::playerSpyInventory(uint32_t godPlayerId, const std::string& targetNam
 	return g_spy.spyInventory(god, target);
 }
 
+bool Game::playerStopSpyInventory(uint32_t godPlayerId)
+{
+	Player* god = getPlayerByID(godPlayerId);
+	if (!god) {
+		return false;
+	}
+
+	return g_spy.stopSpyInventory(god);
+}
+
 void Game::forceAddCondition(uint32_t creatureId, Condition* condition)
 {
 	Condition_ptr condPtr(condition);

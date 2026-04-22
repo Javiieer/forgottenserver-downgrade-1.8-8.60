@@ -15,6 +15,10 @@
 extern Game g_game;
 SpySystem g_spy;
 
+namespace {
+constexpr uint8_t MAX_CLIENT_CONTAINER_ID = 0x0F;
+}
+
 bool SpySystem::startSpy(Player* god, Player* target) {
 	if (!god || !target || god == target) {
 		return false;
@@ -103,10 +107,12 @@ bool SpySystem::stopSpy(Player* god) {
 		godProto->setSpyMode(false);
 		godProto->knownCreatureSet.clear();
 		godProto->sendMapDescription(god->getPosition());
+		restoreInventoryView(god, godProto);
 	}
 
 	{
 		std::lock_guard<std::mutex> lock(mutex_);
+		inventoryViewers_.erase(god->getID());
 		removeSessionInternal(session);
 	}
 
@@ -155,13 +161,48 @@ bool SpySystem::spyInventory(Player* god, Player* target) {
 		}
 	}
 
+	{
+		std::lock_guard<std::mutex> lock(mutex_);
+		inventoryViewers_.insert(god->getID());
+	}
+
 	god->sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE,
 		"Viewing inventory of: " + target->getName());
 	return true;
 }
 
+bool SpySystem::stopSpyInventory(Player* god) {
+	if (!god) {
+		return false;
+	}
+
+	{
+		std::lock_guard<std::mutex> lock(mutex_);
+		auto it = inventoryViewers_.find(god->getID());
+		if (it == inventoryViewers_.end()) {
+			return false;
+		}
+		inventoryViewers_.erase(it);
+	}
+
+	auto godClient = god->client;
+	if (!godClient) {
+		return false;
+	}
+
+	auto godProto = godClient->protocol();
+	if (!godProto) {
+		return false;
+	}
+
+	restoreInventoryView(god, godProto);
+	god->sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE, "Spy inventory closed.");
+	return true;
+}
+
 void SpySystem::onPlayerDisconnect(uint32_t playerId) {
 	std::lock_guard<std::mutex> lock(mutex_);
+	inventoryViewers_.erase(playerId);
 
 	auto godIt = godToSession_.find(playerId);
 	if (godIt != godToSession_.end()) {
@@ -188,6 +229,7 @@ void SpySystem::onPlayerDisconnect(uint32_t playerId) {
 				if (godPlayer) {
 					godProto->knownCreatureSet.clear();
 					godProto->sendMapDescription(godPlayer->getPosition());
+					restoreInventoryView(godPlayer, godProto);
 					godPlayer->sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE,
 						"Spy target disconnected.");
 				}
@@ -220,6 +262,28 @@ void SpySystem::removeSessionInternal(const SpySessionPtr& session) {
 		vec.erase(std::remove(vec.begin(), vec.end(), session), vec.end());
 		if (vec.empty()) {
 			targetToSessions_.erase(it);
+		}
+	}
+}
+
+void SpySystem::restoreInventoryView(Player* god, const ProtocolGame_ptr& godProto) const {
+	if (!god || !godProto) {
+		return;
+	}
+
+	for (uint8_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
+		godProto->sendInventoryItem(static_cast<slots_t>(slot),
+			god->getInventoryItem(static_cast<slots_t>(slot)));
+	}
+
+	for (uint16_t cid = 0; cid <= MAX_CLIENT_CONTAINER_ID; ++cid) {
+		godProto->sendCloseContainer(static_cast<uint8_t>(cid));
+	}
+
+	for (const auto& [cid, openContainer] : god->getOpenContainers()) {
+		if (openContainer.container) {
+			bool hasParent = (dynamic_cast<const Container*>(openContainer.container->getParent()) != nullptr);
+			godProto->sendContainer(cid, openContainer.container, hasParent, openContainer.index);
 		}
 	}
 }

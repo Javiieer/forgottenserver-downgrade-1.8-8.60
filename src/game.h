@@ -440,6 +440,7 @@ public:
 	bool playerStartSpy(uint32_t godPlayerId, const std::string& targetName);
 	bool playerStopSpy(uint32_t godPlayerId);
 	bool playerSpyInventory(uint32_t godPlayerId, const std::string& targetName);
+	bool playerStopSpyInventory(uint32_t godPlayerId);
 
 	void cleanup();
 	void shutdown();

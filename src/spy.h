@@ -12,6 +12,7 @@
 #include <mutex>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 class Player;
@@ -42,6 +43,7 @@ public:
 	bool startSpy(Player* god, Player* target);
 	bool stopSpy(Player* god);
 	bool spyInventory(Player* god, Player* target);
+	bool stopSpyInventory(Player* god);
 
 	void onPlayerDisconnect(uint32_t playerId);
 
@@ -52,10 +54,12 @@ private:
 
 	std::unordered_map<uint32_t, SpySessionPtr> godToSession_;
 	std::unordered_map<uint32_t, std::vector<SpySessionPtr>> targetToSessions_;
+	std::unordered_set<uint32_t> inventoryViewers_;
 
 	mutable std::mutex mutex_;
 
 	void removeSessionInternal(const SpySessionPtr& session);
+	void restoreInventoryView(Player* god, const ProtocolGame_ptr& godProto) const;
 };
 
 extern SpySystem g_spy;

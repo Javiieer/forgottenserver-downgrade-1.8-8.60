@@ -1136,6 +1136,14 @@ int luaGameSpyInventory(lua_State* L)
 	return 1;
 }
 
+int luaGameStopSpyInventory(lua_State* L)
+{
+	// Game.stopSpyInventory(godPlayerId)
+	uint32_t godPlayerId = getInteger<uint32_t>(L, 1);
+	pushBoolean(L, g_game.playerStopSpyInventory(godPlayerId));
+	return 1;
+}
+
 } // namespace
 
 void LuaScriptInterface::registerGame()
@@ -1224,4 +1232,5 @@ void LuaScriptInterface::registerGame()
 	registerMethod("Game", "startSpy", luaGameStartSpy);
 	registerMethod("Game", "stopSpy", luaGameStopSpy);
 	registerMethod("Game", "spyInventory", luaGameSpyInventory);
+	registerMethod("Game", "stopSpyInventory", luaGameStopSpyInventory);
 }
