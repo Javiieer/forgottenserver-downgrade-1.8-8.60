@@ -47,7 +47,8 @@
 | 🧬 Core Engine | ⚔️ Combat & RPG | 🌍 World Systems | 🏗️ Infrastructure | 📚 Docs & Support |
 |:-:|:-:|:-:|:-:|:-:|
 | [ClientID .dat](#-clientid-implementation) | [Forge System](#-forge-system-item-fusion) | [Instance System](#-instance-system) | [Compilation](#️-compilation) | [📖 Full Wiki Docs](https://github.com/Mateuzkl/forgottenserver-downgrade-1.8-8.60/wiki) |
-| [Overview](#-overview) | [Imbuement System](#-imbuement-system) | [Guild Halls](#-guild-halls-system) | | [Contributing](#-contributing--issues) |
+| [Overview](#-overview) | [Imbuement System](#-imbuement-system) | [Guild Halls](#-guild-halls-system) | [Client Config](#-client-configuration-otcv8--mehah) | [📋 Map Conversion Tutorial](https://github.com/Mateuzkl/forgottenserver-downgrade-1.8-8.60/wiki/Map-Conversion-Tutorial-%E2%80%90-ServerID-to-ClientID) |
+| [Extended Protocol](#-extended-options--modified-860-cip-clients) | [Reward Boss](#-reward-boss-system) | [House Protection](#️-house-protection-system) | [Linux Tuning](#-linux-server-tuning) | [Contributing](#-contributing--issues) |
 | [Extended Protocol](#-extended-options--modified-860-cip-clients) | [Reward Boss](#-reward-boss-system) | [House Protection](#️-house-protection-system) | [Client Config](#-client-configuration-otcv8--mehah) | [Project Status](#-project-status) |
 | [System Spy](#-system-spy) | [Guild Wars](#️-guild-war-system) | [AutoLoot](#️-autoloot-system) | [Linux Tuning](#-linux-server-tuning) | [Downloads](#-downloads--client-updater) |
 | | [Harmony (Monk)](#-harmony-system--monk-vocation) | [Offline Training](#-offline-training-system) | | [Donations](#-support-the-project) |
@@ -70,8 +71,11 @@
 
 This eliminates the traditional ServerID/ClientID mismatch, making content creation and debugging significantly simpler.
 
-> 🗺️ To edit maps compatible with this ClientID system, use the modified RME:  
+> 🗺️ **To edit maps compatible with this ClientID system, use the modified RME:**  
 > **[⬇️ Download RME-CLIENTID](https://github.com/Mateuzkl/RME-CLIENTID)**
+
+> 📋 **Converting existing maps from ServerID to ClientID?**  
+> **[📖 Read the Map Conversion Tutorial](https://github.com/Mateuzkl/forgottenserver-downgrade-1.8-8.60/wiki/Map-Conversion-Tutorial-%E2%80%90-ServerID-to-ClientID)**
 
 ---
 
