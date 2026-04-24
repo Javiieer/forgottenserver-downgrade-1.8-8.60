@@ -153,6 +153,7 @@
 		<attribute key="armor" value="1" />
 		<attribute key="weight" value="700" />
 		<attribute key="description" value="This is Budriks old mining helmet." />
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="140" article="a" name="parcel">
 		<attribute key="description" value="It is the parcel for the watchtower on the Femor Hills" />
@@ -962,6 +963,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="legs" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="646" article="an" name="elvenhair rope">
 		<attribute key="weight" value="600" />
@@ -2245,6 +2247,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="812" name="terra legs">
 		<attribute key="absorbpercentpoison" value="6" />
@@ -2256,6 +2259,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="813" name="terra boots">
 		<attribute key="absorbpercentpoison" value="5" />
@@ -2271,6 +2275,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="814" article="a" name="terra amulet">
 		<attribute key="showCharges" value="1" />
@@ -2334,6 +2339,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="819" name="glacier shoes">
 		<attribute key="absorbpercentice" value="5" />
@@ -2349,6 +2355,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="820" name="lightning boots">
 		<attribute key="absorbpercentpoison" value="-5" />
@@ -2364,6 +2371,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="821" name="magma legs">
 		<attribute key="absorbpercentice" value="-6" />
@@ -2375,6 +2383,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="822" name="lightning legs">
 		<attribute key="absorbpercentpoison" value="-6" />
@@ -2386,6 +2395,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="823" article="a" name="glacier kilt">
 		<attribute key="absorbpercentice" value="6" />
@@ -2397,6 +2407,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="824" article="a" name="glacier robe">
 		<attribute key="absorbpercentice" value="8" />
@@ -2408,6 +2419,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="825" article="a" name="lightning robe">
 		<attribute key="absorbpercentpoison" value="-8" />
@@ -2419,6 +2431,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="826" article="a" name="magma coat">
 		<attribute key="absorbpercentice" value="-8" />
@@ -2430,6 +2443,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="827" article="a" name="magma monocle">
 		<attribute key="absorbpercentice" value="-5" />
@@ -2440,6 +2454,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="828" article="a" name="lightning headband">
 		<attribute key="absorbpercentpoison" value="-5" />
@@ -2450,6 +2465,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="829" article="a" name="glacier mask">
 		<attribute key="absorbpercentice" value="4" />
@@ -2460,6 +2476,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="830" article="a" name="terra hood">
 		<attribute key="absorbpercentpoison" value="4" />
@@ -2470,6 +2487,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="831" article="a" name="green bed kit">
 		<attribute key="description" value="Use it on your bed to change the bed to green" />
@@ -2590,6 +2608,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="876" article="an" name="ant trail">
 	</item>
@@ -2615,6 +2634,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="895" article="a" name="jester staff">
 		<attribute key="weight" value="725" />
@@ -6695,6 +6715,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="3211" article="a" name="witchesbroom">
 		<attribute key="description" value="Don't use it without flying license. Not suitable for minors" />
@@ -7174,7 +7195,7 @@
 		</attribute>
 	</item>
 	<item id="3281" article="a" name="giant sword">
-		<attribute key="classification" value="2" />
+		<attribute key="classification" value="3" />
 		<attribute key="description" value="This sword has been forged by ancient giants" />
 		<attribute key="weaponType" value="sword" />
 		<attribute key="slotType" value="two-handed" />
@@ -7390,6 +7411,7 @@
 			<attribute key="weaponType" value="sword" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="3297" article="a" name="serpent sword">
 		<attribute key="classification" value="1" />
@@ -7501,6 +7523,7 @@
 			<attribute key="weaponType" value="axe" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="3304" article="a" name="crowbar">
 		<attribute key="classification" value="1" />
@@ -7579,6 +7602,7 @@
 			<attribute key="weaponType" value="club" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="3310" article="an" name="iron hammer">
 		<attribute key="classification" value="1" />
@@ -7632,6 +7656,7 @@
 			<attribute key="weaponType" value="club" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="3313" article="an" name="obsidian lance">
 		<attribute key="classification" value="1" />
@@ -7848,6 +7873,7 @@
 			<attribute key="weaponType" value="club" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="3326" article="an" name="epee">
 		<attribute key="classification" value="2" />
@@ -7903,6 +7929,7 @@
 			<attribute key="weaponType" value="axe" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="3330" article="a" name="heavy machete">
 		<attribute key="classification" value="1" />
@@ -7933,6 +7960,7 @@
 			<attribute key="unproperly" value="true" />
 			<attribute key="weaponType" value="axe" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="3332" article="a" name="hammer of wrath">
 		<attribute key="classification" value="2" />
@@ -7989,6 +8017,7 @@
 			<attribute key="weaponType" value="sword" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="3335" article="a" name="twin axe">
 		<attribute key="weaponType" value="axe" />
@@ -8009,6 +8038,7 @@
 			<attribute key="weaponType" value="axe" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="3336" article="a" name="studded club">
 		<attribute key="classification" value="1" />
@@ -8064,6 +8094,7 @@
 			<attribute key="weaponType" value="sword" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="3340" article="a" name="heavy mace">
 		<attribute key="classification" value="2" />
@@ -8142,6 +8173,7 @@
 			<attribute key="weaponType" value="club" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="3344" article="a" name="beastslayer axe">
 		<attribute key="classification" value="2" />
@@ -8165,7 +8197,7 @@
 		</attribute>
 	</item>
 	<item id="3345" article="a" name="templar scytheblade">
-		<attribute key="classification" value="1" />
+		<attribute key="classification" value="2" />
 		<attribute key="weaponType" value="sword" />
 		<attribute key="attack" value="23" />
 		<attribute key="extradef" value="1" />
@@ -8249,6 +8281,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3352" article="a" name="chain helmet">
 		<attribute key="armor" value="2" />
@@ -8256,6 +8289,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3353" article="an" name="iron helmet">
 		<attribute key="armor" value="5" />
@@ -8263,6 +8297,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3354" article="a" name="brass helmet">
 		<attribute key="armor" value="3" />
@@ -8270,6 +8305,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3355" article="a" name="leather helmet">
 		<attribute key="armor" value="1" />
@@ -8277,6 +8313,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3356" article="a" name="devil helmet">
 		<attribute key="armor" value="7" />
@@ -8284,6 +8321,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="3357" article="a" name="plate armor">
 		<attribute key="armor" value="10" />
@@ -8291,6 +8329,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3358" article="a" name="chain armor">
 		<attribute key="armor" value="6" />
@@ -8307,6 +8346,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3359" article="a" name="brass armor">
 		<attribute key="armor" value="8" />
@@ -8314,6 +8354,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3360" article="a" name="golden armor">
 		<attribute key="armor" value="14" />
@@ -8331,6 +8372,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="3361" article="a" name="leather armor">
 		<attribute key="armor" value="4" />
@@ -8338,6 +8380,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3362" name="studded legs">
 		<attribute key="armor" value="2" />
@@ -8345,6 +8388,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="legs" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3363" name="dragon scale legs">
 		<attribute key="armor" value="10" />
@@ -8352,6 +8396,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="legs" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="3364" name="golden legs">
 		<attribute key="armor" value="9" />
@@ -8360,6 +8405,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="3365" article="a" name="golden helmet">
 		<attribute key="description" value="It's the famous Helmet of the Stars" />
@@ -8376,6 +8422,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="3366" article="a" name="magic plate armor">
 		<attribute key="armor" value="17" />
@@ -8393,6 +8440,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="3367" article="a" name="viking helmet">
 		<attribute key="armor" value="4" />
@@ -8400,6 +8448,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3368" article="a" name="winged helmet">
 		<attribute key="description" value="It's the Helmet of Hermes" />
@@ -8408,6 +8457,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="3369" article="a" name="warrior helmet">
 		<attribute key="armor" value="8" />
@@ -8423,6 +8473,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="3370" article="a" name="knight armor">
 		<attribute key="armor" value="12" />
@@ -8440,6 +8491,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="3371" name="knight legs">
 		<attribute key="armor" value="8" />
@@ -8448,6 +8500,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3372" name="brass legs">
 		<attribute key="armor" value="5" />
@@ -8455,6 +8508,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="legs" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3373" article="a" name="strange helmet">
 		<attribute key="armor" value="6" />
@@ -8462,6 +8516,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3374" article="a" name="legion helmet">
 		<attribute key="armor" value="4" />
@@ -8469,6 +8524,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="3375" article="a" name="soldier helmet">
 		<attribute key="armor" value="5" />
@@ -8476,6 +8532,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3376" article="a" name="studded helmet">
 		<attribute key="armor" value="2" />
@@ -8483,6 +8540,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3377" article="a" name="scale armor">
 		<attribute key="armor" value="9" />
@@ -8490,6 +8548,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3378" article="a" name="studded armor">
 		<attribute key="armor" value="5" />
@@ -8520,6 +8579,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3381" article="a" name="crown armor">
 		<attribute key="armor" value="13" />
@@ -8537,6 +8597,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="3382" name="crown legs">
 		<attribute key="armor" value="8" />
@@ -8545,6 +8606,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="3383" article="a" name="dark armor">
 		<attribute key="armor" value="10" />
@@ -8552,6 +8614,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3384" article="a" name="dark helmet">
 		<attribute key="armor" value="6" />
@@ -8559,6 +8622,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3385" article="a" name="crown helmet">
 		<attribute key="armor" value="7" />
@@ -8574,6 +8638,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="3386" article="a" name="dragon scale mail">
 		<attribute key="armor" value="15" />
@@ -8591,6 +8656,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="3387" article="a" name="demon helmet">
 		<attribute key="description" value="You hear an evil whispering from inside" />
@@ -8629,7 +8695,7 @@
 	<item id="3389" name="demon legs">
 		<attribute key="armor" value="9" />
 		<attribute key="weight" value="7000" />
-		<attribute key="classification" value="2"/>
+		<attribute key="classification" value="4" />
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="legs" />
 		</attribute>
@@ -8640,6 +8706,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="3391" article="a" name="crusader helmet">
 		<attribute key="armor" value="8" />
@@ -8655,6 +8722,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="3392" article="a" name="royal helmet">
 		<attribute key="description" value="An excellent masterpiece of a smith" />
@@ -8671,6 +8739,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="3393" article="an" name="amazon helmet">
 		<attribute key="armor" value="7" />
@@ -8686,6 +8755,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="3394" article="an" name="amazon armor">
 		<attribute key="skilldist" value="3" />
@@ -8705,6 +8775,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="3395" article="a" name="ceremonial mask">
 		<attribute key="armor" value="9" />
@@ -8712,6 +8783,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="3396" article="a" name="dwarven helmet">
 		<attribute key="absorbpercentphysical" value="2" />
@@ -8728,6 +8800,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="3397" article="a" name="dwarven armor">
 		<attribute key="absorbpercentphysical" value="5" />
@@ -8745,6 +8818,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="3398" name="dwarven legs">
 		<attribute key="absorbpercentphysical" value="3" />
@@ -8753,6 +8827,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="legs" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="3399" article="an" name="elven mail">
 		<attribute key="armor" value="9" />
@@ -8769,6 +8844,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="3400" article="a" name="dragon scale helmet">
 		<attribute key="description" value="It's made of dragon scales." />
@@ -8777,6 +8853,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="3401" name="elven legs">
 		<attribute key="armor" value="4" />
@@ -8784,6 +8861,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="legs" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="3402" article="a" name="native armor">
 		<attribute key="armor" value="7" />
@@ -8791,6 +8869,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="3403" article="a" name="tribal mask">
 		<attribute key="armor" value="2" />
@@ -8798,6 +8877,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3404" article="a" name="leopard armor">
 		<attribute key="armor" value="9" />
@@ -8814,6 +8894,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="3405" article="a" name="horseman helmet">
 		<attribute key="armor" value="6" />
@@ -8821,6 +8902,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3406" article="a" name="feather headdress">
 		<attribute key="armor" value="2" />
@@ -8828,6 +8910,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3407" article="a" name="charmer's tiara">
 		<attribute key="armor" value="2" />
@@ -8835,6 +8918,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3408" article="a" name="bonelord helmet">
 		<attribute key="armor" value="7" />
@@ -8850,6 +8934,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="3409" article="a" name="steel shield">
 		<attribute key="weaponType" value="shield" />
@@ -9618,6 +9703,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="feet" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="3551" name="sandals">
 		<attribute key="weight" value="600" />
@@ -9639,6 +9725,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="feet" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3553" name="bunnyslippers">
 		<attribute key="weight" value="600" />
@@ -9660,6 +9747,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="feet" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="3555" name="golden boots">
 		<attribute key="armor" value="4" />
@@ -9671,6 +9759,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="feet" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="3556" name="crocodile boots">
 		<attribute key="armor" value="1" />
@@ -9682,6 +9771,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="feet" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="3557" name="plate legs">
 		<attribute key="armor" value="7" />
@@ -9689,6 +9779,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="legs" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3558" name="chain legs">
 		<attribute key="armor" value="3" />
@@ -9696,6 +9787,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="legs" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3559" name="leather legs">
 		<attribute key="armor" value="1" />
@@ -9703,6 +9795,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="legs" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3560" article="a" name="bast skirt">
 		<attribute key="weight" value="350" />
@@ -9716,6 +9809,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3562" article="a" name="coat">
 		<attribute key="armor" value="1" />
@@ -9723,6 +9817,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3563" article="a" name="green tunic">
 		<attribute key="armor" value="1" />
@@ -9730,6 +9825,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3564" article="a" name="red tunic">
 		<attribute key="armor" value="2" />
@@ -9744,6 +9840,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3566" article="a" name="red robe">
 		<attribute key="description" value="The robe is artfully embroidered" />
@@ -9752,6 +9849,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3567" article="a" name="blue robe">
 		<attribute key="description" value="It is a magic robe" />
@@ -9769,6 +9867,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="3568" article="a" name="simple dress">
 		<attribute key="weight" value="1000" />
@@ -9795,6 +9894,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3572" article="a" name="scarf">
 		<attribute key="armor" value="1" />
@@ -9817,6 +9917,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="3574" article="a" name="mystic turban">
 		<attribute key="description" value="Something is strange about this turban" />
@@ -9825,6 +9926,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="3575" article="a" name="wood cape">
 		<attribute key="absorbpercentpoison" value="4" />
@@ -9835,6 +9937,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="3576" article="a" name="post officer's hat">
 		<attribute key="description" value="This hat is the insignia of all Tibian post officers" />
@@ -10494,6 +10597,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="4034" article="a" name="slain ghoul">
 		<attribute key="duration" value="300" />
@@ -13165,6 +13269,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="feet" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="5462" article="a" name="sugar cane">
 		<attribute key="description" value="It has just been harvested." />
@@ -13651,6 +13756,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item fromid="5743" toid="5744" name="wooden floor">
 	</item>
@@ -13957,6 +14063,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="5904" article="a" name="magic sulphur">
 		<attribute key="description" value="It smells rather badly but is said to be an important catalyst for magical rituals" />
@@ -14008,6 +14115,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="5918" name="pirate knee breeches">
 		<attribute key="armor" value="1" />
@@ -14015,6 +14123,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="legs" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="5919" article="a" name="dragon claw">
 		<attribute key="description" value="It is the claw of Demodras" />
@@ -14949,6 +15058,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="6097" article="a" name="hook">
 		<attribute key="description" value="It belonged once to a pirate" />
@@ -15947,6 +16057,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="6532" article="a" name="dead defiler">
 		<attribute key="fluidsource" value="slime" />
@@ -16099,6 +16210,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="6579" article="a" name="doll">
 		<attribute key="weight" value="650" />
@@ -17176,7 +17288,7 @@
 		</attribute>
 	</item>
 	<item id="7382" article="a" name="demonrage sword">
-		<attribute key="classification" value="2" />
+		<attribute key="classification" value="3" />
 		<attribute key="weaponType" value="sword" />
 		<attribute key="slotType" value="two-handed" />
 		<attribute key="attack" value="47" />
@@ -17409,7 +17521,7 @@
 		<attribute key="weight" value="500" />
 	</item>
 	<item id="7402" article="a" name="dragon slayer">
-		<attribute key="classification" value="2" />
+		<attribute key="classification" value="3" />
 		<attribute key="weaponType" value="sword" />
 		<attribute key="slotType" value="two-handed" />
 		<attribute key="attack" value="44" />
@@ -17430,7 +17542,7 @@
 		</attribute>
 	</item>
 	<item id="7403" article="a" name="berserker">
-		<attribute key="classification" value="2" />
+		<attribute key="classification" value="3" />
 		<attribute key="weaponType" value="sword" />
 		<attribute key="slotType" value="two-handed" />
 		<attribute key="attack" value="48" />
@@ -17490,9 +17602,10 @@
 			<attribute key="weaponType" value="sword" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="7406" article="a" name="blacksteel sword">
-		<attribute key="classification" value="2" />
+		<attribute key="classification" value="3" />
 		<attribute key="description" value="This sword is only granted to a greenhorn of the Svargrond arena" />
 		<attribute key="weaponType" value="sword" />
 		<attribute key="slotType" value="two-handed" />
@@ -17514,7 +17627,7 @@
 		</attribute>
 	</item>
 	<item id="7407" article="a" name="haunted blade">
-		<attribute key="classification" value="2" />
+		<attribute key="classification" value="3" />
 		<attribute key="weaponType" value="sword" />
 		<attribute key="slotType" value="two-handed" />
 		<attribute key="attack" value="40" />
@@ -17587,6 +17700,7 @@
 			<attribute key="weaponType" value="club" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="7411" article="an" name="ornamented axe">
 		<attribute key="classification" value="2" />
@@ -17703,7 +17817,7 @@
 		</attribute>
 	</item>
 	<item id="7417" article="a" name="runed sword">
-		<attribute key="classification" value="2" />
+		<attribute key="classification" value="3" />
 		<attribute key="weaponType" value="sword" />
 		<attribute key="attack" value="45" />
 		<attribute key="extradef" value="2" />
@@ -17777,6 +17891,7 @@
 			<attribute key="weaponType" value="axe" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="7421" article="an" name="onyx flail">
 		<attribute key="classification" value="2" />
@@ -17831,6 +17946,7 @@
 			<attribute key="weaponType" value="club" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="7424" article="a" name="lunar staff">
 		<attribute key="classification" value="2" />
@@ -17976,6 +18092,7 @@
 			<attribute key="weaponType" value="club" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="7432" article="a" name="furry club">
 		<attribute key="classification" value="2" />
@@ -18003,6 +18120,7 @@
 			<attribute key="weaponType" value="axe" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="7434" article="a" name="royal axe">
 		<attribute key="classification" value="2" />
@@ -18045,6 +18163,7 @@
 			<attribute key="weaponType" value="axe" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="7436" article="an" name="angelic axe">
 		<attribute key="classification" value="2" />
@@ -18161,6 +18280,7 @@
 			<attribute key="weaponType" value="club" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="7451" article="a" name="shadow sceptre">
 		<attribute key="classification" value="2" />
@@ -18222,6 +18342,7 @@
 			<attribute key="weaponType" value="axe" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="7454" article="a" name="glorious axe">
 		<attribute key="classification" value="2" />
@@ -18256,6 +18377,7 @@
 			<attribute key="weaponType" value="axe" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="7456" article="a" name="noble axe">
 		<attribute key="classification" value="2" />
@@ -18289,6 +18411,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="feet" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="7458" article="a" name="fur cap">
 		<attribute key="description" value="It feels nice and warm on your ears" />
@@ -18305,6 +18428,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="7459" article="a" name="pair of earmuffs">
 		<attribute key="description" value="They feel nice and warm on your ears" />
@@ -18344,6 +18468,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="7463" article="a" name="mammoth fur cape">
 		<attribute key="description" value="It is imbued with protective magic" />
@@ -18361,6 +18486,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="7464" name="mammoth fur shorts">
 		<attribute key="description" value="They offer little protection but will at least provide some comfort and warmth" />
@@ -18976,6 +19102,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="7992" article="a" name="mage hat">
 		<attribute key="armor" value="3" />
@@ -18988,6 +19115,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="7993" article="a" name="witchhunter's coat">
 		<attribute key="absorbpercentdeath" value="2" />
@@ -19080,6 +19208,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="8023" article="a" name="royal crossbow">
 		<attribute key="weaponType" value="distance" />
@@ -19102,6 +19231,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="8024" article="the" name="devileye">
 		<attribute key="weaponType" value="distance" />
@@ -19167,6 +19297,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="8027" article="a" name="composite hornbow">
 		<attribute key="classification" value="2" />
@@ -19204,6 +19335,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="8029" article="a" name="silkweaver bow">
 		<attribute key="classification" value="2" />
@@ -19240,6 +19372,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="8031" name="spider fangs">
 		<attribute key="showCount" value="0" />
@@ -19266,6 +19399,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="8038" article="a" name="robe of the ice queen">
 		<attribute key="description" value="The soft tissue shimmers" />
@@ -19278,6 +19412,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="8039" article="a" name="dragon robe">
 		<attribute key="description" value="It is covered with runic symbols" />
@@ -19290,6 +19425,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="8040" article="a" name="velvet mantle">
 		<attribute key="description" value="The smooth tissue seems to sparkle" />
@@ -19302,6 +19438,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="8041" article="a" name="greenwood coat">
 		<attribute key="absorbpercentpoison" value="12" />
@@ -19313,6 +19450,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="8042" article="a" name="spirit cloak">
 		<attribute key="magiclevelpoints" value="1" />
@@ -19322,6 +19460,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="8043" article="a" name="focus cape">
 		<attribute key="magiclevelpoints" value="1" />
@@ -19331,6 +19470,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="8044" article="a" name="belted cape">
 		<attribute key="armor" value="10" />
@@ -19339,6 +19479,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="8045" article="a" name="hibiscus dress">
 		<attribute key="weight" value="1900" />
@@ -19375,6 +19516,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="8050" article="a" name="crystalline armor">
 		<attribute key="absorbpercentice" value="3" />
@@ -19386,6 +19528,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="8051" article="a" name="voltage armor">
 		<attribute key="absorbpercentpoison" value="-3" />
@@ -19397,6 +19540,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="8052" article="a" name="swamplair armor">
 		<attribute key="absorbpercentpoison" value="3" />
@@ -19408,6 +19552,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="8053" article="a" name="fireborn giant armor">
 		<attribute key="absorbpercentice" value="-5" />
@@ -19420,6 +19565,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="8054" article="an" name="earthborn titan armor">
 		<attribute key="absorbpercentpoison" value="5" />
@@ -19432,6 +19578,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="8055" article="a" name="windborn colossus armor">
 		<attribute key="absorbpercentpoison" value="-5" />
@@ -19456,6 +19603,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="8057" article="a" name="divine plate">
 		<attribute key="absorbpercentdeath" value="10" />
@@ -19467,6 +19615,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="8058" article="a" name="molten plate">
 		<attribute key="absorbpercentice" value="-7" />
@@ -19478,6 +19627,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="8059" article="a" name="frozen plate">
 		<attribute key="absorbpercentice" value="7" />
@@ -19489,6 +19639,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="8060" article="a" name="master archer's armor">
 		<attribute key="skilldist" value="3" />
@@ -19508,6 +19659,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="8061" article="a" name="skullcracker armor">
 		<attribute key="absorbpercentdeath" value="5" />
@@ -19519,6 +19671,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="8062" article="a" name="robe of the underworld">
 		<attribute key="absorbpercentdeath" value="12" />
@@ -19530,6 +19683,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="8063" article="a" name="paladin armor">
 		<attribute key="skilldist" value="2" />
@@ -19548,6 +19702,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="8064" article="an" name="ethno coat">
 		<attribute key="magiclevelpoints" value="1" />
@@ -19557,6 +19712,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item fromid="8066" toid="8069" article="a" name="mysterious machine">
 	</item>
@@ -19859,6 +20015,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="8096" article="a" name="hellforged axe">
 		<attribute key="weaponType" value="axe" />
@@ -19880,6 +20037,7 @@
 			<attribute key="slot" value="hand" />
 			<attribute key="chain" value="0.9" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="8097" article="a" name="solar axe">
 		<attribute key="weaponType" value="axe" />
@@ -19900,6 +20058,7 @@
 			<attribute key="weaponType" value="axe" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="8098" article="a" name="demonwing axe">
 		<attribute key="weaponType" value="axe" />
@@ -19920,6 +20079,7 @@
 			<attribute key="weaponType" value="axe" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="8099" article="a" name="dark trinity mace">
 		<attribute key="weaponType" value="club" />
@@ -19933,6 +20093,7 @@
 			<attribute key="weaponType" value="club" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="8100" article="an" name="obsidian truncheon">
 		<attribute key="weaponType" value="club" />
@@ -19953,6 +20114,7 @@
 			<attribute key="weaponType" value="club" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="8101" article="the" name="stomper">
 		<attribute key="weaponType" value="club" />
@@ -19993,6 +20155,7 @@
 			<attribute key="weaponType" value="sword" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="8103" article="the" name="epiphany">
 		<attribute key="weaponType" value="sword" />
@@ -20942,6 +21105,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="8863" article="a" name="yalahari leg piece">
 		<attribute key="absorbpercentdeath" value="5" />
@@ -20953,6 +21117,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="8864" article="a" name="yalahari mask">
 		<attribute key="magiclevelpoints" value="2" />
@@ -20967,6 +21132,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="8865" article="a" name="crystal column">
 	</item>
@@ -21709,6 +21875,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="9104" article="a" name="football">
 	</item>
@@ -22420,6 +22587,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="9375" article="a" name="pointed rabbitslayer">
 		<attribute key="classification" value="2" />
@@ -22498,6 +22666,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="9380" article="a" name="shield of care">
 		<attribute key="description" value="This shield will surely care for anyone who can bear it" />
@@ -22532,6 +22701,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="9382" article="a" name="helmet of nature">
 		<attribute key="description" value="One can only hope nobody will ever insist on wearing that" />
@@ -22548,6 +22718,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="9383" name="trousers of the ancients">
 		<attribute key="description" value="These atavistic trousers already served the forefathers of mankind" />
@@ -22556,6 +22727,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="legs" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="9384" article="a" name="scythe of the reaper">
 		<attribute key="classification" value="2" />
@@ -22682,6 +22854,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="9400" article="the" name="rain coat">
 		<attribute key="description" value="The wearer of this cape commands the forces of heaven" />
@@ -23141,6 +23314,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="9654" article="a" name="war crystal" plural="war crystals">
 		<attribute key="weight" value="145" />
@@ -23612,6 +23786,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="10201" name="dragon scale boots">
 		<attribute key="absorbpercentice" value="-3" />
@@ -23627,6 +23802,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="10202" article="a" name="heart backpack">
 		<attribute key="containersize" value="20" />
@@ -23903,6 +24079,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="10324" article="an" name="expedition backpack">
 		<attribute key="containersize" value="20" />
@@ -24150,6 +24327,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="10385" article="a" name="Zaoan helmet">
 		<attribute key="absorbpercentphysical" value="5" />
@@ -24167,6 +24345,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="10386" article="a" name="Zaoan shoes">
 		<attribute key="speed" value="5" />
@@ -24179,6 +24358,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="feet" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="10387" article="a" name="Zaoan legs">
 		<attribute key="absorbpercentphysical" value="2" />
@@ -24187,6 +24367,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="legs" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="10388" article="a" name="drakinata">
 		<attribute key="classification" value="2" />
@@ -24474,6 +24655,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="10439" article="a" name="Zaoan robe">
 		<attribute key="absorbpercentice" value="-10" />
@@ -24485,6 +24667,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="10440" name="dead sandcrawler">
 		<attribute key="fluidsource" value="slime" />
@@ -24553,6 +24736,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="10452" article="a" name="terramite shell" plural="terramite shells">
 		<attribute key="weight" value="150" />
@@ -25646,6 +25830,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="11652" article="a" name="broken key ring">
 		<attribute key="weight" value="50" />
@@ -25767,6 +25952,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="11675" article="a" name="dissolved souleater">
 		<attribute key="duration" value="10" />
@@ -25819,6 +26005,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="11687" article="a" name="royal scale robe">
 		<attribute key="absorbpercentfire" value="5" />
@@ -25830,6 +26017,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="11688" article="a" name="shield of corruption">
 		<attribute key="weaponType" value="shield" />
@@ -25870,6 +26058,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="11690" name="trashed draken boots">
 		<attribute key="description" value="They will expire within a short time, sell them back to Esrik before they do" />
@@ -25906,6 +26095,7 @@
 			<attribute key="weaponType" value="club" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="11693" article="a" name="blade of corruption">
 		<attribute key="classification" value="2" />
@@ -25953,6 +26143,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="11701" article="an" name="old cape">
 		<attribute key="description" value="This old cape might be worth more than what it looks like" />
@@ -25961,6 +26152,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="11702" article="a" name="brimstone fangs" plural="brimstone fangs">
 		<attribute key="weight" value="112" />
@@ -27119,6 +27311,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="12600" name="coal">
 		<attribute key="weight" value="500" />
@@ -27146,6 +27339,7 @@
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item fromid="12604" toid="12616" name="rubbish" />
 	<item id="12617" article="a" name="torn teddy">
@@ -28432,6 +28626,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="13994" article="a" name="depth lorica">
 		<attribute key="showAttributes" value="1" />
@@ -28452,6 +28647,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="13995" article="a" name="depth galea">
 		<attribute key="description" value="Enables underwater exploration" />
@@ -28473,6 +28669,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="13997" article="a" name="depth calcei">
 		<attribute key="showAttributes" value="1" />
@@ -28489,6 +28686,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="13998" article="a" name="depth scutum">
 		<attribute key="weaponType" value="shield" />
@@ -28520,6 +28718,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="14000" article="an" name="ornate shield">
 		<attribute key="weaponType" value="shield" />
@@ -28838,6 +29037,7 @@
 			<attribute key="level" value="75" />
 			<attribute key="slot" value="legs" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="14088" article="a" name="carapace shield">
 		<attribute key="weaponType" value="shield" />
@@ -29319,6 +29519,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="14769" article="a" name="spellbook of ancient arcana">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn" />
@@ -30309,6 +30510,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="16105" article="a" name="gill coat">
 		<attribute key="absorbpercentpoison" value="10" />
@@ -30321,6 +30523,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="16106" article="a" name="gill legs">
 		<attribute key="absorbpercentpoison" value="8" />
@@ -30333,6 +30536,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="16107" article="a" name="spellbook of vigilance">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn" />
@@ -30370,6 +30574,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="16110" article="a" name="prismatic armor">
 		<attribute key="absorbpercentphysical" value="5" />
@@ -30390,6 +30595,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="16111" name="prismatic legs">
 		<attribute key="absorbpercentphysical" value="3" />
@@ -30401,6 +30607,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="16112" name="prismatic boots">
 		<attribute key="showAttributes" value="1" />
@@ -30417,6 +30624,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="16113" article="a" name="prismatic necklace">
 		<attribute key="showCharges" value="1" />
@@ -32090,6 +32298,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="17847" article="a" name="wimp tooth chain" plural="wimp teeth chain">
 		<attribute key="description" value="It contains the teeth of many easy victims" />
@@ -32122,6 +32331,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="17853" name="lost bracers" plural="lost bracers">
 		<attribute key="weight" value="290" />
@@ -35166,6 +35376,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="19357" article="a" name="shrunken head necklace">
 		<attribute key="showAttributes" value="1" />
@@ -35192,6 +35403,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="19359" article="a" name="horn">
 		<attribute key="showAttributes" value="1" />
@@ -35258,6 +35470,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item fromid="19367" toid="19368" name="RESERVED SPRITE" />
 	<item id="19369" article="an" name="eye of the storm">
@@ -35330,6 +35543,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="19392" article="an" name="aligned opticording sphere">
 		<attribute key="description" value="This strange box holds a dark sphere. The sphere has been adjusted and its key mechanism aligned" />
@@ -35607,6 +35821,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="20066" article="an" name="umbral masterblade">
 		<attribute key="weaponType" value="sword" />
@@ -35663,6 +35878,7 @@
 			<attribute key="weaponType" value="sword" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="20069" article="an" name="umbral master slayer">
 		<attribute key="weaponType" value="sword" />
@@ -35684,6 +35900,7 @@
 			<attribute key="weaponType" value="sword" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="20070" article="a" name="crude umbral axe">
 		<attribute key="classification" value="2" />
@@ -35720,6 +35937,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="20072" article="an" name="umbral master axe">
 		<attribute key="weaponType" value="axe" />
@@ -35742,6 +35960,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="20073" article="a" name="crude umbral chopper">
 		<attribute key="classification" value="2" />
@@ -35776,6 +35995,7 @@
 			<attribute key="weaponType" value="axe" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="20075" article="an" name="umbral master chopper">
 		<attribute key="weaponType" value="axe" />
@@ -35797,6 +36017,7 @@
 			<attribute key="weaponType" value="axe" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="20076" article="a" name="crude umbral mace">
 		<attribute key="classification" value="2" />
@@ -35833,6 +36054,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="20078" article="an" name="umbral master mace">
 		<attribute key="weaponType" value="club" />
@@ -35855,6 +36077,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="20079" article="a" name="crude umbral hammer">
 		<attribute key="classification" value="2" />
@@ -35889,6 +36112,7 @@
 			<attribute key="weaponType" value="club" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="20081" article="an" name="umbral master hammer">
 		<attribute key="weaponType" value="club" />
@@ -35910,6 +36134,7 @@
 			<attribute key="weaponType" value="club" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="20082" article="a" name="crude umbral bow">
 		<attribute key="classification" value="2" />
@@ -35948,6 +36173,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="20084" article="an" name="umbral master bow">
 		<attribute key="weaponType" value="distance" />
@@ -35971,6 +36197,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="20085" article="a" name="crude umbral crossbow">
 		<attribute key="classification" value="2" />
@@ -36009,6 +36236,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="20087" article="an" name="umbral master crossbow">
 		<attribute key="weaponType" value="distance" />
@@ -36032,6 +36260,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="20088" article="a" name="crude umbral spellbook">
 		<attribute key="absorbpercentice" value="2" />
@@ -37362,6 +37591,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="21165" article="a" name="rubber cap">
 		<attribute key="absorbpercentpoison" value="3" />
@@ -37374,6 +37604,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="21166" article="a" name="mooh'tah plate">
 		<attribute key="armor" value="12" />
@@ -37391,6 +37622,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="21167" article="a" name="heat core">
 		<attribute key="armor" value="12" />
@@ -37407,6 +37639,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="21168" name="alloy legs">
 		<attribute key="speed" value="10" />
@@ -37416,6 +37649,7 @@
 			<attribute key="level" value="60" />
 			<attribute key="slot" value="legs" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="21169" name="metal spats">
 		<attribute key="absorbpercentphysical" value="1" />
@@ -37430,6 +37664,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="21170" article="a" name="gearwheel chain">
 		<attribute key="armor" value="3" />
@@ -37718,6 +37953,7 @@
 			<attribute key="unproperly" value="true" />
 			<attribute key="weaponType" value="club" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="21220" name="RESERVED SPRITE" />
 	<item id="21221" article="a" name="jammed sewer grate">
@@ -38655,6 +38891,7 @@
 			<attribute key="level" value="80" />
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="21893" article="a" name="dead seacrest serpent">
 		<attribute key="fluidsource" value="blood" />
@@ -38917,6 +39154,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="21982" article="a" name="nightmare teddy">
 		<attribute key="weight" value="590" />
@@ -39299,6 +39537,7 @@
 			<attribute key="level" value="50" />
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="22086" article="a" name="badger boots">
 		<attribute key="showAttributes" value="1" />
@@ -39313,6 +39552,7 @@
 			<attribute key="level" value="60" />
 			<attribute key="slot" value="feet" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="22087" article="a" name="wereboar loincloth">
 		<attribute key="description" value="They offer little protection but will at least provide some comfort and warmth" />
@@ -39322,6 +39562,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="legs" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="22088" article="an" name="enchanted werewolf helmet">
 		<attribute key="description" value="This helmet can only be worn by knights and amplifies axe fighting." />
@@ -39749,6 +39990,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="22193" article="an" name="onyx chip" plural="onyx chips">
 		<attribute key="weight" value="120" />
@@ -39893,6 +40135,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="22519" article="a" name="fireheart hauberk">
 		<attribute key="absorbpercentice" value="-8" />
@@ -39905,6 +40148,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="22520" article="a" name="fireheart platemail">
 		<attribute key="absorbpercentice" value="-8" />
@@ -39917,6 +40161,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="22521" article="an" name="earthheart cuirass">
 		<attribute key="absorbpercentpoison" value="8" />
@@ -39929,6 +40174,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="22522" article="an" name="earthheart hauberk">
 		<attribute key="absorbpercentpoison" value="8" />
@@ -39941,6 +40187,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="22523" article="an" name="earthheart platemail">
 		<attribute key="absorbpercentpoison" value="8" />
@@ -39953,6 +40200,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="22524" article="a" name="thunderheart cuirass">
 		<attribute key="absorbpercentpoison" value="-8" />
@@ -39965,6 +40213,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="22525" article="a" name="thunderheart hauberk">
 		<attribute key="absorbpercentpoison" value="-8" />
@@ -39977,6 +40226,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="22526" article="a" name="thunderheart platemail">
 		<attribute key="absorbpercentpoison" value="-8" />
@@ -39989,6 +40239,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="22527" article="a" name="frostheart cuirass">
 		<attribute key="absorbpercentice" value="8" />
@@ -40001,6 +40252,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="22528" article="a" name="frostheart hauberk">
 		<attribute key="absorbpercentice" value="8" />
@@ -40013,6 +40265,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="22529" article="a" name="frostheart platemail">
 		<attribute key="absorbpercentice" value="8" />
@@ -40025,6 +40278,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="22530" article="a" name="firesoul tabard">
 		<attribute key="absorbpercentice" value="-8" />
@@ -40037,6 +40291,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="22531" article="an" name="earthsoul tabard">
 		<attribute key="absorbpercentpoison" value="8" />
@@ -40049,6 +40304,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="22532" article="a" name="thundersoul tabard">
 		<attribute key="absorbpercentpoison" value="-8" />
@@ -40061,6 +40317,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="22533" article="a" name="frostsoul tabard">
 		<attribute key="absorbpercentice" value="8" />
@@ -40073,6 +40330,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="22534" article="a" name="firemind raiment">
 		<attribute key="absorbpercentice" value="-8" />
@@ -40085,6 +40343,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="22535" article="an" name="earthmind raiment">
 		<attribute key="absorbpercentpoison" value="8" />
@@ -40097,6 +40356,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="22536" article="a" name="thundermind raiment">
 		<attribute key="absorbpercentpoison" value="-8" />
@@ -40109,6 +40369,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="22537" article="a" name="frostmind raiment">
 		<attribute key="absorbpercentice" value="8" />
@@ -40121,6 +40382,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item fromid="22538" toid="22541" name="stone floor">
 	</item>
@@ -40489,6 +40751,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="22755" article="a" name="book of lies">
 		<attribute key="weaponType" value="shield" />
@@ -40520,6 +40783,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="feet" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="22757" article="a" name="shroud of despair">
 		<attribute key="armor" value="7" />
@@ -40529,6 +40793,7 @@
 			<attribute key="level" value="150" />
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="22758" article="a" name="death gaze">
 		<attribute key="weaponType" value="shield" />
@@ -40561,6 +40826,7 @@
 			<attribute key="weaponType" value="axe" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="22760" article="an" name="impaler of the igniter">
 		<attribute key="weaponType" value="sword" />
@@ -40599,6 +40865,7 @@
 			<attribute key="weaponType" value="club" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="22763" article="a" name="shaggy ogre bag">
 		<attribute key="weight" value="800" />
@@ -42326,6 +42593,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item fromid="24398" toid="24401" name="plate layered archway" />
 	<item id="24402" article="a" name="chocolatey dragon scale legs">
@@ -42335,6 +42603,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="legs" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="24403" name="plate layered wall" />
 	<item id="24404" article="a" name="tatty dragon scale legs">
@@ -42344,6 +42613,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="legs" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="24405" article="a" name="rusty winged helmet">
 		<attribute key="description" value="It's the Helmet of Hermes but it clearly has seen better days" />
@@ -42352,6 +42622,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="24406" name="plate layered wall" />
 	<item fromid="24407" toid="24408" name="plate layered corner" />
@@ -42872,6 +43143,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="25089" name="colourful feathers" plural="colourful feathers">
 		<attribute key="showCount" value="0" />
@@ -43657,6 +43929,7 @@
 			<attribute key="level" value="60" />
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="25780" article="a" name="blossom bag">
 		<attribute key="containersize" value="24" />
@@ -46771,6 +47044,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="27648" article="a" name="gnome armor">
 		<attribute key="absorbpercentphysical" value="4" />
@@ -46791,6 +47065,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="27649" article="a" name="gnome legs">
 		<attribute key="absorbpercentice" value="-2" />
@@ -46803,6 +47078,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="27650" article="a" name="gnome shield">
 		<attribute key="weaponType" value="shield" />
@@ -46849,6 +47125,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="27652" name="unknown item" />
 	<item id="27653" article="a" name="suspicious device">
@@ -48127,6 +48404,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="28715" article="a" name="falcon coif">
 		<attribute key="absorbpercentphysical" value="3" />
@@ -48149,6 +48427,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="28716" article="a" name="falcon rod">
 		<attribute key="weaponType" value="wand" />
@@ -48173,6 +48452,7 @@
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="28717" article="a" name="falcon wand">
 		<attribute key="weaponType" value="wand" />
@@ -48197,6 +48477,7 @@
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="28718" article="a" name="falcon bow">
 		<attribute key="weaponType" value="distance" />
@@ -48221,6 +48502,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="28719" article="a" name="falcon plate">
 		<attribute key="absorbpercentphysical" value="12" />
@@ -48241,6 +48523,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="28720" name="falcon greaves">
 		<attribute key="absorbpercentphysical" value="7" />
@@ -48256,6 +48539,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="28721" article="a" name="falcon shield">
 		<attribute key="weaponType" value="shield" />
@@ -48320,6 +48604,7 @@
 			<attribute key="weaponType" value="sword" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="28724" article="a" name="falcon battleaxe">
 		<attribute key="weaponType" value="axe" />
@@ -48342,6 +48627,7 @@
 			<attribute key="weaponType" value="axe" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="28725" article="a" name="falcon mace">
 		<attribute key="weaponType" value="club" />
@@ -48365,6 +48651,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="28726" article="a" name="dead grand commander soeren">
 		<attribute key="fluidsource" value="blood" />
@@ -48756,6 +49043,7 @@
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="28826" article="a" name="deepling fork">
 		<attribute key="weaponType" value="wand" />
@@ -48781,6 +49069,7 @@
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="28829" article="a" name="rotten demonbone">
 		<attribute key="weaponType" value="club" />
@@ -48802,6 +49091,7 @@
 			<attribute key="weaponType" value="club" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="28830" article="an" name="energized demonbone">
 		<attribute key="absorbpercentenergy" value="3" />
@@ -48822,6 +49112,7 @@
 			<attribute key="weaponType" value="club" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="28831" article="an" name="unliving demonbone">
 		<attribute key="absorbpercentdeath" value="3" />
@@ -48842,6 +49133,7 @@
 			<attribute key="weaponType" value="club" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="28832" article="a" name="sulphurous demonbone">
 		<attribute key="absorbpercentfire" value="3" />
@@ -48862,6 +49154,7 @@
 			<attribute key="weaponType" value="club" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item fromid="28833" toid="28834" name="unknown item" />
 	<item fromid="28835" toid="28848" name="RESERVED SPRITE" />
@@ -49362,6 +49655,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="29418" article="a" name="living armor">
 		<attribute key="absorbpercentpoison" value="12" />
@@ -49381,6 +49675,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="29419" article="a" name="resizer">
 		<attribute key="slotType" value="two-handed" />
@@ -49403,6 +49698,7 @@
 			<attribute key="weaponType" value="club" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="29420" article="a" name="shoulder plate">
 		<attribute key="weaponType" value="shield" />
@@ -49446,6 +49742,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="29422" article="a" name="winterblade">
 		<attribute key="weaponType" value="sword" />
@@ -49468,6 +49765,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="29423" article="a" name="dream shroud">
 		<attribute key="absorbpercentenergy" value="10" />
@@ -49487,6 +49785,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="29424" article="a" name="pair of dreamwalkers">
 		<attribute key="absorbpercentpoison" value="8" />
@@ -49502,6 +49801,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="29425" article="an" name="energized limb">
 		<attribute key="weaponType" value="wand" />
@@ -49526,6 +49826,7 @@
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="29426" article="a" name="brain in a jar">
 		<attribute key="weaponType" value="shield" />
@@ -49565,6 +49866,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="29428" article="a" name="sleep shawl">
 		<attribute key="weight" value="430" />
@@ -51022,6 +51324,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="30394" name="cobra boots">
 		<attribute key="showAttributes" value="1" />
@@ -51038,6 +51341,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="30395" name="cobra club">
 		<attribute key="elementfire" value="44" />
@@ -51059,6 +51363,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="30396" name="cobra axe">
 		<attribute key="elementice" value="44" />
@@ -51080,6 +51385,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="30397" article="a" name="cobra hood">
 		<attribute key="showAttributes" value="1" />
@@ -51102,6 +51408,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="30398" name="cobra sword">
 		<attribute key="skillsword" value="3" />
@@ -51123,6 +51430,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="30399" name="cobra wand">
 		<attribute key="weaponType" value="wand" />
@@ -51146,6 +51454,7 @@
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="30400" name="cobra rod">
 		<attribute key="weaponType" value="wand" />
@@ -51170,6 +51479,7 @@
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="30401" name="amulet of theurgy">
 		<attribute key="weight" value="500" />
@@ -52557,6 +52867,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="31578" article="a" name="bear skin">
 		<attribute key="absorbpercentpoison" value="11" />
@@ -52576,6 +52887,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="31579" article="an" name="embrace of nature">
 		<attribute key="absorbpercentice" value="11" />
@@ -52595,6 +52907,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="31580" article="a" name="mortal mace">
 		<attribute key="weaponType" value="club" />
@@ -52617,6 +52930,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="31581" article="a" name="bow of cataclysm">
 		<attribute key="weaponType" value="distance" />
@@ -52641,6 +52955,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="31582" article="a" name="galea mortis">
 		<attribute key="absorbpercentdeath" value="6" />
@@ -52657,6 +52972,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="31583" article="a" name="toga mortis">
 		<attribute key="absorbpercentdeath" value="6" />
@@ -52676,6 +52992,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item fromid="31584" toid="31586" name="unknown item" />
 	<item id="31587" article="a" name="dead gryphon" />
@@ -52752,7 +53069,7 @@
 		<attribute key="weight" value="4500" />
 	</item>
 	<item id="31614" article="a" name="tagralt blade">
-		<attribute key="classification" value="2" />
+		<attribute key="classification" value="4" />
 		<attribute key="weaponType" value="sword" />
 		<attribute key="slotType" value="two-handed" />
 		<attribute key="elementearth" value="49" />
@@ -52806,6 +53123,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="31618" name="frayed veldt flowers">
 		<attribute key="description" value="Because of the damaged stalks they will wither very soon" />
@@ -54608,6 +54926,7 @@
 			<attribute key="weaponType" value="axe" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="32617" article="a" name="fabulous legs">
 		<attribute key="absorbpercentphysical" value="4" />
@@ -54623,6 +54942,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Knight;true, Paladin;true, Elite Knight, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="32618" article="a" name="soulful legs">
 		<attribute key="absorbpercentholy" value="8" />
@@ -54634,6 +54954,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="32619" name="pair of nightmare boots">
 		<attribute key="absorbpercentenergy" value="6" />
@@ -54649,6 +54970,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Sorcerer;true, Druid;true, Master Sorcerer, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="32620" article="a" name="ghost backpack">
 		<attribute key="containersize" value="26" />
@@ -54707,6 +55029,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="32629" name="spectral scrap of cloth">
 		<attribute key="description" value="Its tattered fringes seem to move by themselves" />
@@ -56597,6 +56920,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="34085" article="a" name="souleater">
 		<attribute key="weaponType" value="axe" />
@@ -56619,6 +56943,7 @@
 			<attribute key="weaponType" value="axe" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="34086" article="a" name="soulcrusher">
 		<attribute key="weaponType" value="club" />
@@ -56645,6 +56970,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="34087" article="a" name="soulmaimer">
 		<attribute key="weaponType" value="club" />
@@ -56667,6 +56993,7 @@
 			<attribute key="weaponType" value="club" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="34088" article="a" name="soulbleeder">
 		<attribute key="weaponType" value="distance" />
@@ -56692,6 +57019,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="34089" article="a" name="soulpiercer">
 		<attribute key="weaponType" value="distance" />
@@ -56716,6 +57044,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="34090" article="a" name="soultainter">
 		<attribute key="weaponType" value="wand" />
@@ -56739,6 +57068,7 @@
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="34091" article="a" name="soulhexer">
 		<attribute key="weaponType" value="wand" />
@@ -56766,6 +57096,7 @@
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="34092" article="a" name="soulshanks">
 		<attribute key="absorbpercentdeath" value="10" />
@@ -56777,6 +57108,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="34093" article="a" name="soulstrider">
 		<attribute key="absorbpercentfire" value="10" />
@@ -56788,6 +57120,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="34094" article="a" name="soulshell">
 		<attribute key="absorbpercentphysical" value="3" />
@@ -56808,6 +57141,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="34095" article="a" name="soulmantle">
 		<attribute key="absorbpercentphysical" value="4" />
@@ -56828,6 +57162,7 @@
 			<attribute key="level" value="400" />
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="34096" article="a" name="soulshroud">
 		<attribute key="absorbpercentdeath" value="10" />
@@ -56847,6 +57182,7 @@
 			<attribute key="level" value="400" />
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="34097" name="pair of soulwalkers">
 		<attribute key="absorbpercentphysical" value="7" />
@@ -56866,6 +57202,7 @@
 			<attribute key="level" value="400" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="34098" name="pair of soulstalkers">
 		<attribute key="absorbpercentphysical" value="5" />
@@ -56882,6 +57219,7 @@
 			<attribute key="level" value="400" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="34099" article="a" name="soulbastion">
 		<attribute key="weaponType" value="shield" />
@@ -57105,6 +57443,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="34151" article="a" name="lion rod">
 		<attribute key="weaponType" value="wand" />
@@ -57128,6 +57467,7 @@
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="34152" article="a" name="lion wand">
 		<attribute key="weaponType" value="wand" />
@@ -57152,6 +57492,7 @@
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="34153" article="a" name="lion spellbook">
 		<attribute key="absorbpercentphysical" value="3" />
@@ -57238,6 +57579,7 @@
 			<attribute key="level" value="230" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="34157" article="a" name="lion plate">
 		<attribute key="absorbpercentphysical" value="6" />
@@ -57260,6 +57602,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="34158" article="a" name="lion amulet">
 		<attribute key="description" value="The heraldic animal of the Order of the Lion is emblazoned on this imposing amulet. It is worn with pride by true knights of the lion" />
@@ -57559,6 +57902,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="34254" article="a" name="lion hammer">
 		<attribute key="weaponType" value="club" />
@@ -57581,6 +57925,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="34255" article="a" name="trapdoor">
 		<attribute key="floorchange" value="down" />
@@ -58190,6 +58535,7 @@
 			<attribute key="weaponType" value="club" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="35515" article="a" name="throwing axe">
 		<attribute key="weaponType" value="axe" />
@@ -58212,6 +58558,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="35516" name="exotic legs">
 		<attribute key="absorbpercentphysical" value="4" />
@@ -58222,6 +58569,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="35517" name="bast legs">
 		<attribute key="absorbpercentenergy" value="4" />
@@ -58233,6 +58581,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="35518" article="a" name="jungle bow">
 		<attribute key="weaponType" value="distance" />
@@ -58257,6 +58606,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="35519" name="makeshift boots">
 		<attribute key="absorbpercentfire" value="6" />
@@ -58272,6 +58622,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="35520" name="make-do boots">
 		<attribute key="absorbpercentice" value="6" />
@@ -58287,6 +58638,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="35521" article="a" name="jungle rod">
 		<attribute key="weaponType" value="wand" />
@@ -58310,6 +58662,7 @@
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="35522" article="a" name="jungle wand">
 		<attribute key="weaponType" value="wand" />
@@ -58333,6 +58686,7 @@
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="35523" article="an" name="exotic amulet">
 		<attribute key="showattributes" value="1" />
@@ -59296,6 +59650,7 @@
 			<attribute key="weaponType" value="sword" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="36658" article="a" name="gilded eldritch claymore">
 		<attribute key="description" value="Refined by the legendary artisan Gnomaurum" />
@@ -59318,6 +59673,7 @@
 			<attribute key="weaponType" value="sword" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="36659" article="a" name="eldritch warmace">
 		<attribute key="weaponType" value="club" />
@@ -59339,6 +59695,7 @@
 			<attribute key="weaponType" value="club" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="36660" article="a" name="gilded eldritch warmace">
 		<attribute key="description" value="Refined by the legendary artisan Gnomaurum" />
@@ -59362,6 +59719,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="36661" article="a" name="eldritch greataxe">
 		<attribute key="weaponType" value="axe" />
@@ -59383,6 +59741,7 @@
 			<attribute key="weaponType" value="axe" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="36662" article="a" name="gilded eldritch greataxe">
 		<attribute key="description" value="Refined by the legendary artisan Gnomaurum" />
@@ -59405,6 +59764,7 @@
 			<attribute key="weaponType" value="axe" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="36663" article="a" name="eldritch cuirass">
 		<attribute key="absorbpercentphysical" value="10" />
@@ -59424,6 +59784,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="36664" article="a" name="eldritch bow">
 		<attribute key="weaponType" value="distance" />
@@ -59447,6 +59808,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="36665" article="a" name="gilded eldritch bow">
 		<attribute key="description" value="Refined by the legendary artisan Gnomaurum" />
@@ -59471,6 +59833,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="36666" article="a" name="eldritch quiver">
 		<attribute key="weaponType" value="quiver" />
@@ -59495,6 +59858,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="36668" article="a" name="eldritch wand">
 		<attribute key="weaponType" value="wand" />
@@ -59518,6 +59882,7 @@
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="36669" article="a" name="gilded eldritch wand">
 		<attribute key="description" value="Refined by the legendary artisan Gnomaurum" />
@@ -59542,6 +59907,7 @@
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="36670" article="a" name="eldritch cowl">
 		<attribute key="absorbpercentice" value="7" />
@@ -59561,6 +59927,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="36671" article="a" name="eldritch hood">
 		<attribute key="absorbpercentpoison" value="7" />
@@ -59580,6 +59947,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="36672" article="a" name="eldritch folio">
 		<attribute key="absorbpercentpoison" value="6" />
@@ -59645,6 +60013,7 @@
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="36675" article="a" name="gilded eldritch rod">
 		<attribute key="description" value="Refined by the legendary artisan Gnomaurum" />
@@ -59673,6 +60042,7 @@
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="36676" article="a" name="dead lavaworm">
 		<attribute key="duration" value="60" />
@@ -61811,6 +62181,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="legs" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="37608" name="green demon armor">
 		<attribute key="armor" value="16" />
@@ -61827,6 +62198,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="armor" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="37609" name="green demon helmet">
 		<attribute key="description" value="You hear an evil whispering from inside" />
@@ -61843,6 +62215,7 @@
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="head" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="37610" name="green demon slippers">
 		<attribute key="weight" value="600" />
@@ -62430,6 +62803,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="39148" article="a" name="spiritthorn helmet">
 		<attribute key="absorbpercentphysical" value="6" />
@@ -62453,6 +62827,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="39149" article="an" name="alicorn headguard">
 		<attribute key="absorbpercentphysical" value="5" />
@@ -62479,6 +62854,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="39150" article="an" name="alicorn quiver">
 		<attribute key="weaponType" value="quiver" />
@@ -62509,6 +62885,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="39152" article="an" name="arcanomancer folio">
 		<attribute key="absorbpercentfire" value="8" />
@@ -62546,6 +62923,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="39154" article="an" name="arboreal tome">
 		<attribute key="absorbpercentphysical" value="4" />
@@ -62610,6 +62988,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="39157" article="a" name="naga club">
 		<attribute key="weaponType" value="club" />
@@ -62632,6 +63011,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="39158" article="a" name="frostflower boots">
 		<attribute key="absorbpercentice" value="5" />
@@ -62647,6 +63027,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="39159" article="a" name="naga crossbow">
 		<attribute key="weaponType" value="distance" />
@@ -62671,6 +63052,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="39160" article="a" name="naga quiver">
 		<attribute key="weaponType" value="quiver" />
@@ -62700,6 +63082,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="39162" article="a" name="naga wand">
 		<attribute key="weaponType" value="wand" />
@@ -62725,6 +63108,7 @@
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="39163" article="a" name="naga rod">
 		<attribute key="weaponType" value="wand" />
@@ -62750,6 +63134,7 @@
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="39164" article="a" name="dawnfire sherwani">
 		<attribute key="absorbpercentfire" value="10" />
@@ -62769,6 +63154,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="39165" article="a" name="midnight tunic">
 		<attribute key="absorbpercentphysical" value="3" />
@@ -62789,6 +63175,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="39166" article="a" name="dawnfire pantaloons">
 		<attribute key="absorbpercentphysical" value="3" />
@@ -62800,6 +63187,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="39167" article="a" name="midnight sarong">
 		<attribute key="absorbpercentice" value="7" />
@@ -62811,6 +63199,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="39168" article="a" name="heated crystal" />
 	<item id="39169" article="a" name="cooled crystal" />
@@ -64587,6 +64976,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="40589" name="stitched mutant hide legs">
 		<attribute key="absorbpercentphysical" value="5" />
@@ -64601,6 +64991,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="40590" name="mutated skin legs">
 		<attribute key="absorbpercentphysical" value="4" />
@@ -64613,6 +65004,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="40591" article="a" name="mutated skin armor">
 		<attribute key="absorbpercentphysical" value="3" />
@@ -64633,6 +65025,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="40592" article="a" name="alchemist's boots">
 		<attribute key="absorbpercentphysical" value="2" />
@@ -64648,6 +65041,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="40593" article="a" name="mutant bone boots">
 		<attribute key="absorbpercentdeath" value="3" />
@@ -64663,6 +65057,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="40594" article="an" name="alchemist's notepad">
 		<attribute key="weaponType" value="shield" />
@@ -64694,6 +65089,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="42050" article="a" name="dead iks">
 		<attribute key="decayTo" value="0" />
@@ -66245,6 +66641,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="43877" article="a" name="sanguine bow">
 		<attribute key="weaponType" value="distance" />
@@ -66353,6 +66750,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="43882" article="a" name="sanguine coil">
 		<attribute key="weaponType" value="wand" />
@@ -66380,6 +66778,7 @@
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="43883" article="a" name="grand sanguine coil">
 		<attribute key="weaponType" value="wand" />
@@ -66406,6 +66805,7 @@
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="43884" name="sanguine boots">
 		<attribute key="absorbpercentphysical" value="2" />
@@ -66423,6 +66823,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="43885" article="a" name="sanguine rod">
 		<attribute key="weaponType" value="wand" />
@@ -66492,6 +66893,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="43891" article="a" name="sacrificial plate">
 	</item>
@@ -66726,6 +67128,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="44620" name="stoic iks chestplate">
 		<attribute key="armor" value="16" />
@@ -66746,6 +67149,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="44621" article="a" name="dauntless dragon scale armor">
 		<attribute key="armor" value="18" />
@@ -66768,6 +67172,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="44622" article="an" name="unerring dragon scale armor">
 		<attribute key="armor" value="17" />
@@ -66789,6 +67194,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="44623" article="an" name="arcane dragon robe">
 		<attribute key="armor" value="15" />
@@ -66810,6 +67216,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="44624" article="an" name="mystical dragon robe">
 		<attribute key="armor" value="15" />
@@ -66831,6 +67238,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="44636" name="stoic iks casque">
 		<attribute key="armor" value="8" />
@@ -66852,6 +67260,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="44637" name="stoic iks headpiece">
 		<attribute key="armor" value="8" />
@@ -66872,6 +67281,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="44638" article="a" name="knight pedestal">
 	</item>
@@ -66894,6 +67304,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="44643" name="stoic iks faulds">
 		<attribute key="armor" value="8" />
@@ -66905,6 +67316,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="44648" name="stoic iks boots">
 		<attribute key="speed" value="15" />
@@ -66920,6 +67332,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="44649" name="stoic iks sandals">
 		<attribute key="armor" value="2" />
@@ -66935,6 +67348,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="44651" article="a" name="dead dragolisk">
 		<attribute key="fluidsource" value="blood" />
@@ -67330,6 +67744,7 @@
 			<attribute key="weaponType" value="sword" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="47369" article="an" name="amber greataxe">
 		<attribute key="weaponType" value="axe" />
@@ -67350,6 +67765,7 @@
 			<attribute key="weaponType" value="axe" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="47370" article="an" name="amber bludgeon">
 		<attribute key="weaponType" value="club" />
@@ -67370,6 +67786,7 @@
 			<attribute key="weaponType" value="club" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="47371" article="an" name="amber bow">
 		<attribute key="weaponType" value="distance" />
@@ -67394,6 +67811,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="47372" article="an" name="amber wand">
 		<attribute key="weaponType" value="wand" />
@@ -67418,6 +67836,7 @@
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="47373" article="an" name="amber rod">
 		<attribute key="weaponType" value="wand" />
@@ -67442,6 +67861,7 @@
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="47374" article="an" name="amber sabre">
 		<attribute key="weaponType" value="sword" />
@@ -67463,6 +67883,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="47375" article="an" name="amber axe">
 		<attribute key="weaponType" value="axe" />
@@ -67484,6 +67905,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="47376" article="an" name="amber cudgel">
 		<attribute key="weaponType" value="club" />
@@ -67505,6 +67927,7 @@
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 			<attribute key="slot" value="hand" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="47377" article="an" name="amber crossbow">
 		<attribute key="weaponType" value="distance" />
@@ -67529,6 +67952,7 @@
 			<attribute key="weaponType" value="distance" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="47379" article="a" name="large obelisk">
 	</item>
@@ -70866,6 +71290,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="49532" article="a" name="hellstalker visor">
 		<attribute key="armor" value="10" />
@@ -70882,6 +71307,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="49533" article="a" name="dreadfire headpiece">
 		<attribute key="armor" value="8" />
@@ -70898,6 +71324,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="49534" article="a" name="demonfang mask">
 		<attribute key="armor" value="8" />
@@ -70914,6 +71341,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item fromid="49535" toid="49547" name="stone floor">
 	</item>
@@ -72077,6 +72505,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="50147" article="a" name="charged ethereal ring">
 		<attribute key="weight" value="70" />
@@ -72601,6 +73030,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="50185" name="jade legs">
 		<attribute key="armor" value="5" />
@@ -72613,6 +73043,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="50186" name="jungle survivor legs">
 		<attribute key="armor" value="5" />
@@ -72624,6 +73055,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="50187" name="legs of wisdom">
 		<attribute key="armor" value="4" />
@@ -72635,6 +73067,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="50188" name="ethereal coned hat">
 		<attribute key="armor" value="7" />
@@ -72652,6 +73085,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="50189" name="demon mengu">
 		<attribute key="armor" value="6" />
@@ -72669,6 +73103,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="50190" name="dark vision bandana">
 		<attribute key="armor" value="5" />
@@ -72684,6 +73119,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="50191" article="an" name="enchanted werewolf helmet">
 		<attribute key="description" value="This helmet can only be worn by monks and amplifies fist fighting" />
@@ -72719,6 +73155,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="50194" name="light bandana">
 		<attribute key="armor" value="3" />
@@ -72728,6 +73165,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="50195" article="a" name="harmony amulet">
 		<attribute key="showattributes" value="1" />
@@ -72800,6 +73238,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="50242" article="an" name="ancient shrine">
 		<attribute key="description" value="An ancient shrine of the Merudri with lit candles" />
@@ -72926,6 +73365,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="50255" name="stoic iks robe">
 		<attribute key="description" value="A robe worn by a separatis caste of the ancient Iks" />
@@ -72947,6 +73387,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="50257" name="plain monk robe">
 		<attribute key="description" value="A plain variant of the traditional robe of Merudri monks" />
@@ -72960,6 +73401,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="50258" name="monk robe">
 		<attribute key="description" value="The traditional robe of a Merudri monk" />
@@ -72970,6 +73412,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="50259" name="zaoan monk robe">
 		<attribute key="description" value="A dark oyoroi with an even darker past. Worn and ragged from many a battle" />
@@ -72981,6 +73424,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="50260" name="death oyoroi">
 		<attribute key="description" value="A dark oyoroi with an even darker past. Worn and ragged from many a battle" />
@@ -73002,6 +73446,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="50261" name="merudri nanbando">
 		<attribute key="description" value="A rare metal breastplate worn by early Merudri guardians" />
@@ -73022,6 +73467,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="50262" name="naga tanko">
 		<attribute key="description" value="A metal tanko, originally manufactured and refined by the ancient Naga" />
@@ -73044,6 +73490,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="50263" name="merudri scale mail">
 		<attribute key="description" value="A magical mail with scales. Worn by ancient Merudri beast slayers" />
@@ -73056,6 +73503,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="50264" name="merudri battle mail">
 		<attribute key="description" value="Mighty battle armament refined by Merudri master artisans" />
@@ -73078,6 +73526,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="50266" name="eldritch monk boots">
 		<attribute key="armor" value="2" />
@@ -73094,6 +73543,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="50267" name="boots of enlightenment">
 		<attribute key="description" value="Traditional boots worn by pilgrims of the Three-Fold Path. Its design features elements of the natural appearance of moths" />
@@ -73109,6 +73559,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="50268" name="robe of enlightenment">
 		<attribute key="description" value="Traditional robe worn by pilgrims of the Three-Fold Path. Its design features elements of the natural appearance of moths" />
@@ -73129,6 +73580,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="50269" name="legs of enlightenment">
 		<attribute key="description" value="Traditional legs worn by pilgrims of the Three-Fold Path. Its design features elements of the natural appearance of moths" />
@@ -73141,6 +73593,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="50270" article="a" name="bambus jo">
 		<attribute key="weaponType" value="fist" />
@@ -73243,6 +73696,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="1" />
 	</item>
 	<item id="50275" name="ghazbaran oyoroi">
 		<attribute key="description" value="A beastly oyoroi, folded and bolstered to withstand even the hardest blows" />
@@ -73257,6 +73711,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="50276" name="gnomish cuirass">
 		<attribute key="description" value="Gnomish cuirass with intricate gems worked into it" />
@@ -73278,6 +73733,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="50277" name="leaf robe">
 		<attribute key="description" value="Monk robe with mysticals leaves woven into it" />
@@ -73291,6 +73747,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="50278" name="magma robe">
 		<attribute key="description" value="Monk robe strengthened with plates of cooled magma" />
@@ -73304,6 +73761,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="50279" name="energy robe">
 		<attribute key="description" value="Monk robe interwoven with mystical fabrics and brimming with energy" />
@@ -73317,6 +73775,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="50280" name="ice robe">
 		<attribute key="description" value="Monk robe fortified with floes of century old unmelting ice" />
@@ -73330,6 +73789,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="50289" name="yalahari footwraps">
 		<attribute key="armor" value="1" />
@@ -73345,6 +73805,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="50290" name="gnomish footwraps">
 		<attribute key="armor" value="1" />
@@ -73361,6 +73822,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="3" />
 	</item>
 	<item id="50291" name="iks footwraps">
 		<attribute key="armor" value="2" />
@@ -73376,6 +73838,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="50292" article="a" name="training wraps">
 		<attribute key="showCharges" value="1" />
@@ -73620,6 +74083,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="51261" name="norcferatu bonehood">
 		<attribute key="armor" value="5" />
@@ -73636,6 +74100,7 @@
 			<attribute key="slot" value="head" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="51262" name="norcferatu tuskplate">
 		<attribute key="armor" value="22" />
@@ -73649,6 +74114,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="51263" name="norcferatu bloodhide">
 		<attribute key="armor" value="16" />
@@ -73659,6 +74125,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="51264" name="norcferatu bonecloak">
 		<attribute key="armor" value="16" />
@@ -73669,6 +74136,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="51265" name="norcferatu thornwraps">
 		<attribute key="armor" value="9" />
@@ -73681,6 +74149,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="51266" name="norcferatu bloodstrider">
 		<attribute key="armor" value="8" />
@@ -73692,6 +74161,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Druid;true, Elder Druid" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="51267" name="norcferatu fleshguards">
 		<attribute key="armor" value="5" />
@@ -73703,6 +74173,7 @@
 			<attribute key="slot" value="legs" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="51268" name="norcferatu goretrampers">
 		<attribute key="absorbpercentearth" value="5" />
@@ -73718,6 +74189,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Knight;true, Elite Knight" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="51269" name="norcferatu fangstompers">
 		<attribute key="armor" value="2" />
@@ -73729,6 +74201,7 @@
 			<attribute key="slot" value="feet" />
 			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
 		</attribute>
+		<attribute key="classification" value="4" />
 	</item>
 	<item id="51270" name="ink blade">
 		<attribute key="showAttributes" value="1" />
@@ -73797,6 +74270,7 @@
 			<attribute key="slot" value="armor" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
+		<attribute key="classification" value="2" />
 	</item>
 	<item id="51419" article="a" name="paper plane">
 		<attribute key="weight" value="50" />
