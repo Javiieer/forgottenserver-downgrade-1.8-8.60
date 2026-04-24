@@ -1,5 +1,6 @@
 local npcType = Game.createNpcType("Storyteller")
 npcType:outfit({lookType = 128, lookHead = 78, lookBody = 76, lookLegs = 78, lookFeet = 76})
+npcType:emblem(1)
 npcType:spawnRadius(2)
 npcType:walkInterval(5000)
 npcType:walkSpeed(80)

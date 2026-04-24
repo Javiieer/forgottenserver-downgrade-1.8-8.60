@@ -406,6 +406,7 @@ void Npc::loadNpcTypeInfo()
 	healthMax = npcType->healthMax;
 	moneyType = npcType->moneyType;
 	setSkull(npcType->skull);
+	setGuildEmblem(npcType->emblem);
 }
 
 // ─── NpcType ──────────────────────────────────────────────────────────────────

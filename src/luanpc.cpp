@@ -406,6 +406,24 @@ int luaNpcTypeMaxHealth(lua_State* L)
 	return 1;
 }
 
+int luaNpcTypeEmblem(lua_State* L)
+{
+	// get: npcType:emblem() set: npcType:emblem(emblem)
+	auto* npcType = getUserdata<NpcType>(L, 1);
+	if (!npcType) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		lua_pushinteger(L, npcType->emblem);
+	} else {
+		npcType->emblem = getInteger<GuildEmblems_t>(L, 2);
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
 int luaNpcTypeOnCallback(lua_State* L)
 {
 	// npcType:onSay(callback) / onAppear / onDisappear / onMove / onPlayerCloseChannel / onPlayerEndTrade / onThink
@@ -446,6 +464,7 @@ void LuaScriptInterface::registerNpcType()
 	registerMethod("NpcType", "parameters", luaNpcTypeParameter);
 	registerMethod("NpcType", "health", luaNpcTypeHealth);
 	registerMethod("NpcType", "maxHealth", luaNpcTypeMaxHealth);
+	registerMethod("NpcType", "emblem", luaNpcTypeEmblem);
 
 	registerMethod("NpcType", "onSay", luaNpcTypeOnCallback);
 	registerMethod("NpcType", "onDisappear", luaNpcTypeOnCallback);

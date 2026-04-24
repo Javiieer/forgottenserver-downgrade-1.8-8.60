@@ -363,7 +363,7 @@ ReturnValue Actions::internalUseItem(Player* player, const Position& pos, uint8_
 	return RETURNVALUE_CANNOTUSETHISOBJECT;
 }
 
-static void showUseHotkeyMessage(Player* player, const Item* item, uint32_t count) // raw ptr: lifetime garantido pelo caller
+static void showUseHotkeyMessage(Player* player, const Item* item, uint32_t count) // raw ptr: lifetime guaranteed by caller
 {
 	const ItemType& it = Item::items[item->getID()];
 	if (!it.showCount) {

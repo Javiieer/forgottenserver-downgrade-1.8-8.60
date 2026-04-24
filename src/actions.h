@@ -95,7 +95,7 @@ public:
 	               Creature* = nullptr);
 
 	ReturnValue canUse(const Player* player, const Position& pos);
-	ReturnValue canUse(const Player*, const Position&, const Item*); // raw ptr: lifetime garantido pelo caller
+	ReturnValue canUse(const Player*, const Position&, const Item*); // raw ptr: lifetime guaranteed by caller
 	ReturnValue canUseFar(const Creature* creature, const Position& toPos, bool checkLineOfSight, bool checkFloor);
 
 	bool registerLuaEvent(Action* event);
@@ -113,7 +113,7 @@ private:
 	ActionUseMap actionItemMap;
 	std::map<Position, Action> positionMap;
 
-	Action* getAction(const Item*); // raw ptr: lifetime garantido pelo caller
+	Action* getAction(const Item*); // raw ptr: lifetime guaranteed by caller
 	Action* getAction(const Position& pos);
 	void clearMap(ActionUseMap& map, bool fromLua);
 

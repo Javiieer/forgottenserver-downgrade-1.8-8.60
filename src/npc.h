@@ -129,6 +129,7 @@ public:
 
 	Outfit_t defaultOutfit;
 	Skulls_t skull = SKULL_NONE;
+	GuildEmblems_t emblem = GUILDEMBLEM_NONE;
 
 	uint16_t moneyType = 0;
 
