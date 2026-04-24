@@ -31,6 +31,9 @@ end
 registerMonsterType.skull = function(mtype, mask)
 	if mask.skull then mtype:skull(mask.skull) end
 end
+registerMonsterType.emblem = function(mtype, mask)
+	if mask.emblem then mtype:emblem(mask.emblem) end
+end
 registerMonsterType.outfit = function(mtype, mask)
 	if mask.outfit then mtype:outfit(mask.outfit) end
 end

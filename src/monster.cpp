@@ -52,6 +52,7 @@ Monster::Monster(const std::shared_ptr<MonsterType>& mType) : Creature(), nameDe
 	defaultOutfit = mType->info.outfit;
 	currentOutfit = mType->info.outfit;
 	skull = mType->info.skull;
+	emblem = mType->info.emblem;
 	health = mType->info.health;
 	healthMax = mType->info.healthMax;
 	baseSpeed = mType->info.baseSpeed;

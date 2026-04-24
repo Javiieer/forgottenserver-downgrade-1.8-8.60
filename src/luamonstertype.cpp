@@ -449,6 +449,27 @@ int luaMonsterTypeSkull(lua_State* L)
 	return 1;
 }
 
+int luaMonsterTypeEmblem(lua_State* L)
+{
+	// get: monsterType:emblem() set: monsterType:emblem(str/constant)
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			lua_pushinteger(L, monsterType->info.emblem);
+		} else {
+			if (isInteger(L, 2)) {
+				monsterType->info.emblem = getInteger<GuildEmblems_t>(L, 2);
+			} else {
+				monsterType->info.emblem = getEmblemType(getString(L, 2));
+			}
+			pushBoolean(L, true);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int luaMonsterTypeCombatImmunities(lua_State* L)
 {
 	// get: monsterType:combatImmunities() set: monsterType:combatImmunities(immunity)
@@ -1377,6 +1398,7 @@ void LuaScriptInterface::registerMonsterType()
 	registerMethod("MonsterType", "runHealth", luaMonsterTypeRunHealth);
 	registerMethod("MonsterType", "experience", luaMonsterTypeExperience);
 	registerMethod("MonsterType", "skull", luaMonsterTypeSkull);
+	registerMethod("MonsterType", "emblem", luaMonsterTypeEmblem);
 
 	registerMethod("MonsterType", "combatImmunities", luaMonsterTypeCombatImmunities);
 	registerMethod("MonsterType", "conditionImmunities", luaMonsterTypeConditionImmunities);

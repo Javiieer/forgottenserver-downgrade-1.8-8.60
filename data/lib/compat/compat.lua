@@ -614,6 +614,10 @@ function getCreatureSkullType(cid)
 	local c = Creature(cid)
 	return c and c:getSkull() or false
 end
+function getCreatureEmblemType(cid)
+	local c = Creature(cid)
+	return c and c:getEmblem() or false
+end
 function getCreatureNoMove(cid)
 	local c = Creature(cid)
 	return c and c:isMovementBlocked() or false
@@ -671,6 +675,10 @@ end
 function doCreatureSetSkullType(cid, skull)
 	local c = Creature(cid)
 	return c and c:setSkull(skull) or false
+end
+function doCreatureSetEmblemType(cid, emblem)
+	local c = Creature(cid)
+	return c and c:setEmblem(emblem) or false
 end
 function setCreatureMaxHealth(cid, health)
 	local c = Creature(cid)
