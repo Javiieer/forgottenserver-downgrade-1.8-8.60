@@ -37,6 +37,11 @@ void trimString(std::string& str) { boost::algorithm::trim(str); }
 // std::string asLowerCaseString(const std::string& str) { return boost::algorithm::to_lower_copy<std::string>(str); }
 
 // void toLowerCaseString(std::string& str) { boost::algorithm::to_lower(str); }
+
+bool playerIsMonkVocation(const Vocation* vocation)
+{
+	return vocation && (vocation->getId() == 9 || vocation->getFromVocation() == 9);
+}
 } // namespace
 
 MuteCountMap Player::muteCountMap;
@@ -143,13 +148,15 @@ bool Player::isPushable() const
 std::string Player::getDescription(int32_t lookDistance) const
 {
 	std::ostringstream s;
+	const bool hideMonkVocation = playerIsMonkVocation(vocation.get()) &&
+	                              !ConfigManager::getBoolean(ConfigManager::MONK_VOCATION_ENABLED);
 
 	if (lookDistance == -1) {
 		s << "yourself.";
 
 		if (group->access) {
 			s << " You are " << group->name << '.';
-		} else if (vocation->getId() != VOCATION_NONE) {
+		} else if (vocation->getId() != VOCATION_NONE && !hideMonkVocation) {
 			s << " You are " << vocation->getVocDescription() << " (Level " << level << ").";
 		} else {
 			s << " You have no vocation (Level " << level << ").";
@@ -173,7 +180,7 @@ std::string Player::getDescription(int32_t lookDistance) const
 
 		if (group->access) {
 			s << " is " << group->name << '.';
-		} else if (vocation->getId() != VOCATION_NONE) {
+		} else if (vocation->getId() != VOCATION_NONE && !hideMonkVocation) {
 			s << " is " << vocation->getVocDescription() << '.';
 		} else {
 			s << " has no vocation.";
@@ -4176,6 +4183,10 @@ bool Player::canWear(uint32_t lookType, uint8_t addons) const
 		return false;
 	}
 
+	if (!ConfigManager::getBoolean(ConfigManager::MONK_VOCATION_ENABLED) && outfit->name == "Monk") {
+		return false;
+	}
+
 	if (outfit->premium && !isPremium()) {
 		return false;
 	}
@@ -4199,6 +4210,10 @@ bool Player::hasOutfit(uint32_t lookType, uint8_t addons)
 {
 	const Outfit* outfit = Outfits::getInstance().getOutfitByLookType(static_cast<uint16_t>(lookType));
 	if (!outfit) {
+		return false;
+	}
+
+	if (!ConfigManager::getBoolean(ConfigManager::MONK_VOCATION_ENABLED) && outfit->name == "Monk") {
 		return false;
 	}
 

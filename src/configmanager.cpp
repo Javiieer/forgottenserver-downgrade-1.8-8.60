@@ -339,6 +339,10 @@ bool ConfigManager::load()
 	booleans[Boolean::REMOVE_SUMMONS_ON_PZ] = getGlobalBoolean(L, "removeSummonsOnPz", false);
 	booleans[Boolean::FAMILIAR_ENTER_PZ] = getGlobalBoolean(L, "familiarEnterPz", true);
 	booleans[Boolean::TELEPORT_SUMMON] = getGlobalBoolean(L, "teleportSummon", false);
+	booleans[Boolean::FORGE_SYSTEM_ENABLED] = getGlobalBoolean(L, "forgeSystemEnabled", false);
+	booleans[Boolean::IMBUEMENT_SYSTEM_ENABLED] = getGlobalBoolean(L, "imbuementSystemEnabled", false);
+	booleans[Boolean::MONK_VOCATION_ENABLED] = getGlobalBoolean(L, "monkVocationEnabled", false);
+	booleans[Boolean::FAMILIAR_SYSTEM_ENABLED] = getGlobalBoolean(L, "familiarSystemEnabled", false);
 
 	// Admin Config
 	booleans[Boolean::ADMIN_LOCALHOST_ONLY] = getGlobalBoolean(L, "adminLocalhostOnly", true);

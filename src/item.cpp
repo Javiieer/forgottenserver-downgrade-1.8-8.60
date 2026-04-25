@@ -1178,6 +1178,10 @@ static double quadraticPoly(double a, double b, double c, uint8_t tier)
 
 double Item::getFatalChance() const
 {
+	if (!ConfigManager::getBoolean(ConfigManager::FORGE_SYSTEM_ENABLED)) {
+		return 0.0;
+	}
+
 	uint8_t tier = getTier();
 	if (tier == 0) {
 		return 0.0;
@@ -1190,6 +1194,10 @@ double Item::getFatalChance() const
 
 double Item::getDodgeChance() const
 {
+	if (!ConfigManager::getBoolean(ConfigManager::FORGE_SYSTEM_ENABLED)) {
+		return 0.0;
+	}
+
 	uint8_t tier = getTier();
 	if (tier == 0) {
 		return 0.0;
@@ -1202,6 +1210,10 @@ double Item::getDodgeChance() const
 
 double Item::getMomentumChance() const
 {
+	if (!ConfigManager::getBoolean(ConfigManager::FORGE_SYSTEM_ENABLED)) {
+		return 0.0;
+	}
+
 	uint8_t tier = getTier();
 	if (tier == 0) {
 		return 0.0;
@@ -1214,6 +1226,10 @@ double Item::getMomentumChance() const
 
 double Item::getTranscendenceChance() const
 {
+	if (!ConfigManager::getBoolean(ConfigManager::FORGE_SYSTEM_ENABLED)) {
+		return 0.0;
+	}
+
 	uint8_t tier = getTier();
 	if (tier == 0) {
 		return 0.0;
@@ -1391,11 +1407,18 @@ bool Item::isEquipped() const {
 uint16_t Item::getImbuementSlots() const
 {
 	// item:getImbuementSlots() -- returns how many total slots
+	if (!ConfigManager::getBoolean(ConfigManager::IMBUEMENT_SYSTEM_ENABLED)) {
+		return 0;
+	}
 	return imbuementSlots;
 }
 
 uint16_t Item::getFreeImbuementSlots() const
 {
+	if (!ConfigManager::getBoolean(ConfigManager::IMBUEMENT_SYSTEM_ENABLED)) {
+		return 0;
+	}
+
 	const auto used = static_cast<uint16_t>(imbuements.size());
 	if (used >= imbuementSlots) {
 		return 0;
@@ -1406,6 +1429,9 @@ uint16_t Item::getFreeImbuementSlots() const
 bool Item::canImbue() const
 {
 	// item:canImbue() -- returns true if item has slots that are free
+	if (!ConfigManager::getBoolean(ConfigManager::IMBUEMENT_SYSTEM_ENABLED)) {
+		return false;
+	}
 	return (imbuementSlots > 0 && imbuementSlots > imbuements.size()) ? true : false;
 }
 
@@ -1455,6 +1481,9 @@ bool Item::removeImbuementSlots(const uint16_t amount, const bool destroyImbues)
 bool Item::hasImbuementType(const ImbuementType imbuetype) const
 {
 	// item:hasImbuementType(type)
+	if (!ConfigManager::getBoolean(ConfigManager::IMBUEMENT_SYSTEM_ENABLED)) {
+		return false;
+	}
 	return std::any_of(imbuements.begin(), imbuements.end(), [imbuetype](std::shared_ptr<Imbuement> elem) {
 		return elem->imbuetype == imbuetype;
 		});
@@ -1463,6 +1492,9 @@ bool Item::hasImbuementType(const ImbuementType imbuetype) const
 bool Item::hasImbuement(const std::shared_ptr<Imbuement>& imbuement) const
 {
 	// item:hasImbuement(imbuement)
+	if (!ConfigManager::getBoolean(ConfigManager::IMBUEMENT_SYSTEM_ENABLED)) {
+		return false;
+	}
 	return std::any_of(imbuements.begin(), imbuements.end(), [&imbuement](const std::shared_ptr<Imbuement>& elem) {
 		return elem == imbuement;
 		});
@@ -1472,6 +1504,9 @@ bool Item::hasImbuement(const std::shared_ptr<Imbuement>& imbuement) const
 bool Item::hasImbuements() const
 {
 	// item:hasImbuements() -- returns true if item has any imbuements
+	if (!ConfigManager::getBoolean(ConfigManager::IMBUEMENT_SYSTEM_ENABLED)) {
+		return false;
+	}
 	return imbuements.size() > 0;
 }
 
@@ -1504,6 +1539,10 @@ static const char* getCategoryKey(uint16_t categoryId) {
 
 bool Item::canApplyImbuement(uint16_t categoryId, uint8_t tier) const
 {
+	if (!ConfigManager::getBoolean(ConfigManager::IMBUEMENT_SYSTEM_ENABLED)) {
+		return false;
+	}
+
 	const ItemType& it = items[id];
 	if (it.imbuementAllowedTypes.empty()) {
 		return false;
@@ -1525,13 +1564,18 @@ bool Item::canApplyImbuement(uint16_t categoryId, uint8_t tier) const
 bool Item::addImbuement(std::shared_ptr<Imbuement>  imbuement, bool created)
 {
 	// item:addImbuement(imbuement) -- returns true if it successfully adds the imbuement
-	if (canImbue() && getFreeImbuementSlots() > 0 && g_events->eventItemOnImbue(this, imbuement, created))
-	{
+	const bool systemEnabled = ConfigManager::getBoolean(ConfigManager::IMBUEMENT_SYSTEM_ENABLED);
+	if (created && !systemEnabled) {
+		return false;
+	}
+
+	const bool hasRoom = imbuementSlots > 0 && imbuementSlots > imbuements.size();
+	if (hasRoom && (!created || g_events->eventItemOnImbue(this, imbuement, created))) {
 		imbuements.push_back(imbuement);
 		for (auto imbue : imbuements) {
 			if (imbue == imbuement) {
 				Player* player = const_cast<Player*>(getHoldingPlayer());
-				if (player && isEquipped()) {
+				if (systemEnabled && player && isEquipped()) {
 					player->addImbuementEffect(imbue);
 				}
 			}
@@ -1563,6 +1607,10 @@ std::vector<std::shared_ptr<Imbuement>>& Item::getImbuements() {
 }
 
 void Item::decayImbuements(bool infight) {
+	if (!ConfigManager::getBoolean(ConfigManager::IMBUEMENT_SYSTEM_ENABLED)) {
+		return;
+	}
+
 	std::vector<std::shared_ptr<Imbuement>> expired;
 	for (auto& imbue : imbuements) {
 		if (imbue->isEquipDecay()) {

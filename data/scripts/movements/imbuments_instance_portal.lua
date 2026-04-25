@@ -17,6 +17,10 @@ local instanceCounter = 10000
 local returnPositions = {}
 local instanceNpcs = {}
 
+local function isImbuementEnabled()
+    return configManager.getBoolean(configKeys.IMBUEMENT_SYSTEM_ENABLED)
+end
+
 local function getInstanceCenter()
     return Position(
         math.floor((INSTANCE_FROM.x + INSTANCE_TO.x) / 2),
@@ -128,6 +132,13 @@ local entryMovement = MoveEvent()
 function entryMovement.onStepIn(creature, item, position, fromPosition)
     local player = creature:getPlayer()
     if not player then return true end
+
+    if not isImbuementEnabled() then
+        player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+        player:teleportTo(fromPosition)
+        fromPosition:sendMagicEffect(CONST_ME_POFF)
+        return true
+    end
 
     if player:getInstanceId() ~= 0 then
         player:sendTextMessage(MESSAGE_STATUS_CONSOLE_RED, "You are already inside an instance.")

@@ -63,6 +63,10 @@ function Item:getAttackSpeed()
 end
 
 function Item:getClassification()
+	if not configManager.getBoolean(configKeys.FORGE_SYSTEM_ENABLED) then
+		return 0
+	end
+
 	if self:hasAttribute(ITEM_ATTRIBUTE_CLASSIFICATION) then
 		return self:getAttribute(ITEM_ATTRIBUTE_CLASSIFICATION) --[[@as integer]]
 	end
@@ -70,6 +74,10 @@ function Item:getClassification()
 end
 
 function Item:getTier()
+	if not configManager.getBoolean(configKeys.FORGE_SYSTEM_ENABLED) then
+		return 0
+	end
+
 	if self:hasAttribute(ITEM_ATTRIBUTE_TIER) then
 		return self:getAttribute(ITEM_ATTRIBUTE_TIER) --[[@as integer]]
 	end
@@ -401,7 +409,7 @@ do
 
 		-- classification and tier + forge abilities
 		local forgeDescriptions = {}
-		do
+		if configManager.getBoolean(configKeys.FORGE_SYSTEM_ENABLED) then
 			local classification = item:getClassification()
 			local tier = item:getTier()
 			if classification > 0 then
@@ -751,7 +759,7 @@ do
 		response[#response + 1] = "."
 
 		-- imbuements
-		do
+		if configManager.getBoolean(configKeys.IMBUEMENT_SYSTEM_ENABLED) then
 			local totalSlots = isVirtual and itemType:getImbuementSlot() or item:getImbuementSlots()
 			if totalSlots > 0 then
 				local activeImbuements = not isVirtual and item:getImbuements() or nil

@@ -20,6 +20,24 @@ extern Game g_game;
 extern Monsters g_monsters;
 extern LuaEnvironment g_luaEnvironment;
 
+namespace {
+bool spellsIsMonkVocationId(uint16_t vocationId)
+{
+	return vocationId == 9 || vocationId == 10;
+}
+
+bool spellsIsDisabledMonkVocation(const Player* player)
+{
+	return player && !ConfigManager::getBoolean(ConfigManager::MONK_VOCATION_ENABLED) &&
+	       spellsIsMonkVocationId(player->getVocationId());
+}
+
+bool spellsIsFamiliarSpell(std::string_view name)
+{
+	return name.find("Familiar") != std::string_view::npos || name.find("familiar") != std::string_view::npos;
+}
+} // namespace
+
 Spells::Spells() { scriptInterface.initState(); }
 
 Spells::~Spells() { clear(false); }
@@ -317,6 +335,18 @@ bool CombatSpell::executeCastSpell(Creature* creature, const LuaVariant& var)
 bool Spell::playerSpellCheck(Player* player) const
 {
 	if (player->hasFlag(PlayerFlag_CannotUseSpells)) {
+		return false;
+	}
+
+	if (spellsIsDisabledMonkVocation(player)) {
+		player->sendCancelMessage(RETURNVALUE_YOURVOCATIONCANNOTUSETHISSPELL);
+		g_game.addMagicEffect(player->getPosition(), CONST_ME_POFF, player->getInstanceID());
+		return false;
+	}
+
+	if (!ConfigManager::getBoolean(ConfigManager::FAMILIAR_SYSTEM_ENABLED) && spellsIsFamiliarSpell(getName())) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		g_game.addMagicEffect(player->getPosition(), CONST_ME_POFF, player->getInstanceID());
 		return false;
 	}
 
@@ -840,6 +870,14 @@ bool InstantSpell::executeCastSpell(Creature* creature, const LuaVariant& var)
 bool InstantSpell::canCast(const Player* player) const
 {
 	if (player->hasFlag(PlayerFlag_CannotUseSpells)) {
+		return false;
+	}
+
+	if (spellsIsDisabledMonkVocation(player)) {
+		return false;
+	}
+
+	if (!ConfigManager::getBoolean(ConfigManager::FAMILIAR_SYSTEM_ENABLED) && spellsIsFamiliarSpell(getName())) {
 		return false;
 	}
 

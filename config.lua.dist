@@ -125,6 +125,13 @@ exhaustItemAtUsePotion = true
 
 protectionTime = 10
 
+-- Optional custom systems
+-- Default false keeps closer 8.60 behavior.
+forgeSystemEnabled = false
+imbuementSystemEnabled = false
+monkVocationEnabled = false
+familiarSystemEnabled = false
+
 -- Forge Tier Abilities
 -- Formula: chance = A * tier^2 + B * tier + C
 forgeFatalA = 0.05

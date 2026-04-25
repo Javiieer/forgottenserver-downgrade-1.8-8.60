@@ -1,6 +1,7 @@
 #include "otpch.h"
 
 #include "familiar.h"
+#include "configmanager.h"
 #include "events.h"
 #include "game.h"
 #include "monster.h"
@@ -79,6 +80,7 @@ static void RemoveFamiliar(uint32_t creatureId, uint32_t playerId)
 
 std::string getFamiliarName(const Player* player)
 {
+    if (!ConfigManager::getBoolean(ConfigManager::FAMILIAR_SYSTEM_ENABLED)) return {};
     if (!player || !player->getVocation()) return {};
     uint32_t base = player->getVocation()->getFromVocation();
     if (base == 0) base = player->getVocation()->getId();
@@ -90,6 +92,12 @@ std::string getFamiliarName(const Player* player)
 bool dispellFamiliar(Player* player)
 {
     if (!player) return false;
+    if (!ConfigManager::getBoolean(ConfigManager::FAMILIAR_SYSTEM_ENABLED)) {
+        ClearFamiliarTimerEvents(player, true);
+        player->setStorageValue(STORAGE_FAMILIAR_SUMMON_TIME, std::optional<int64_t>(-1));
+        return false;
+    }
+
     const auto& summons = player->getSummons();
     std::string famName = getFamiliarName(player);
     if (famName.empty()) return false;
@@ -114,6 +122,12 @@ bool dispellFamiliar(Player* player)
 
 bool createFamiliar(Player* player, const std::string& familiarName, uint32_t timeLeft)
 {
+    if (player && !ConfigManager::getBoolean(ConfigManager::FAMILIAR_SYSTEM_ENABLED)) {
+        player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+        g_game.addMagicEffect(player->getPosition(), CONST_ME_POFF, player->getInstanceID());
+        return false;
+    }
+
     if (!player || familiarName.empty()) {
         if (player) {
             player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
@@ -175,6 +189,12 @@ bool createFamiliar(Player* player, const std::string& familiarName, uint32_t ti
 bool createFamiliarSpell(Player* player, uint32_t spellId)
 {
     if (!player) return false;
+    if (!ConfigManager::getBoolean(ConfigManager::FAMILIAR_SYSTEM_ENABLED)) {
+        g_game.addMagicEffect(player->getPosition(), CONST_ME_POFF, player->getInstanceID());
+        player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+        return false;
+    }
+
     if (!player->isPremium()) {
         g_game.addMagicEffect(player->getPosition(), CONST_ME_POFF, player->getInstanceID());
         player->sendCancelMessage("You need a premium account.");
@@ -230,6 +250,12 @@ void restoreFamiliarOnLogin(uint32_t playerId)
 {
     Player* player = g_game.getPlayerByID(playerId);
     if (!player) {
+        return;
+    }
+
+    if (!ConfigManager::getBoolean(ConfigManager::FAMILIAR_SYSTEM_ENABLED)) {
+        ClearFamiliarTimerEvents(player, true);
+        player->setStorageValue(STORAGE_FAMILIAR_SUMMON_TIME, std::optional<int64_t>(-1));
         return;
     }
 

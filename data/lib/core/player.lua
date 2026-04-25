@@ -40,6 +40,10 @@ function Player.isMage(self)
 end
 
 function Player.isMonk(self)
+	if not configManager.getBoolean(configKeys.MONK_VOCATION_ENABLED) then
+		return false
+	end
+
 	return table.contains({ VOCATION.ID.MONK, VOCATION.ID.EXALTED_MONK }, self:getVocation():getId())
 end
 

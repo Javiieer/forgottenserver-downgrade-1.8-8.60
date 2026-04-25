@@ -4,6 +4,7 @@
 #include "otpch.h"
 
 #include "combat.h"
+#include "configmanager.h"
 #include "game.h"
 #include "item.h"
 #include "luascript.h"
@@ -919,6 +920,11 @@ int LuaScriptInterface::luaItemSetTier(lua_State *L)
 	// item:setTier(tier)
 	Item *item = getItemUserdata<Item>(L, 1);
 	if (item) {
+		if (!ConfigManager::getBoolean(ConfigManager::FORGE_SYSTEM_ENABLED)) {
+			pushBoolean(L, false);
+			return 1;
+		}
+
 		item->setTier(getInteger<uint8_t>(L, 2));
 		pushBoolean(L, true);
 	} else {
@@ -944,6 +950,11 @@ int LuaScriptInterface::luaItemSetClassification(lua_State *L)
 	// item:setClassification(classification)
 	Item *item = getItemUserdata<Item>(L, 1);
 	if (item) {
+		if (!ConfigManager::getBoolean(ConfigManager::FORGE_SYSTEM_ENABLED)) {
+			pushBoolean(L, false);
+			return 1;
+		}
+
 		item->setClassification(getInteger<uint8_t>(L, 2));
 		pushBoolean(L, true);
 	} else {

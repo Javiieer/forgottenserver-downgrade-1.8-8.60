@@ -4,6 +4,7 @@
 #ifndef FS_ITEM_H
 #define FS_ITEM_H
 
+#include "configmanager.h"
 #include "cylinder.h"
 #include "items.h"
 #include "luascript.h"
@@ -783,6 +784,9 @@ public:
 
 	uint8_t getTier() const
 	{
+		if (!ConfigManager::getBoolean(ConfigManager::FORGE_SYSTEM_ENABLED)) {
+			return 0;
+		}
 		if (!hasAttribute(ITEM_ATTRIBUTE_TIER)) {
 			return 0;
 		}
@@ -790,10 +794,16 @@ public:
 	}
 	void setTier(uint8_t tier)
 	{
+		if (!ConfigManager::getBoolean(ConfigManager::FORGE_SYSTEM_ENABLED)) {
+			return;
+		}
 		setIntAttr(ITEM_ATTRIBUTE_TIER, tier);
 	}
 	uint8_t getClassification() const
 	{
+		if (!ConfigManager::getBoolean(ConfigManager::FORGE_SYSTEM_ENABLED)) {
+			return 0;
+		}
 		if (hasAttribute(ITEM_ATTRIBUTE_CLASSIFICATION)) {
 			return static_cast<uint8_t>(getIntAttr(ITEM_ATTRIBUTE_CLASSIFICATION));
 		}
@@ -801,6 +811,9 @@ public:
 	}
 	void setClassification(uint8_t classification)
 	{
+		if (!ConfigManager::getBoolean(ConfigManager::FORGE_SYSTEM_ENABLED)) {
+			return;
+		}
 		setIntAttr(ITEM_ATTRIBUTE_CLASSIFICATION, classification);
 	}
 
