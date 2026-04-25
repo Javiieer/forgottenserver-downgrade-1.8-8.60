@@ -29,27 +29,27 @@ trade:shop(1)
 local vocItems = {[1] = 2190, [2] = 2182, [5] = 2190, [6] = 2182} -- druid=rod, sorc=wand
 
 local firstItem = greet:keyword({"first rod", "first wand"})
-firstItem:onAnswer(function(player)
+function firstItem:callback(npc, player, message, handler)
     local voc = player:getVocation():getId()
-    if not table.contains({1, 2, 5, 6}, voc) then
-        return "Sorry, you aren't a druid or a sorcerer."
+    if not vocItems[voc] then
+        return false, "Sorry, you aren't a druid or a sorcerer."
     end
     if player:getStorageValue(PlayerStorageKeys.firstRod) ~= -1 then
-        return "What? I have already gave you one {" .. ItemType(vocItems[voc]):getName() .. "}!"
+        return false, "What? I have already gave you one {" .. ItemType(vocItems[voc]):getName() .. "}!"
     end
-    return "So you ask me for a {" .. ItemType(vocItems[voc]):getName() .. "} to begin your adventure?"
-end)
+    return true, "So you ask me for a {" .. ItemType(vocItems[voc]):getName() .. "} to begin your adventure?"
+end
 
 local confirmFirst = firstItem:keyword("yes")
-confirmFirst:onAnswer(function(player)
+function confirmFirst:callback(npc, player, message, handler)
     local voc = player:getVocation():getId()
-    if table.contains({1, 2, 5, 6}, voc) and player:getStorageValue(PlayerStorageKeys.firstRod) == -1 then
+    if vocItems[voc] and player:getStorageValue(PlayerStorageKeys.firstRod) == -1 then
         player:addItem(vocItems[voc], 1)
         player:setStorageValue(PlayerStorageKeys.firstRod, 1)
-        return "Here you are young adept, take care yourself."
+        return true, "Here you are young adept, take care yourself."
     end
-    return "I already gave you one!"
-end)
+    return false, "I already gave you one!"
+end
 
 firstItem:keyword("no"):respond("Ok then.")
 

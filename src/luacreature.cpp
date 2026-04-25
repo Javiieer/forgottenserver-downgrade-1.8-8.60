@@ -1098,7 +1098,7 @@ int luaCreatureGetStorageValue(lua_State* L)
 	} else if (isInteger(L, 3)) {
 		lua_pushinteger(L, getInteger<int64_t>(L, 3));
 	} else {
-		lua_pushnil(L);
+		lua_pushinteger(L, -1);
 	}
 	return 1;
 }
