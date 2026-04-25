@@ -46,8 +46,8 @@ if not NpcEvents then
     function NpcEvents.onAppear(npc, creature)
         -- Auto-set speech bubble for NPCs with shops
         if creature:getId() == npc:getId() then
-            local handler = NpcsHandler(npc)
-            if handler and next(handler.shops or {}) then
+            local npcName = RevNpcSysResolveNpcName(npc)
+            if npcName and NpcShop[npcName] and next(NpcShop[npcName]) then
                 local currentBubble = npc:getSpeechBubble()
                 if currentBubble == 3 then -- SPEECHBUBBLE_QUEST
                     npc:setSpeechBubble(4) -- SPEECHBUBBLE_QUESTTRADER
