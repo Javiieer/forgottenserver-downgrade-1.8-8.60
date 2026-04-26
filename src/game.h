@@ -17,6 +17,7 @@
 #include "raids.h"
 #include "wildcardtree.h"
 
+#include <map>
 #include <shared_mutex>
 #include <absl/container/flat_hash_map.h>
 
@@ -515,7 +516,8 @@ public:
 	// Loot Highlight system
 	void startLootHighlight(Container* corpse, uint32_t ownerPlayerId);
 	void stopLootHighlight(Container* corpse);
-	void checkLootHighlight(std::shared_ptr<Item> corpseItem, uint32_t ownerPlayerId, int32_t ownerTicksLeft, int32_t totalTicksLeft);
+	void checkLootHighlight(std::shared_ptr<Item> corpseItem, uint32_t ownerPlayerId, int32_t ownerTicksLeft,
+	                        int32_t totalTicksLeft, uint32_t eventId);
 
 	void loadMotdNum();
 	int16_t getWorldTime() { return worldTime; }
@@ -546,7 +548,7 @@ public:
 
 	void internalRemoveItems(std::vector<Item*> itemList, uint32_t amount, bool stackable);
 
-	[[nodiscard]] BedItem* getBedBySleeper(uint32_t guid) const;
+	[[nodiscard]] BedItem* getBedBySleeper(uint32_t guid);
 	void setBedSleeper(BedItem* bed, uint32_t guid);
 	void removeBedSleeper(uint32_t guid);
 
@@ -626,6 +628,10 @@ private:
 	bool playerYell(Player* player, std::string_view text);
 	bool playerSpeakTo(Player* player, SpeakClasses type, std::string_view receiver, std::string_view text);
 	void playerSpeakToNpc(Player* player, std::string_view text);
+	void cleanupExpiredTradeItems();
+	void eraseTradeItem(Item* item);
+	void cleanupExpiredLootHighlightEvents();
+	bool eraseLootHighlightEvent(const std::weak_ptr<Item>& corpse, uint32_t eventId);
 
 	std::unordered_map<uint32_t, Player*> players;
 	std::unordered_map<std::string, Player*> mappedPlayerNames;
@@ -651,15 +657,18 @@ private:
 	std::unordered_map<uint32_t, std::shared_ptr<Creature>> creatureSharedRefs;
 	mutable std::shared_mutex creatureRefsMutex;
 
-	// list of items that are in trading state, mapped to the player
-	std::unordered_map<Item*, uint32_t> tradeItems;
+	using TradeItemMap = std::map<std::weak_ptr<Item>, uint32_t, std::owner_less<std::weak_ptr<Item>>>;
+	using LootHighlightEventMap = std::map<std::weak_ptr<Item>, uint32_t, std::owner_less<std::weak_ptr<Item>>>;
 
-	std::unordered_map<uint32_t, BedItem*> bedSleepersMap;
+	// list of items that are in trading state, mapped to the player
+	TradeItemMap tradeItems;
+
+	std::unordered_map<uint32_t, std::weak_ptr<BedItem>> bedSleepersMap;
 
 	std::unordered_set<Tile*> tilesToClean;
 
-	// Loot Highlight: maps container raw pointer (as uintptr_t) -> scheduler event ID
-	std::unordered_map<uintptr_t, uint32_t> lootHighlightEvents;
+	// Loot Highlight: maps corpse item lifetime to scheduler event ID
+	LootHighlightEventMap lootHighlightEvents;
 
 	ModalWindow offlineTrainingWindow{std::numeric_limits<uint32_t>::max(), "Train while you sleep",
 	                                  "Please choose a skill to train:"};

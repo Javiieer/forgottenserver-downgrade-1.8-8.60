@@ -474,6 +474,7 @@ public:
 	void setTradeState(tradestate_t state) { tradeState = state; }
 	tradestate_t getTradeState() const { return tradeState; }
 	Item* getTradeItem() { return tradeItem.lock().get(); }
+	std::shared_ptr<Item> getTradeItemRef() { return tradeItem.lock(); }
 	void setTradeItem(const std::shared_ptr<Item>& item) { tradeItem = item; }
 	void setTradePartner(const std::shared_ptr<Player>& partner) { tradePartner = partner; }
 	std::shared_ptr<Player> getTradePartner() { return tradePartner.lock(); }
