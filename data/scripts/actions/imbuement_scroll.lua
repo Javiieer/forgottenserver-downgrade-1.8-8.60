@@ -55,6 +55,10 @@ local BASE_PRICES = {
 
 local ALL_DEFS = Game.getImbuementDefinitions() or {}
 
+local function isImbuementEnabled()
+    return configManager.getBoolean(configKeys.IMBUEMENT_SYSTEM_ENABLED)
+end
+
 local function formatDuration(seconds)
     local hours = math.floor(seconds / 3600)
     local minutes = math.floor((seconds % 3600) / 60)
@@ -114,6 +118,12 @@ end
 
 local action = Action()
 function action.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+    if not isImbuementEnabled() then
+        player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+        player:getPosition():sendMagicEffect(CONST_ME_POFF)
+        return true
+    end
+
     if not target then
         player:sendTextMessage(MESSAGE_STATUS_SMALL, "Use the Etcher on the imbuement workbench.")
         return true

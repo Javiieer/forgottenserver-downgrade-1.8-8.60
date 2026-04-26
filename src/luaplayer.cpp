@@ -5,6 +5,7 @@
 
 #include "bed.h"
 #include "chat.h"
+#include "configmanager.h"
 #include "game.h"
 #include "iologindata.h"
 #include "luascript.h"
@@ -23,6 +24,27 @@ extern Vocations g_vocations;
 
 namespace {
 using namespace Lua;
+
+bool luaPlayerIsMonkVocationId(uint16_t vocationId)
+{
+	return vocationId == 9 || vocationId == 10;
+}
+
+bool luaPlayerIsMonkVocation(const Vocation* vocation)
+{
+	return vocation && (luaPlayerIsMonkVocationId(vocation->getId()) || vocation->getFromVocation() == 9);
+}
+
+bool luaPlayerIsDisabledMonkVocation(const Player* player)
+{
+	return player && !ConfigManager::getBoolean(ConfigManager::MONK_VOCATION_ENABLED) &&
+	       luaPlayerIsMonkVocationId(player->getVocationId());
+}
+
+bool luaPlayerIsFamiliarSpell(std::string_view name)
+{
+	return name.find("Familiar") != std::string_view::npos || name.find("familiar") != std::string_view::npos;
+}
 
 // Player
 int luaPlayerCreate(lua_State* L)
@@ -780,6 +802,11 @@ int luaPlayerSetVocation(lua_State* L)
 	}
 
 	if (!vocation) {
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	if (!ConfigManager::getBoolean(ConfigManager::MONK_VOCATION_ENABLED) && luaPlayerIsMonkVocation(vocation)) {
 		pushBoolean(L, false);
 		return 1;
 	}
@@ -1966,7 +1993,10 @@ int luaPlayerCanLearnSpell(lua_State* L)
 		return 1;
 	}
 
-	if (player->getLevel() < spell->getLevel()) {
+	if (luaPlayerIsDisabledMonkVocation(player) ||
+	    (!ConfigManager::getBoolean(ConfigManager::FAMILIAR_SYSTEM_ENABLED) && luaPlayerIsFamiliarSpell(spell->getName()))) {
+		pushBoolean(L, false);
+	} else if (player->getLevel() < spell->getLevel()) {
 		pushBoolean(L, false);
 	} else if (player->getMagicLevel() < spell->getMagicLevel()) {
 		pushBoolean(L, false);
@@ -2782,7 +2812,7 @@ int luaOfflinePlayerCreate(lua_State* L)
 	}
 
 	if (player) {
-		pushUserdata<Player>(L, player.release());
+		pushOwnedUserdata<Player>(L, std::move(player));
 		setMetatable(L, -1, "OfflinePlayer");
 	} else {
 		lua_pushnil(L);
@@ -2793,12 +2823,7 @@ int luaOfflinePlayerCreate(lua_State* L)
 int luaOfflinePlayerRemove(lua_State* L)
 {
 	// offlinePlayer:__close() or offlinePlayer:__gc()
-	Player** playerPtr = getRawUserdata<Player>(L, 1);
-	if (auto player = *playerPtr) {
-		std::unique_ptr<Player> guard(player);
-		*playerPtr = nullptr;
-	}
-	return 0;
+	return deleteOwnedUserdata(L);
 }
 int luaPlayerGetResetCount(lua_State* L)
 {

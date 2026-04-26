@@ -3,6 +3,7 @@
 
 #include "otpch.h"
 
+#include "configmanager.h"
 #include "item.h"
 #include "items.h"
 #include "luascript.h"
@@ -951,6 +952,11 @@ int luaItemTypeGetClassification(lua_State* L)
 	// itemType:getClassification()
 	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
+		if (!ConfigManager::getBoolean(ConfigManager::FORGE_SYSTEM_ENABLED)) {
+			lua_pushnumber(L, 0);
+			return 1;
+		}
+
 		lua_pushnumber(L, itemType->classification);
 	} else {
 		lua_pushnil(L);
@@ -963,6 +969,11 @@ int luaItemTypeGetTier(lua_State* L)
 	// itemType:getTier()
 	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
+		if (!ConfigManager::getBoolean(ConfigManager::FORGE_SYSTEM_ENABLED)) {
+			lua_pushnumber(L, 0);
+			return 1;
+		}
+
 		lua_pushnumber(L, itemType->tier);
 	} else {
 		lua_pushnil(L);
@@ -992,6 +1003,11 @@ int luaItemTypeGetImbuementSlot(lua_State* L)
 	// itemType:getImbuementSlot()
 	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
+		if (!ConfigManager::getBoolean(ConfigManager::IMBUEMENT_SYSTEM_ENABLED)) {
+			lua_pushinteger(L, 0);
+			return 1;
+		}
+
 		lua_pushinteger(L, itemType->imbuementSlot);
 	} else {
 		lua_pushnil(L);

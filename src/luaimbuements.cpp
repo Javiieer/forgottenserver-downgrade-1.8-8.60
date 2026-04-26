@@ -3,6 +3,7 @@
 
 #include "otpch.h"
 
+#include "configmanager.h"
 #include "imbuement.h"
 #include "item.h"
 #include "luascript.h"
@@ -54,6 +55,11 @@ int LuaScriptInterface::luaItemAddImbuementSlots(lua_State* L)
 	// item:addImbuementSlots(amount) -- tries to add imbuement slot(s), returns true if successful
 	Item* item = getItemUserdata<Item>(L, 1);
 	if (item) {
+		if (!ConfigManager::getBoolean(ConfigManager::IMBUEMENT_SYSTEM_ENABLED)) {
+			pushBoolean(L, false);
+			return 1;
+		}
+
 		pushBoolean(L, item->addImbuementSlots(getNumber<uint32_t>(L, 2)));
 	} else {
 		lua_pushnil(L);
@@ -66,6 +72,11 @@ int LuaScriptInterface::luaItemRemoveImbuementSlots(lua_State* L)
 	// item:removeImbuementSlots(amount, destroy) -- tries to remove imbuement slot(s), returns true if successful
 	Item* item = getItemUserdata<Item>(L, 1);
 	if (item) {
+		if (!ConfigManager::getBoolean(ConfigManager::IMBUEMENT_SYSTEM_ENABLED)) {
+			pushBoolean(L, false);
+			return 1;
+		}
+
 		pushBoolean(L, item->removeImbuementSlots(getNumber<uint32_t>(L, 2), getBoolean(L, 3, false)));
 	} else {
 		lua_pushnil(L);
@@ -119,6 +130,11 @@ int LuaScriptInterface::luaItemAddImbuement(lua_State* L)
 	// item:addImbuement(imbuement) -- returns true if it successfully adds the imbuement
 	Item* item = getItemUserdata<Item>(L, 1);
 	if (item) {
+		if (!ConfigManager::getBoolean(ConfigManager::IMBUEMENT_SYSTEM_ENABLED)) {
+			pushBoolean(L, false);
+			return 1;
+		}
+
 		std::shared_ptr<Imbuement> imbue = getSharedPtr<Imbuement>(L, 2);
 		if (imbue) {
 			pushBoolean(L, item->addImbuement(imbue, true));
@@ -134,6 +150,11 @@ int LuaScriptInterface::luaItemRemoveImbuement(lua_State* L)
 	// item:removeImbuement(imbuement)
 	Item* item = getItemUserdata<Item>(L, 1);
 	if (item) {
+		if (!ConfigManager::getBoolean(ConfigManager::IMBUEMENT_SYSTEM_ENABLED)) {
+			pushBoolean(L, false);
+			return 1;
+		}
+
 		std::shared_ptr<Imbuement> imbue = getSharedPtr<Imbuement>(L, 2);
 		if (imbue) {
 			pushBoolean(L, item->removeImbuement(imbue, false));
@@ -150,6 +171,11 @@ int LuaScriptInterface::luaItemGetImbuements(lua_State* L)
 	Item* item = getItemUserdata<Item>(L, 1);
 	if (!item) {
 		lua_pushnil(L);
+		return 1;
+	}
+
+	if (!ConfigManager::getBoolean(ConfigManager::IMBUEMENT_SYSTEM_ENABLED)) {
+		lua_createtable(L, 0, 0);
 		return 1;
 	}
 
@@ -185,6 +211,11 @@ int LuaScriptInterface::luaItemCanApplyImbuement(lua_State* L)
 int LuaScriptInterface::luaImbuementCreate(lua_State* L)
 {
 	// Imbuement(type, amount, duration, decayType, baseId)
+	if (!ConfigManager::getBoolean(ConfigManager::IMBUEMENT_SYSTEM_ENABLED)) {
+		lua_pushnil(L);
+		return 1;
+	}
+
 	ImbuementType imbueType = getNumber<ImbuementType>(L, 2, IMBUEMENT_TYPE_NONE);
 	uint32_t amount = getNumber<uint32_t>(L, 3);
 	uint32_t duration = getNumber<uint32_t>(L, 4);
@@ -383,6 +414,11 @@ int LuaScriptInterface::luaImbuementIsInfightDecay(lua_State* L)
 int LuaScriptInterface::luaGameGetImbuementByScroll(lua_State* L)
 {
 	// Game.getImbuementByScroll(scrollId) -> table with definition data or nil
+	if (!ConfigManager::getBoolean(ConfigManager::IMBUEMENT_SYSTEM_ENABLED)) {
+		lua_pushnil(L);
+		return 1;
+	}
+
 	uint16_t scrollId = getNumber<uint16_t>(L, 1);
 	const ImbuementDefinition* def = Imbuements::getInstance().getDefinitionByScrollId(scrollId);
 	if (!def) {
@@ -426,6 +462,11 @@ int LuaScriptInterface::luaGameGetImbuementByScroll(lua_State* L)
 int LuaScriptInterface::luaGameGetImbuementBases(lua_State* L)
 {
 	// Game.getImbuementBases() -> table of bases
+	if (!ConfigManager::getBoolean(ConfigManager::IMBUEMENT_SYSTEM_ENABLED)) {
+		lua_createtable(L, 0, 0);
+		return 1;
+	}
+
 	const auto& bases = Imbuements::getInstance().getBases();
 	lua_createtable(L, static_cast<int>(bases.size()), 0);
 	int idx = 1;
@@ -445,6 +486,11 @@ int LuaScriptInterface::luaGameGetImbuementBases(lua_State* L)
 int LuaScriptInterface::luaGameGetImbuementCategories(lua_State* L)
 {
 	// Game.getImbuementCategories() -> table of categories
+	if (!ConfigManager::getBoolean(ConfigManager::IMBUEMENT_SYSTEM_ENABLED)) {
+		lua_createtable(L, 0, 0);
+		return 1;
+	}
+
 	const auto& categories = Imbuements::getInstance().getCategories();
 	lua_createtable(L, static_cast<int>(categories.size()), 0);
 	int idx = 1;
@@ -462,6 +508,11 @@ int LuaScriptInterface::luaGameGetImbuementCategories(lua_State* L)
 int LuaScriptInterface::luaGameGetImbuementDefinitions(lua_State* L)
 {
 	// Game.getImbuementDefinitions() -> array of all imbuement definitions (including tier 1 with no scroll)
+	if (!ConfigManager::getBoolean(ConfigManager::IMBUEMENT_SYSTEM_ENABLED)) {
+		lua_createtable(L, 0, 0);
+		return 1;
+	}
+
 	const auto& defs = Imbuements::getInstance().getDefinitions();
 	lua_createtable(L, static_cast<int>(defs.size()), 0);
 	int idx = 1;

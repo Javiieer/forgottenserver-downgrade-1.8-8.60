@@ -18,6 +18,10 @@ local FORGE_POSITIONS = {
     container = Position(1054, 974, 7),
 }
 
+local function isForgeEnabled()
+    return configManager.getBoolean(configKeys.FORGE_SYSTEM_ENABLED)
+end
+
 
 local UPGRADE_CHANCES = {
     [0] = 50, [1] = 40, [2] = 35, [3] = 30, [4] = 25,
@@ -45,12 +49,16 @@ local CHANCE_LOSS_TIER = 10
 
 
 function Player:getForgeDust()
+    if not isForgeEnabled() then return 0 end
+
     local v = self:getStorageValue(FORGE_STORAGE.dust)
     if not v or v < 0 then return 0 end
     return v
 end
 
 function Player:getForgeDustLimit()
+    if not isForgeEnabled() then return 0 end
+
     local v = self:getStorageValue(FORGE_STORAGE.dustLimit)
     if not v or v <= 0 then
         self:setStorageValue(FORGE_STORAGE.dustLimit, 100)
@@ -60,6 +68,8 @@ function Player:getForgeDustLimit()
 end
 
 function Player:addForgeDust(amount)
+    if not isForgeEnabled() then return 0 end
+
     local cur = self:getForgeDust()
     local limit = self:getForgeDustLimit()
     local new = math.min(cur + amount, limit)
@@ -68,6 +78,8 @@ function Player:addForgeDust(amount)
 end
 
 function Player:removeForgeDust(amount)
+    if not isForgeEnabled() then return false end
+
     local cur = self:getForgeDust()
     if cur < amount then return false end
     self:setStorageValue(FORGE_STORAGE.dust, cur - amount)
@@ -77,6 +89,12 @@ end
 
 local forgeFusion = Action()
 function forgeFusion.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+    if not isForgeEnabled() then
+        player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+        player:getPosition():sendMagicEffect(CONST_ME_POFF)
+        return true
+    end
+
     local containerPos = FORGE_POSITIONS.container
     local tile = Tile(containerPos)
     if not tile then
@@ -245,6 +263,12 @@ forgeFusion:register()
 
 local resetStone = Action()
 function resetStone.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+    if not isForgeEnabled() then
+        player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+        player:getPosition():sendMagicEffect(CONST_ME_POFF)
+        return true
+    end
+
     if not target or not target:isItem() then
         player:sendTextMessage(MESSAGE_EVENT_ORANGE, "[Forge] Use the reset stone on an equipment item.")
         return true
@@ -273,6 +297,11 @@ resetStone:register()
 -- ====== Conversions: /forge dust | /forge silver | /forge info ======
 local forgeTalk = TalkAction("/forge")
 function forgeTalk.onSay(player, words, param)
+    if not isForgeEnabled() then
+        player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+        return false
+    end
+
     param = param:lower():trim()
 
     if param == "info" then
@@ -323,6 +352,10 @@ forgeTalk:register()
 
 local forgeStation = GlobalEvent("ForgeStation")
 function forgeStation.onStartup()
+    if not isForgeEnabled() then
+        return true
+    end
+
     local pos = FORGE_POSITIONS.container
     local tile = Tile(pos)
     if tile then

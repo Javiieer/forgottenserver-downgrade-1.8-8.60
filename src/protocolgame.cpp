@@ -2759,10 +2759,28 @@ void ProtocolGame::sendOutfitWindow()
 	NetworkMessage msg;
 	msg.addByte(0xC8);
 
+	const bool monkVocationEnabled = ConfigManager::getBoolean(ConfigManager::MONK_VOCATION_ENABLED);
+	auto isHiddenOutfit = [monkVocationEnabled](const Outfit* outfit) {
+		return !monkVocationEnabled && outfit && outfit->name == "Monk";
+	};
+	auto firstVisibleOutfit = [&outfits, &isHiddenOutfit]() -> const Outfit* {
+		for (const Outfit* outfit : outfits) {
+			if (!isHiddenOutfit(outfit)) {
+				return outfit;
+			}
+		}
+		return nullptr;
+	};
+
 	Outfit_t currentOutfit = player->getDefaultOutfit();
-	if (currentOutfit.lookType == 0) {
+	const Outfit* currentOutfitType = Outfits::getInstance().getOutfitByLookType(currentOutfit.lookType);
+	if (currentOutfit.lookType == 0 || isHiddenOutfit(currentOutfitType)) {
+		const Outfit* visibleOutfit = firstVisibleOutfit();
+		if (!visibleOutfit) {
+			return;
+		}
 		currentOutfit = {};
-		currentOutfit.lookType = outfits.front()->lookType;
+		currentOutfit.lookType = visibleOutfit->lookType;
 	}
 
 	Mount* currentMount = g_game.mounts.getMountByID(player->getCurrentMount());
@@ -2785,6 +2803,10 @@ void ProtocolGame::sendOutfitWindow()
 	}
 
 	for (const Outfit* outfit : outfits) {
+		if (isHiddenOutfit(outfit)) {
+			continue;
+		}
+
 		uint8_t addons;
 		if (!player->getOutfitAddons(*outfit, addons)) {
 			continue;

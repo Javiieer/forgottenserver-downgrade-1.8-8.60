@@ -10,6 +10,10 @@ local FORGE_CONTAINER_POS   = Position(1054, 974, 7)
 local instanceCounter = 20000
 local returnPositions = {}
 
+local function isForgeEnabled()
+    return configManager.getBoolean(configKeys.FORGE_SYSTEM_ENABLED)
+end
+
 local function getInstanceCenter()
     return Position(
         math.floor((INSTANCE_FROM.x + INSTANCE_TO.x) / 2),
@@ -110,6 +114,13 @@ function portalMovement.onStepIn(creature, item, position, fromPosition)
     if not player then return true end
 
     local instanceId = player:getInstanceId()
+
+    if not isForgeEnabled() and instanceId == 0 then
+        player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+        player:teleportTo(fromPosition)
+        fromPosition:sendMagicEffect(CONST_ME_POFF)
+        return true
+    end
 
     if instanceId ~= 0 then
         local returnPos = returnPositions[player:getGuid()]

@@ -16,7 +16,7 @@ event.onLook = function(self, thing, position, distance, description)
 		description = description .. thing:getDescription(distance)
 		
 		-- Familiar summon time display
-		if thing:isCreature() then
+		if thing:isCreature() and configManager.getBoolean(configKeys.FAMILIAR_SYSTEM_ENABLED) then
 			local master = thing:getMaster()
 			if master then
 				local isFamiliar = false

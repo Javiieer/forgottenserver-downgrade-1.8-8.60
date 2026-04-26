@@ -105,6 +105,11 @@ local firstItems = CreatureEvent("FirstItems")
 function firstItems.onLogin(player)
 	local vocationId = player:getVocation():getId()
 	local lastLogin = player:getLastLoginSaved()
+
+	if not configManager.getBoolean(configKeys.MONK_VOCATION_ENABLED) and (vocationId == 9 or vocationId == 10) then
+		player:setStorageValue(PlayerStorageKeys.firstItems, 1)
+		return true
+	end
 	
 	if player:getStorageValue(PlayerStorageKeys.firstItems) == 1 then
 		return true

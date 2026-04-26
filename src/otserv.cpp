@@ -182,10 +182,14 @@ void mainLoader(const std::shared_ptr<ServiceManager>& services)
 		return;
 	}
 
-	LOG_INFO(">> Loading imbuements");
-	if (!Imbuements::getInstance().loadFromXml()) {
-		startupErrorMessage("Unable to load imbuements!");
-		return;
+	if (ConfigManager::getBoolean(ConfigManager::IMBUEMENT_SYSTEM_ENABLED)) {
+		LOG_INFO(">> Loading imbuements");
+		if (!Imbuements::getInstance().loadFromXml()) {
+			startupErrorMessage("Unable to load imbuements!");
+			return;
+		}
+	} else {
+		LOG_INFO(">> Imbuements disabled");
 	}
 
 	LOG_INFO(">> Preparing native OTBM zones");

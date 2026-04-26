@@ -2322,7 +2322,7 @@ void Items::parseScriptAttribute(ItemType& it, const pugi::xml_node& attributeNo
 
 			// Register weapon
 			weapon->fromItem = true;
-			g_weapons->registerLuaEvent(weapon.release());
+			g_weapons->registerLuaEvent(std::move(weapon));
 		}
 	}
 }

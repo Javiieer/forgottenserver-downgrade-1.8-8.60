@@ -515,7 +515,7 @@ public:
 	// Loot Highlight system
 	void startLootHighlight(Container* corpse, uint32_t ownerPlayerId);
 	void stopLootHighlight(Container* corpse);
-	void checkLootHighlight(uintptr_t corpseKey, uint32_t ownerPlayerId, int32_t ownerTicksLeft, int32_t totalTicksLeft);
+	void checkLootHighlight(std::shared_ptr<Item> corpseItem, uint32_t ownerPlayerId, int32_t ownerTicksLeft, int32_t totalTicksLeft);
 
 	void loadMotdNum();
 	int16_t getWorldTime() { return worldTime; }
@@ -632,7 +632,7 @@ private:
 	std::unordered_map<uint32_t, Player*> mappedPlayerGuids;
 	mutable std::shared_mutex playersMutex;
 	std::unordered_map<uint32_t, Guild_ptr> guilds;
-	std::unordered_map<uint16_t, Item*> uniqueItems;
+	std::unordered_map<uint16_t, std::weak_ptr<Item>> uniqueItems;
 	std::unordered_map<uint32_t, std::unordered_map<uint32_t, int32_t>> accountStorageMap;
 
 	std::vector<std::shared_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];

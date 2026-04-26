@@ -728,6 +728,40 @@ Update your CipSoft client, executables and DLLs automatically with just a few c
 
 ---
 
+## Optional Custom Systems (`true` / `false`)
+
+Some custom systems are optional and can be enabled or disabled in `config.lua`.
+The default value is `false`, keeping the server closer to classic 8.60 behavior.
+
+If you want a system enabled, set it to `true`. If you do not want it, keep it as `false`.
+
+```lua
+forgeSystemEnabled = false
+imbuementSystemEnabled = false
+monkVocationEnabled = false
+familiarSystemEnabled = false
+```
+
+| Config key | Default | What it controls |
+|------------|---------|------------------|
+| `forgeSystemEnabled` | `false` | Enables Forge tier/classification features, forge commands, forge portal and forge item look text |
+| `imbuementSystemEnabled` | `false` | Enables imbuements, imbuement scrolls/workbench/portal and imbuement item look text |
+| `monkVocationEnabled` | `false` | Enables Monk vocation behavior, Monk outfit visibility, Monk spells and Monk checks |
+| `familiarSystemEnabled` | `false` | Enables familiar summons, familiar spells and familiar remaining-time look text |
+
+Example to enable only imbuements:
+
+```lua
+forgeSystemEnabled = false
+imbuementSystemEnabled = true
+monkVocationEnabled = false
+familiarSystemEnabled = false
+```
+
+These options are present in both `config.lua` and `config.lua.dist`.
+
+---
+
 <p align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=0:8b5cf6,50:5b1fa8,100:0d0221&height=140&section=footer&text=Made%20with%20%F0%9F%92%9C%20by%20Mateuzkl&fontSize=18&fontColor=ffffff&fontAlignY=65" />
 </p>

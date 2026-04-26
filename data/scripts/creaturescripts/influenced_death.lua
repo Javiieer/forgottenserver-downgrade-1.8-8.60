@@ -11,6 +11,10 @@ local CONFIG = {
 
 local influencedDeath = CreatureEvent("InfluencedDeath")
 function influencedDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUnjustified, mostDamageUnjustified)
+    if not configManager.getBoolean(configKeys.FORGE_SYSTEM_ENABLED) then
+        return true
+    end
+
     if not creature or not creature:isMonster() then
         return true
     end

@@ -1375,6 +1375,10 @@ void LuaScriptInterface::registerFunctions()
 	registerGlobalVariable("STORAGE_FAMILIAR_SUMMON_TIME", STORAGE_FAMILIAR_SUMMON_TIME);
 	registerGlobalVariable("STORAGE_FAMILIAR_TIMER_10", STORAGE_FAMILIAR_TIMER_10);
 	registerGlobalVariable("STORAGE_FAMILIAR_TIMER_60", STORAGE_FAMILIAR_TIMER_60);
+	registerGlobalVariable("FORGE_SYSTEM_ENABLED", ConfigManager::FORGE_SYSTEM_ENABLED);
+	registerGlobalVariable("IMBUEMENT_SYSTEM_ENABLED", ConfigManager::IMBUEMENT_SYSTEM_ENABLED);
+	registerGlobalVariable("MONK_VOCATION_ENABLED", ConfigManager::MONK_VOCATION_ENABLED);
+	registerGlobalVariable("FAMILIAR_SYSTEM_ENABLED", ConfigManager::FAMILIAR_SYSTEM_ENABLED);
 
 	registerGlobalVariable("ACCOUNT_MANAGER_NONE", static_cast<uint8_t>(AccountManagerMode::ACCOUNT_MANAGER_NONE));
 	registerGlobalVariable("ACCOUNT_MANAGER_NEW", static_cast<uint8_t>(AccountManagerMode::ACCOUNT_MANAGER_NEW));
@@ -2491,6 +2495,10 @@ void LuaScriptInterface::registerFunctions()
 	registerEnumIn("configKeys", ConfigManager::PROTECTION_TIME);
 	registerEnumIn("configKeys", ConfigManager::BED_OFFLINE_TRAINING);
 	registerEnumIn("configKeys", ConfigManager::CHECK_DUPLICATE_STORAGE_KEYS);
+	registerEnumIn("configKeys", ConfigManager::FORGE_SYSTEM_ENABLED);
+	registerEnumIn("configKeys", ConfigManager::IMBUEMENT_SYSTEM_ENABLED);
+	registerEnumIn("configKeys", ConfigManager::MONK_VOCATION_ENABLED);
+	registerEnumIn("configKeys", ConfigManager::FAMILIAR_SYSTEM_ENABLED);
 
 	registerEnumIn("configKeys", ConfigManager::MAP_NAME);
 	registerEnumIn("configKeys", ConfigManager::HOUSE_RENT_PERIOD);
