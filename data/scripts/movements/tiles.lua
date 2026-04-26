@@ -24,9 +24,8 @@ function stepIn.onStepIn(creature, item, position, fromPosition)
         lookPosition:getNextPosition(creature:getDirection())
         local depotItem = Tile(lookPosition):getItemByType(ITEM_TYPE_DEPOT)
         if depotItem then
-            local depotItems = creature:getDepotChest(
-                                   getDepotId(depotItem:getUniqueId()), true)
-                                   :getItemHoldingCount()
+            local depotChest = creature:getDepotChest(getDepotId(depotItem:getUniqueId()), true)
+            local depotItems = math.max(0, depotChest:getItemHoldingCount() - 17)
             local inbox = creature:getInbox()
             if inbox then
                 depotItems = depotItems + inbox:getItemHoldingCount()

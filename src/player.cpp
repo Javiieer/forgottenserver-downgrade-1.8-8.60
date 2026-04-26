@@ -913,6 +913,7 @@ DepotChest* Player::getDepotChest(uint32_t depotId, bool autoCreate)
 
 	it = depotChests.emplace(depotId, std::make_shared<DepotChest>(ITEM_DEPOT)).first;
 	it->second->setMaxDepotItems(getMaxDepotItems());
+	checkDepotBoxes(it->second.get());
 	return it->second.get();
 }
 
@@ -926,7 +927,9 @@ DepotLocker* Player::getDepotLocker(uint32_t depotId)
 
 	it = depotLockerMap.emplace(depotId, std::make_shared<DepotLocker>(ITEM_LOCKER)).first;
 	it->second->setDepotId(static_cast<uint16_t>(depotId));
-	it->second->internalAddThing(getDepotChest(depotId, true));
+
+	DepotChest* chest = getDepotChest(depotId, true);
+	it->second->internalAddThing(chest);
 
 	bool hasInbox = false;
 	for (const auto& item : it->second->getItemList()) {
@@ -944,6 +947,30 @@ DepotLocker* Player::getDepotLocker(uint32_t depotId)
 	}
 
 	return it->second.get();
+}
+
+void Player::checkDepotBoxes(DepotChest* chest)
+{
+	if (!chest) {
+		return;
+	}
+
+	bool hasBox = false;
+	for (const auto& item : chest->getItemList()) {
+		if (item->getID() == ITEM_DEPOT_BOX_1) {
+			hasBox = true;
+			break;
+		}
+	}
+
+	if (!hasBox) {
+		for (uint16_t i = ITEM_DEPOT_BOX_17; i >= ITEM_DEPOT_BOX_1; --i) {
+			auto box = Item::CreateItem(i);
+			if (box) {
+				chest->internalAddThing(box.get());
+			}
+		}
+	}
 }
 
 RewardChest& Player::getRewardChest()

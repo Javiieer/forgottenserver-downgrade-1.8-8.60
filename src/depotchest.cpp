@@ -41,6 +41,40 @@ ReturnValue DepotChest::queryAdd(int32_t index, const Thing& thing, uint32_t cou
 	return Container::queryAdd(index, thing, count, flags, actor);
 }
 
+ReturnValue DepotChest::queryRemove(const Thing& thing, uint32_t count, uint32_t flags,
+                                    Creature* actor /* = nullptr */) const
+{
+	const Item* item = thing.getItem();
+	if (item && item->getID() >= ITEM_DEPOT_BOX_1 && item->getID() <= ITEM_DEPOT_BOX_17) {
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
+	return Container::queryRemove(thing, count, flags, actor);
+}
+
+Cylinder* DepotChest::queryDestination(int32_t& index, const Thing& thing, Item** destItem, uint32_t& flags)
+{
+	const Item* item = thing.getItem();
+	if (item && item->getID() >= ITEM_DEPOT_BOX_1 && item->getID() <= ITEM_DEPOT_BOX_17) {
+		return Container::queryDestination(index, thing, destItem, flags);
+	}
+
+	if (index == INDEX_WHEREEVER) {
+		for (const auto& it : itemlist) {
+			if (it->getID() >= ITEM_DEPOT_BOX_1 && it->getID() <= ITEM_DEPOT_BOX_17) {
+				Container* box = it->getContainer();
+				if (box && box->getItemHoldingCount() < box->capacity()) {
+					index = INDEX_WHEREEVER;
+					*destItem = nullptr;
+					return box->queryDestination(index, thing, destItem, flags);
+				}
+			}
+		}
+	}
+
+	return Container::queryDestination(index, thing, destItem, flags);
+}
+
 void DepotChest::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, cylinderlink_t)
 {
 	Cylinder* parent = getParent();
@@ -60,6 +94,8 @@ void DepotChest::postRemoveNotification(Thing* thing, const Cylinder* newParent,
 
 	save = true;
 }
+
+DepotBox::DepotBox(uint16_t type) : Container(type) {}
 
 /*Cylinder* DepotChest::getParent() const
 {

@@ -452,6 +452,9 @@ public:
 
 	DepotChest* getDepotChest(uint32_t depotId, bool autoCreate);
 	DepotLocker* getDepotLocker(uint32_t depotId);
+	void checkDepotBoxes(DepotChest* chest);
+	bool isLoading() const { return loading; }
+	void setLoading(bool b) { loading = b; }
 	RewardChest& getRewardChest();
 	Inbox* getInbox();
 	void onReceiveMail() const;
@@ -1395,6 +1398,7 @@ private:
 	bool m_serene = false;
 	uint64_t m_serene_cooldown = 0;
 	VirtueMonk_t m_virtue = VIRTUE_NONE;
+	bool loading = false;
 
 	AccountManagerMode accountManager{ACCOUNT_MANAGER_NONE};
 	std::array<bool, 15> managerTalkState{};

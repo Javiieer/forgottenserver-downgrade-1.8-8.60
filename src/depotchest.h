@@ -17,6 +17,9 @@ public:
 	// cylinder implementations
 	ReturnValue queryAdd(int32_t index, const Thing& thing, uint32_t count, uint32_t flags,
 	                     Creature* actor = nullptr) const override;
+	ReturnValue queryRemove(const Thing& thing, uint32_t count, uint32_t flags,
+	                        Creature* actor = nullptr) const override;
+	Cylinder* queryDestination(int32_t& index, const Thing& thing, Item** destItem, uint32_t& flags) override;
 
 	void postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index,
 	                         cylinderlink_t link = LINK_OWNER) override;
@@ -36,6 +39,12 @@ public:
 private:
 	uint32_t maxDepotItems = 2000;
 	bool save = false;
+};
+
+class DepotBox final : public Container
+{
+public:
+	explicit DepotBox(uint16_t type);
 };
 
 #endif

@@ -317,6 +317,8 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 		return false;
 	}
 
+	player->setLoading(true);
+
 	Database& db = Database::getInstance();
 
 	uint32_t accno = result->getNumber<uint32_t>("account_id");
@@ -648,13 +650,28 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
 			for (ItemMap::reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
 				auto item = std::move(it->second.first);
-				if (!item) {
+				if (!item || (item->getID() >= ITEM_DEPOT_BOX_1 && item->getID() <= ITEM_DEPOT_BOX_17)) {
 					continue;
 				}
 
 				int32_t pid = it->second.second;
 				if (pid >= 0 && pid < 100) {
 					transferLoadedItem(player->getDepotChest(pid, true), item);
+					continue;
+				}
+
+				if (pid < 0) {
+					int32_t townId = ((-pid) - 1) / 20;
+					int32_t boxIndex = ((-pid) - 1) % 20;
+					if (boxIndex >= 0 && boxIndex < 17) {
+						DepotChest* chest = player->getDepotChest(townId, true);
+						for (const auto& boxItem : chest->getItemList()) {
+							if (boxItem->getID() == static_cast<uint16_t>(ITEM_DEPOT_BOX_1 + boxIndex)) {
+								transferLoadedItem(boxItem->getContainer(), item);
+								break;
+							}
+						}
+					}
 					continue;
 				}
 
@@ -814,6 +831,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 	player->updateInventoryWeight();
 	player->updateItemsLight(true);
 
+	player->setLoading(false);
 	return true;
 }
 
@@ -1143,6 +1161,16 @@ bool IOLoginData::savePlayer(Player* player)
 
 			for (const auto& it : player->depotChests) {
 				for (const auto& item : it.second->getItemList()) {
+					if (item->getID() >= ITEM_DEPOT_BOX_1 && item->getID() <= ITEM_DEPOT_BOX_17) {
+						if (Container* box = item->getContainer()) {
+							int32_t boxIndex = item->getID() - ITEM_DEPOT_BOX_1;
+							int32_t specialPid = -static_cast<int32_t>(it.first * 20 + boxIndex + 1);
+							for (const auto& subItem : box->getItemList()) {
+								itemList.emplace_back(specialPid, subItem.get());
+							}
+						}
+						continue;
+					}
 					itemList.emplace_back(it.first, item.get());
 				}
 			}

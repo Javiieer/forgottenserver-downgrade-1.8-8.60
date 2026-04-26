@@ -9626,7 +9626,7 @@
 		<attribute key="description" value="Royal Tibia Mail." />
 		</item>
 	<item id="3502" article="a" name="depot chest">
-		<attribute key="containersize" value="30" />
+		<attribute key="containersize" value="17" />
 		</item>
 	<item id="3503" article="a" name="parcel">
 		<attribute key="type" value="container" />
