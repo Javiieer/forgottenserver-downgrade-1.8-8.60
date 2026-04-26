@@ -17,6 +17,7 @@
 #include "raids.h"
 #include "wildcardtree.h"
 
+#include <map>
 #include <shared_mutex>
 #include <absl/container/flat_hash_map.h>
 
@@ -626,6 +627,8 @@ private:
 	bool playerYell(Player* player, std::string_view text);
 	bool playerSpeakTo(Player* player, SpeakClasses type, std::string_view receiver, std::string_view text);
 	void playerSpeakToNpc(Player* player, std::string_view text);
+	void cleanupExpiredTradeItems();
+	void eraseTradeItem(Item* item);
 
 	std::unordered_map<uint32_t, Player*> players;
 	std::unordered_map<std::string, Player*> mappedPlayerNames;
@@ -651,8 +654,10 @@ private:
 	std::unordered_map<uint32_t, std::shared_ptr<Creature>> creatureSharedRefs;
 	mutable std::shared_mutex creatureRefsMutex;
 
+	using TradeItemMap = std::map<std::weak_ptr<Item>, uint32_t, std::owner_less<std::weak_ptr<Item>>>;
+
 	// list of items that are in trading state, mapped to the player
-	std::unordered_map<Item*, uint32_t> tradeItems;
+	TradeItemMap tradeItems;
 
 	std::unordered_map<uint32_t, BedItem*> bedSleepersMap;
 

@@ -2965,10 +2965,18 @@ void Game::playerRequestTrade(uint32_t playerId, const Position& pos, uint8_t st
 		return;
 	}
 
+	cleanupExpiredTradeItems();
+
 	Container* tradeItemContainer = tradeItem->getContainer();
 	if (tradeItemContainer) {
-		for (const auto& it : tradeItems) {
-			Item* item = it.first;
+		for (auto it = tradeItems.begin(); it != tradeItems.end();) {
+			auto itemRef = it->first.lock();
+			if (!itemRef) {
+				it = tradeItems.erase(it);
+				continue;
+			}
+
+			Item* item = itemRef.get();
 			if (tradeItem == item) {
 				player->sendCancelMessage("This item is already being traded.");
 				return;
@@ -2984,10 +2992,18 @@ void Game::playerRequestTrade(uint32_t playerId, const Position& pos, uint8_t st
 				player->sendCancelMessage("This item is already being traded.");
 				return;
 			}
+
+			++it;
 		}
 	} else {
-		for (const auto& it : tradeItems) {
-			Item* item = it.first;
+		for (auto it = tradeItems.begin(); it != tradeItems.end();) {
+			auto itemRef = it->first.lock();
+			if (!itemRef) {
+				it = tradeItems.erase(it);
+				continue;
+			}
+
+			Item* item = itemRef.get();
 			if (tradeItem == item) {
 				player->sendCancelMessage("This item is already being traded.");
 				return;
@@ -2998,6 +3014,8 @@ void Game::playerRequestTrade(uint32_t playerId, const Position& pos, uint8_t st
 				player->sendCancelMessage("This item is already being traded.");
 				return;
 			}
+
+			++it;
 		}
 	}
 
@@ -3016,6 +3034,8 @@ void Game::playerRequestTrade(uint32_t playerId, const Position& pos, uint8_t st
 
 bool Game::internalStartTrade(Player* player, Player* tradePartner, Item* tradeItem)
 {
+	cleanupExpiredTradeItems();
+
 	if (player->tradeState != TRADE_NONE &&
 	    !(player->tradeState == TRADE_ACKNOWLEDGE && player->getTradePartner().get() == tradePartner)) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREALREADYTRADING);
@@ -3028,7 +3048,7 @@ bool Game::internalStartTrade(Player* player, Player* tradePartner, Item* tradeI
 	player->setTradePartner(std::static_pointer_cast<Player>(getCreatureSharedRef(tradePartner)));
 	player->tradeItem = tradeItem->shared_from_this();
 	player->tradeState = TRADE_INITIATED;
-	tradeItems[tradeItem] = player->getID();
+	tradeItems[tradeItem->weak_from_this()] = player->getID();
 
 	player->sendTradeItemRequest(player->getName(), tradeItem, true);
 
@@ -3038,7 +3058,8 @@ bool Game::internalStartTrade(Player* player, Player* tradePartner, Item* tradeI
 		tradePartner->tradeState = TRADE_ACKNOWLEDGE;
 		tradePartner->setTradePartner(std::static_pointer_cast<Player>(getCreatureSharedRef(player)));
 	} else {
-		Item* counterOfferItem = tradePartner->getTradeItem();
+		auto counterOfferItemRef = tradePartner->getTradeItemRef();
+		Item* counterOfferItem = counterOfferItemRef.get();
 		player->sendTradeItemRequest(tradePartner->getName(), counterOfferItem, false);
 		tradePartner->sendTradeItemRequest(player->getName(), tradeItem, false);
 	}
@@ -3080,8 +3101,14 @@ void Game::playerAcceptTrade(uint32_t playerId)
 			return;
 		}
 
-		Item* playerTradeItem = player->getTradeItem();
-		Item* partnerTradeItem = tradePartner->getTradeItem();
+		auto playerTradeItemRef = player->getTradeItemRef();
+		auto partnerTradeItemRef = tradePartner->getTradeItemRef();
+		Item* playerTradeItem = playerTradeItemRef.get();
+		Item* partnerTradeItem = partnerTradeItemRef.get();
+		if (!playerTradeItem || !partnerTradeItem) {
+			internalCloseTrade(player, false);
+			return;
+		}
 
 		if (!g_events->eventPlayerOnTradeAccept(player, tradePartner, playerTradeItem, partnerTradeItem)) {
 			internalCloseTrade(player, false);
@@ -3091,17 +3118,8 @@ void Game::playerAcceptTrade(uint32_t playerId)
 		player->setTradeState(TRADE_TRANSFER);
 		tradePartner->setTradeState(TRADE_TRANSFER);
 
-		auto it = tradeItems.find(playerTradeItem);
-		if (it != tradeItems.end()) {
-			ReleaseItem(it->first);
-			tradeItems.erase(it);
-		}
-
-		it = tradeItems.find(partnerTradeItem);
-		if (it != tradeItems.end()) {
-			ReleaseItem(it->first);
-			tradeItems.erase(it);
-		}
+		eraseTradeItem(playerTradeItem);
+		eraseTradeItem(partnerTradeItem);
 
 		bool isSuccess = false;
 
@@ -3151,16 +3169,16 @@ void Game::playerAcceptTrade(uint32_t playerId)
 		if (!isSuccess) {
 			std::string errorDescription;
 
-			if (tradePartner->getTradeItem()) {
+			if (partnerTradeItem) {
 				errorDescription = getTradeErrorDescription(tradePartnerRet, playerTradeItem);
 				tradePartner->sendTextMessage(MESSAGE_EVENT_ADVANCE, errorDescription);
-				tradePartner->getTradeItem()->onTradeEvent(ON_TRADE_CANCEL, tradePartner);
+				partnerTradeItem->onTradeEvent(ON_TRADE_CANCEL, tradePartner);
 			}
 
-			if (player->getTradeItem()) {
+			if (playerTradeItem) {
 				errorDescription = getTradeErrorDescription(playerRet, partnerTradeItem);
 				player->sendTextMessage(MESSAGE_EVENT_ADVANCE, errorDescription);
-				player->getTradeItem()->onTradeEvent(ON_TRADE_CANCEL, player);
+				playerTradeItem->onTradeEvent(ON_TRADE_CANCEL, player);
 			}
 		}
 
@@ -3206,13 +3224,14 @@ void Game::playerLookInTrade(uint32_t playerId, bool lookAtCounterOffer, uint8_t
 	}
 	Player* tradePartner = tradePartnerLock.get();
 
-	Item* tradeItem;
+	std::shared_ptr<Item> tradeItemRef;
 	if (lookAtCounterOffer) {
-		tradeItem = tradePartner->getTradeItem();
+		tradeItemRef = tradePartner->getTradeItemRef();
 	} else {
-		tradeItem = player->getTradeItem();
+		tradeItemRef = player->getTradeItemRef();
 	}
 
+	Item* tradeItem = tradeItemRef.get();
 	if (!tradeItem) {
 		return;
 	}
@@ -3271,15 +3290,12 @@ void Game::internalCloseTrade(Player* player, bool sendCancel /* = true*/)
 
 	// Cache and clear player's trade item before calling Lua callbacks
 	// to prevent reentrancy issues if onTradeEvent modifies trade state.
-	Item* playerTradeItem = player->getTradeItem();
+	auto playerTradeItemRef = player->getTradeItemRef();
+	Item* playerTradeItem = playerTradeItemRef.get();
 	if (playerTradeItem) {
 		player->tradeItem.reset();
 
-		auto it = tradeItems.find(playerTradeItem);
-		if (it != tradeItems.end()) {
-			ReleaseItem(it->first);
-			tradeItems.erase(it);
-		}
+		eraseTradeItem(playerTradeItem);
 
 		playerTradeItem->onTradeEvent(ON_TRADE_CANCEL, player);
 	}
@@ -3293,15 +3309,12 @@ void Game::internalCloseTrade(Player* player, bool sendCancel /* = true*/)
 	player->sendTradeClose();
 
 	if (tradePartner) {
-		Item* partnerTradeItem = tradePartner->getTradeItem();
+		auto partnerTradeItemRef = tradePartner->getTradeItemRef();
+		Item* partnerTradeItem = partnerTradeItemRef.get();
 		if (partnerTradeItem) {
 			tradePartner->tradeItem.reset();
 
-			auto it = tradeItems.find(partnerTradeItem);
-			if (it != tradeItems.end()) {
-				ReleaseItem(it->first);
-				tradeItems.erase(it);
-			}
+			eraseTradeItem(partnerTradeItem);
 
 			partnerTradeItem->onTradeEvent(ON_TRADE_CANCEL, tradePartner);
 		}
@@ -5682,6 +5695,29 @@ void Game::ReleaseCreature(std::shared_ptr<Creature> creature) { ToReleaseCreatu
 void Game::ReleaseItem(Item* item) { ToReleaseItems.push_back(item->shared_from_this()); }
 
 void Game::ReleaseItem(std::shared_ptr<Item> item) { ToReleaseItems.push_back(std::move(item)); }
+
+void Game::cleanupExpiredTradeItems()
+{
+	for (auto it = tradeItems.begin(); it != tradeItems.end();) {
+		if (it->first.expired()) {
+			it = tradeItems.erase(it);
+		} else {
+			++it;
+		}
+	}
+}
+
+void Game::eraseTradeItem(Item* item)
+{
+	if (!item) {
+		return;
+	}
+
+	auto it = tradeItems.find(item->weak_from_this());
+	if (it != tradeItems.end()) {
+		tradeItems.erase(it);
+	}
+}
 
 void Game::broadcastMessage(std::string_view text, MessageClasses type) const
 {
