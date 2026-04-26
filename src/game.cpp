@@ -5381,23 +5381,34 @@ void Game::startLootHighlight(Container* corpse, uint32_t ownerPlayerId)
 		}
 	}
 
+	auto corpseItem = corpse->weak_from_this().lock();
+	if (!corpseItem) {
+		return;
+	}
+
 	uintptr_t key = reinterpret_cast<uintptr_t>(corpse);
-	std::weak_ptr<Item> weakCorpse = corpse->weak_from_this();
+	std::weak_ptr<Item> weakCorpse = corpseItem;
+	auto scheduledEventId = std::make_shared<uint32_t>(0);
 
 	// Schedule the first repeating tick
 	uint32_t eventId = g_scheduler.addEvent(createSchedulerTask(
 	    LOOT_HIGHLIGHT_PULSE_MS,
-	    ([this, weakCorpse, ownerPlayerId,
+	    ([this, key, weakCorpse, scheduledEventId, ownerPlayerId,
 	      ownerTicksLeft = LOOT_HIGHLIGHT_OWNER_MS - static_cast<int32_t>(LOOT_HIGHLIGHT_PULSE_MS),
 	      totalTicksLeft = LOOT_HIGHLIGHT_MAX_DURATION_MS - static_cast<int32_t>(LOOT_HIGHLIGHT_PULSE_MS)]() {
 		    auto corpseItem = weakCorpse.lock();
 		    if (!corpseItem) {
+			    auto it = lootHighlightEvents.find(key);
+			    if (it != lootHighlightEvents.end() && it->second == *scheduledEventId) {
+				    lootHighlightEvents.erase(it);
+			    }
 			    return;
 		    }
 
 		    checkLootHighlight(corpseItem, ownerPlayerId, ownerTicksLeft, totalTicksLeft);
 	    })));
 
+	*scheduledEventId = eventId;
 	lootHighlightEvents[key] = eventId;
 }
 
@@ -5462,19 +5473,25 @@ void Game::checkLootHighlight(std::shared_ptr<Item> corpseItem, uint32_t ownerPl
 
 	// Reschedule with decreased timers
 	std::weak_ptr<Item> weakCorpse = corpseItem;
+	auto scheduledEventId = std::make_shared<uint32_t>(0);
 	uint32_t newEventId = g_scheduler.addEvent(createSchedulerTask(
 	    LOOT_HIGHLIGHT_PULSE_MS,
-	    ([this, weakCorpse, ownerPlayerId,
+	    ([this, corpseKey, weakCorpse, scheduledEventId, ownerPlayerId,
 	      nextOwnerTicks = ownerTicksLeft - static_cast<int32_t>(LOOT_HIGHLIGHT_PULSE_MS),
 	      nextTotalTicks = totalTicksLeft - static_cast<int32_t>(LOOT_HIGHLIGHT_PULSE_MS)]() {
 		    auto corpseItem = weakCorpse.lock();
 		    if (!corpseItem) {
+			    auto it = lootHighlightEvents.find(corpseKey);
+			    if (it != lootHighlightEvents.end() && it->second == *scheduledEventId) {
+				    lootHighlightEvents.erase(it);
+			    }
 			    return;
 		    }
 
 		    checkLootHighlight(corpseItem, ownerPlayerId, nextOwnerTicks, nextTotalTicks);
 	    })));
 
+	*scheduledEventId = newEventId;
 	lootHighlightEvents[corpseKey] = newEventId;
 }
 

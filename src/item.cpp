@@ -62,6 +62,16 @@ std::shared_ptr<Item> Item::CreateItem(const uint16_t type, uint16_t count /*= 0
 		return std::make_shared<Mailbox>(type);
 	} else if (it.isBed()) {
 		return std::make_shared<BedItem>(type);
+	} else if (it.id >= 3094 && it.id <= 3096) { // magic rings
+		return std::make_shared<Item>(type - 3, count);
+	} else if (it.id == 3099 || it.id == 3100) { // magic rings
+		return std::make_shared<Item>(type - 2, count);
+	} else if (it.id >= 3086 && it.id <= 3090) { // magic rings
+		return std::make_shared<Item>(type - 37, count);
+	} else if (it.id == 2640) { // soft boots
+		return std::make_shared<Item>(6132, count);
+	} else if (it.id == 6301) { // death ring
+		return std::make_shared<Item>(6300, count);
 	}
 	return std::make_shared<Item>(type, count);
 }
