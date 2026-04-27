@@ -257,7 +257,7 @@ ReturnValue Container::queryAdd(int32_t index, const Thing& thing, uint32_t coun
 			cylinder = cylinder->getParent();
 		}
 
-		if (index == INDEX_WHEREEVER && size() >= capacity()) {
+		if (index == INDEX_WHEREEVER && size() >= capacity() && item->getParent() != this) {
 			return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 		}
 	} else {
@@ -306,6 +306,9 @@ ReturnValue Container::queryMaxCount(int32_t index, const Thing& thing, uint32_t
 	}
 
 	int32_t freeSlots = std::max<int32_t>(capacity() - size(), 0);
+	if (item->getParent() == this) {
+		freeSlots++;
+	}
 
 	if (item->isStackable()) {
 		uint32_t n = 0;
