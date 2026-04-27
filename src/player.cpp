@@ -5094,6 +5094,11 @@ void Player::sendAutoLootWindow() const
 
 void Player::parseAutoLootWindow(const std::string& text)
 {
+	if (text.size() > 4096) {
+		sendTextMessage(MESSAGE_STATUS_CONSOLE_RED, "AutoLoot: configuration is too long.");
+		return;
+	}
+
 	if (!ConfigManager::getBoolean(ConfigManager::AUTOLOOT_ENABLED)) {
 		sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE, "AutoLoot is currently disabled.");
 		return;
