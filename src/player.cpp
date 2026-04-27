@@ -5411,6 +5411,10 @@ void Player::lootCorpse(Container* container)
 		if (ret == RETURNVALUE_NOERROR) {
 			continue;
 		}
+		if (ret == RETURNVALUE_NOTENOUGHCAPACITY) {
+			sendTextMessage(MESSAGE_STATUS_SMALL, "You do not have enough capacity to autoloot this item.");
+			continue;
+		}
 
 		if (usedGoldPouch && fallbackDestination != primaryDestination) {
 			ret = g_game.internalMoveItem(container, fallbackDestination, INDEX_WHEREEVER, item,
@@ -5419,16 +5423,27 @@ void Player::lootCorpse(Container* container)
 				sendTextMessage(MESSAGE_STATUS_SMALL, "Your gold pouch is full. Item sent to store inbox.");
 				continue;
 			}
+			if (ret == RETURNVALUE_NOTENOUGHCAPACITY) {
+				sendTextMessage(MESSAGE_STATUS_SMALL, "You do not have enough capacity to autoloot this item.");
+				continue;
+			}
 		}
 
 		auto backpackItem = getInventoryItem(CONST_SLOT_BACKPACK);
 		auto backpack = backpackItem ? backpackItem->getContainer() : nullptr;
-		if (backpack && g_game.internalMoveItem(container, backpack, INDEX_WHEREEVER, item, item->getItemCount(),
-		                                        nullptr) == RETURNVALUE_NOERROR) {
-			sendTextMessage(MESSAGE_STATUS_SMALL, "Your store inbox is full. Item sent to backpack.");
-		} else {
-			sendTextMessage(MESSAGE_STATUS_SMALL, "Your store inbox is full. Item left in corpse.");
+		if (backpack) {
+			ret = g_game.internalMoveItem(container, backpack, INDEX_WHEREEVER, item, item->getItemCount(), nullptr);
+			if (ret == RETURNVALUE_NOERROR) {
+				sendTextMessage(MESSAGE_STATUS_SMALL, "Your store inbox is full. Item sent to backpack.");
+				continue;
+			}
+			if (ret == RETURNVALUE_NOTENOUGHCAPACITY) {
+				sendTextMessage(MESSAGE_STATUS_SMALL, "You do not have enough capacity to autoloot this item.");
+				continue;
+			}
 		}
+		
+		sendTextMessage(MESSAGE_STATUS_SMALL, "Your containers are full. Item left in corpse.");
 	}
 
 	if (autolootConfig.goldEnabled) {
