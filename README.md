@@ -321,7 +321,7 @@ An advanced, interactive **Magic Roulette** system with rich visual effects and 
 <details>
 <summary><b>Click to expand</b></summary>
 
-![Forge System](forge.gif)
+![Forge System](https://imgur.com/a/AKyoaMn)
 
 Fuse two identical items — one is consumed, the other gains **+1 Tier**. Tier is capped by item classification.
 
@@ -369,12 +369,12 @@ The system supports two distinct methods for applying imbuements. You can choose
 #### 📜 Method 1: Imbuement Scrolls
 Directly apply imbuements using scrolls. This is the fastest way to get your gear upgraded.
 
-![Scroll Method](imbuments_scroll.gif)
+![Scroll Method](https://imgur.com/a/WPXSTMR#W5Jr4en)
 
 #### 🧪 Method 2: Raw Materials & Etching
 Craft imbuements from raw creature products and materials using the **Etcher** tool at the workbench.
 
-![Raw Materials Method](imbuments_items.gif)
+![Raw Materials Method](https://imgur.com/a/WPXSTMR#hzmKtbn)
 
 ---
 
