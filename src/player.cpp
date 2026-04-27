@@ -244,10 +244,11 @@ std::string Player::getDescription(int32_t lookDistance) const
 	}
 
 	size_t memberCount = guild->getMemberCount();
+	const auto onlineMembers = guild->getMembersOnlineRefs();
 	if (memberCount == 1) {
-		s << ", which has 1 member, " << guild->getMembersOnline().size() << " of them online.";
+		s << ", which has 1 member, " << onlineMembers.size() << " of them online.";
 	} else {
-		s << ", which has " << memberCount << " members, " << guild->getMembersOnline().size() << " of them online.";
+		s << ", which has " << memberCount << " members, " << onlineMembers.size() << " of them online.";
 	}
 	return s.str();
 }
