@@ -1065,11 +1065,11 @@ Player* Lua::getPlayer(lua_State* L, int32_t arg)
 	if (isUserdata(L, arg)) {
 		return getUserdata<Player>(L, arg);
 	}
-	Player* player = g_game.getPlayerByID(getInteger<uint32_t>(L, arg));
-	if (!player || !Creature::isAlive(player) || player->isRemoved()) {
+	auto player = g_game.getPlayerByID(getInteger<uint32_t>(L, arg));
+	if (!player || !Creature::isAlive(player.get()) || player->isRemoved()) {
 		return nullptr;
 	}
-	return player;
+	return player.get();
 }
 
 std::string Lua::getFieldString(lua_State* L, int32_t arg, std::string_view key)

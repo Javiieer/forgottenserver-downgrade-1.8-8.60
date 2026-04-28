@@ -2078,7 +2078,7 @@ void Monster::death(Creature*)
 			double expectedScore =
 			    ((contrubutionScore / totalScore) * ConfigManager::getFloat(ConfigManager::REWARD_BASE_RATE));
 			double lootRate = std::min(expectedScore, 1.0);
-			Player* player = g_game.getPlayerByGUID(playerId);
+			auto player = g_game.getPlayerByGUID(playerId);
 			auto rewardItem = Item::CreateItem(ITEM_REWARD_CONTAINER);
 			if (!rewardItem) {
 				return;

@@ -145,7 +145,7 @@ void ProtocolGame::login(uint32_t characterId, uint32_t accountId, OperatingSyst
 	}
 
 	// dispatcher thread
-	Player* foundPlayer = g_game.getPlayerByGUID(characterId);
+	auto foundPlayer = g_game.getPlayerByGUID(characterId);
 	std::string name;
 	if (foundPlayer) {
 		name = foundPlayer->getName();
@@ -320,7 +320,7 @@ void ProtocolGame::spectate(const std::string& name, const std::string& password
 		writeToOutputBuffer(opcodeMessage);
 	}
 
-	Player* foundPlayer = g_game.getPlayerByName(name);
+	auto foundPlayer = g_game.getPlayerByName(name);
 	auto castClient = foundPlayer ? foundPlayer->client : nullptr;
 	if (!foundPlayer || !castClient || !castClient->isBroadcasting()) {
 		disconnectClient("That cast is not available anymore.");
@@ -337,7 +337,7 @@ void ProtocolGame::spectate(const std::string& name, const std::string& password
 		return;
 	}
 
-	player = g_game.getCreatureSharedRef<Player>(foundPlayer);
+	player = foundPlayer;
 	isSpectator = true;
 
 	do {
@@ -362,7 +362,7 @@ void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem)
 {
 	eventConnect = 0;
 
-	Player* foundPlayer = g_game.getPlayerByID(playerId);
+	auto foundPlayer = g_game.getPlayerByID(playerId);
 	if (!foundPlayer) {
 		disconnectClient("You are already logged in.");
 		return;
@@ -380,7 +380,7 @@ void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem)
 		return;
 	}
 
-	player = g_game.getCreatureSharedRef<Player>(foundPlayer);
+	player = foundPlayer;
 
 	player->clearModalWindows();
 	g_chat->removeUserFromAllChannels(*player);
@@ -2505,7 +2505,7 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position& pos
 
 	const std::forward_list<VIPEntry>& vipEntries = IOLoginData::getVIPEntries(player->getAccount());
 	for (const VIPEntry& entry : vipEntries) {
-		Player* vipPlayer = g_game.getPlayerByGUID(entry.guid);
+		auto vipPlayer = g_game.getPlayerByGUID(entry.guid);
 
 		sendVIP(entry.guid, entry.name,
 		        static_cast<VipStatus_t>((vipPlayer && (!vipPlayer->isInGhostMode() || player->isAccessPlayer()))));
@@ -3342,20 +3342,20 @@ void ProtocolGame::spectatorTurn(uint8_t direction)
 	std::vector<std::string> candidates;
 	candidates.reserve(32);
 
-	for (auto& it : g_game.getPlayers()) {
-		if (it.second->isRemoved() || !it.second->client->protocol())
+	for (const auto& player : g_game.getPlayers()) {
+		if (player->isRemoved() || !player->client->protocol())
 			continue;
 
-		if (!it.second->client->isBroadcasting())
+		if (!player->client->isBroadcasting())
 			continue;
 
-		if (!it.second->client->password().empty())
+		if (!player->client->password().empty())
 			continue;
 
-		if (it.second->client->isBanned(getIP()))
+		if (player->client->isBanned(getIP()))
 			continue;
 
-		candidates.push_back(it.second->getName());
+		candidates.push_back(player->getName());
 	}
 
 	int index = 0;
@@ -3382,8 +3382,8 @@ void ProtocolGame::spectatorTurn(uint8_t direction)
 		dir = 0;
 	}
 
-	Player* _player = g_game.getPlayerByName(candidates[(index + dir) % candidates.size()]);
-	if (!_player || player.get() == _player) {
+	auto _player = g_game.getPlayerByName(candidates[(index + dir) % candidates.size()]);
+	if (!_player || player.get() == _player.get()) {
 		return;
 	}
 
@@ -3393,7 +3393,7 @@ void ProtocolGame::spectatorTurn(uint8_t direction)
 	}
 
 	player->client->removeSpectator(getThis());
-	player = g_game.getCreatureSharedRef<Player>(_player);
+	player = _player;
 
 	knownCreatureSet.clear();
 	sendAddCreature(player.get(), player->getPosition(), 0, CONST_ME_NONE);

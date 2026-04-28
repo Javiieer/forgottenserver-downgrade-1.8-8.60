@@ -663,14 +663,14 @@ bool InstantSpell::playerCastInstant(Player* player, std::string& param)
 		bool useDirection = false;
 
 		if (hasParam) {
-			Player* playerTarget = nullptr;
+			std::shared_ptr<Player> playerTarget;
 			ReturnValue ret = g_game.getPlayerByNameWildcard(param, playerTarget);
 
 			if (playerTarget && playerTarget->isAccessPlayer() && !player->isAccessPlayer()) {
-				playerTarget = nullptr;
+				playerTarget.reset();
 			}
 
-			target = playerTarget;
+			target = playerTarget.get();
 			if (!target || target->isRemoved() || target->isDead()) {
 				if (!casterTargetOrDirection) {
 					if (cooldown > 0) {
@@ -734,7 +734,7 @@ bool InstantSpell::playerCastInstant(Player* player, std::string& param)
 		}
 	} else if (hasParam) {
 		if (getHasPlayerNameParam()) {
-			Player* playerTarget = nullptr;
+			std::shared_ptr<Player> playerTarget;
 			ReturnValue ret = g_game.getPlayerByNameWildcard(param, playerTarget);
 
 			if (ret != RETURNVALUE_NOERROR) {

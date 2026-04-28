@@ -654,7 +654,7 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 
 				uint32_t corpseOwnerId = corpse->getCorpseOwner();
 				if (corpseOwnerId != 0) {
-					if (Player* corpseOwner = g_game.getPlayerByID(corpseOwnerId)) {
+					if (auto corpseOwner = g_game.getPlayerByID(corpseOwnerId)) {
 						corpseOwner->lootCorpse(corpseContainer);
 					}
 				}

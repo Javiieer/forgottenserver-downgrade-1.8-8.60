@@ -82,8 +82,7 @@ GuildWarRefreshContext prepareGuildWarRefreshContext(uint32_t guildId)
 		}
 	}
 
-	for (const auto& playerEntry : g_game.getPlayers()) {
-		Player* onlinePlayer = playerEntry.second;
+	for (const auto& onlinePlayer : g_game.getPlayers()) {
 		if (!onlinePlayer) {
 			continue;
 		}
