@@ -56,7 +56,7 @@ int luaTalkactionRegister(lua_State* L)
 			return 1;
 		}
 
-		pushBoolean(L, g_talkActions->registerLuaEvent(releaseOwnedUserdata<TalkAction>(L, 1)));
+		pushBoolean(L, g_talkActions->registerLuaEvent(releaseOwnedUserdataPtr<TalkAction>(L, 1)));
 	} else {
 		lua_pushnil(L);
 	}

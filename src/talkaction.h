@@ -71,7 +71,7 @@ public:
 
 	TalkActionResult playerSaySpell(Player* player, SpeakClasses type, std::string_view words) const;
 
-	bool registerLuaEvent(TalkAction* event);
+	bool registerLuaEvent(TalkAction_ptr event);
 	void clear(bool fromLua) override final;
 
 	const auto& getTalkactions() const { return talkActions; }

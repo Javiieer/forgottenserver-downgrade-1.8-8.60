@@ -759,11 +759,35 @@ do
 			end
 		end
 
+		-- The native NpcType methods live in the metatable __index. Assigning
+		-- self[luaField] alone only changes Lua state; it does not register the
+		-- callback reference that the C++ engine calls during NPC ticks.
+		local npcTypeMeta = getmetatable(self)
+		local npcTypeIndex = npcTypeMeta and npcTypeMeta.__index or nil
+
+		local function getNativeNpcTypeMethod(methodName)
+			if type(npcTypeIndex) == "table" and type(npcTypeIndex[methodName]) == "function" then
+				return npcTypeIndex[methodName]
+			end
+
+			return nil
+		end
+
+		-- Essential callbacks must exist on both sides. compatData tells us
+		-- whether the RevScript already provided a real callback; when it did
+		-- not, install a harmless stub and register that same stub natively.
 		local essentialEvents = { "onSay", "onAppear", "onThink" }
 		for _, luaField in ipairs(essentialEvents) do
 			if type(compatData[luaField]) ~= "function" then
-				self[luaField] = function()
+				local stub = function()
 					return true
+				end
+				local nativeMethod = getNativeNpcTypeMethod(luaField)
+
+				self[luaField] = stub
+				self:eventType(luaField:gsub("on", ""):lower())
+				if nativeMethod then
+					nativeMethod(self, stub)
 				end
 			end
 		end

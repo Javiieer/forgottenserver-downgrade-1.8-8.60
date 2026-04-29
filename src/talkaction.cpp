@@ -22,9 +22,8 @@ void TalkActions::clear(bool fromLua)
 
 LuaScriptInterface& TalkActions::getScriptInterface() { return scriptInterface; }
 
-bool TalkActions::registerLuaEvent(TalkAction* event)
+bool TalkActions::registerLuaEvent(TalkAction_ptr talkAction)
 {
-	TalkAction_ptr talkAction{event};
 	const auto& words = talkAction->stealWordsMap();
 
 	if (words.empty()) {
