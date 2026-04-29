@@ -1,22 +1,15 @@
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d0221,40:2d0b6e,70:5b1fa8,100:8b5cf6&height=240&section=header&text=%E2%9A%94%EF%B8%8F%20TFS%201.8%20Downgrade&fontSize=52&fontColor=ffffff&fontAlignY=40&desc=Protocol%208.60%20%7C%20Modern%20Engine%20%7C%20Custom%20Systems&descAlignY=62&descSize=17&animation=fadeIn" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d0221,40:2d0b6e,70:5b1fa8,100:8b5cf6&height=240&section=header&text=%E2%9A%94%EF%B8%8F%20TFS%201.8%20Downgrade&fontSize=52&fontColor=ffffff&fontAlignY=40&desc=Protocol%208.60%20%7C%20Modern%20Engine%20%7C%20ClientID%20Native&descAlignY=62&descSize=17&animation=fadeIn" alt="TFS 1.8 Downgrade" />
 </p>
 
 <div align="center">
 
 [![Build Status](https://ci.appveyor.com/api/projects/status/github/Mateuzkl/forgottenserver-downgrade?branch=official&svg=true)](https://ci.appveyor.com/project/Mateuzkl/forgottenserver-downgrade)
-&nbsp;
 [![License](https://img.shields.io/badge/license-GPL--2.0-blue?style=flat-square)](LICENSE)
-&nbsp;
-[![Commits](https://img.shields.io/badge/commits-~900-6a0dad?style=flat-square)](https://github.com/Mateuzkl/forgottenserver-downgrade-1.8-8.60/commits)
-&nbsp;
+[![Commits](https://img.shields.io/badge/commits-1000%2B-6a0dad?style=flat-square)](https://github.com/Mateuzkl/forgottenserver-downgrade-1.8-8.60/commits)
 [![Wiki](https://img.shields.io/badge/docs-wiki-8b5cf6?style=flat-square&logo=wikipedia&logoColor=white)](https://github.com/Mateuzkl/forgottenserver-downgrade-1.8-8.60/wiki)
 
-</div>
-
-<br/>
-
-<div align="center">
+<br />
 
 ![Engine](https://img.shields.io/badge/ENGINE-TFS%201.8-7c3aed?style=for-the-badge)
 ![Protocol](https://img.shields.io/badge/PROTOCOL-8.60-f97316?style=for-the-badge)
@@ -26,435 +19,280 @@
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-22.04%2B-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
 ![Windows](https://img.shields.io/badge/Windows-vcpkg-0078D4?style=for-the-badge&logo=windows&logoColor=white)
 
-</div>
+<br />
+<br />
 
-<br/>
+**TFS 1.8 Downgrade** brings the classic Tibia **8.60** protocol to a modern, optimized server engine, with native ClientID support and a large set of custom systems.
 
-<div align="center">
+Developed and maintained by [Mateuzkl](https://github.com/Mateuzkl), based on [Nekiro's TFS 1.5 Downgrades](https://github.com/nekiro/TFS-1.5-Downgrades) and forked from [MillhioreBT's downgrade](https://github.com/MillhioreBT/forgottenserver-downgrade).
 
-> **Developed & Optimized by** [Mateuzkl](https://github.com/Mateuzkl)  
-> Based on [Nekiro's TFS 1.5 Downgrades](https://github.com/nekiro/TFS-1.5-Downgrades) · Forked from [MillhioreBT's downgrade](https://github.com/MillhioreBT/forgottenserver-downgrade)  
-> **Fully reworked** — all systems, optimizations, and custom features by Mateuzkl
-
-> If you’d like to stay updated on the community and follow the project’s progress, feel free to join our **Discord**. Everyone is welcome! 
-[Discord Server](https://discord.com/invite/GxTm7DyXVe) 🙂
+[Discord Community](https://discord.com/invite/GxTm7DyXVe) · [Full Wiki](https://github.com/Mateuzkl/forgottenserver-downgrade-1.8-8.60/wiki) · [Issues](https://github.com/Mateuzkl/forgottenserver-downgrade-1.8-8.60/issues)
 
 </div>
 
 ---
 
-## 📋 Índice
+## Highlights
 
-<div align="center">
-
-| 🧬 Core Engine | ⚔️ Combat & RPG | 🌍 World Systems | 🏗️ Infrastructure | 📚 Docs & Support |
-|:-:|:-:|:-:|:-:|:-:|
-| [ClientID .dat](#-clientid-implementation) | [Forge System](#-forge-system-item-fusion) | [Instance System](#-instance-system) | [Compilation](#️-compilation) | [📖 Full Wiki Docs](https://github.com/Mateuzkl/forgottenserver-downgrade-1.8-8.60/wiki) |
-| [Overview](#-overview) | [Imbuement System](#-imbuement-system) | [Guild Halls](#-guild-halls-system) | [Client Config](#-client-configuration-otcv8--mehah) | [📋 Map Conversion](https://github.com/Mateuzkl/forgottenserver-downgrade-1.8-8.60/wiki/Map-Conversion-Tutorial-%E2%80%90-ServerID-to-ClientID) |
-| [Extended Protocol](#-extended-options--modified-860-cip-clients) | [Reward Boss](#-reward-boss-system) | [House Protection](#️-house-protection-system) | [Linux Tuning](#-linux-server-tuning) | [Contributing](#-contributing--issues) |
-| [System Spy](#-system-spy) | [Guild Wars](#️-guild-war-system) | [AutoLoot](#️-autoloot-system) | [Magic Roulette](#-magic-roulette-system) | [Project Status](#-project-status) |
-| [Token Protect](#-token-item-protection) | [Harmony (Monk)](#-harmony-system--monk-vocation) | [Offline Training](#-offline-training-system) | | [Downloads](#-downloads--client-updater) |
-| | | [Live Cast](#-live-cast-system) | | [Donations](#-support-the-project) |
-| | | [Zones System](#️-zones-system) | | |
-
-</div>
+| Area | Features |
+|---|---|
+| Core | TFS 1.8 engine, protocol 8.60, C++23, Lua 5.4, MariaDB, optimized decay |
+| ClientID | Native `.dat` loading, no ServerID/ClientID conversion layer |
+| RPG systems | Forge, Imbuements, Reward Boss, Monk Harmony, Offline Training |
+| World systems | Instances, Zones, Guild Halls, House Protection, Live Cast |
+| Security & tools | Token Protection, System Spy, AutoLoot, Store Inbox support |
+| Clients | OTCv8/Mehah features, extended sprites, modified CIP DLL options |
 
 ---
 
-## 🧬 ClientID Implementation
+## ClientID Native
 
-<div align="center">
+This source uses **ClientID everywhere**: items, maps, Lua scripts and database records all use the same IDs seen by the client.
 
-| ✅ ClientID Only | ✅ Full .dat System | ✅ No Conversion Layer |
-|:-:|:-:|:-:|
-| No ServerID — Items, maps (OTBM), Lua scripts and DB all use ClientID directly | Reads item definitions from the client's `.dat` file — like Canary and Crystal Server | No ServerID/ClientID mapping — the ID you see in the client is the same everywhere |
+| What changes | Benefit |
+|---|---|
+| Reads item definitions from the client `.dat` | Easier content editing |
+| Removes ServerID/ClientID mapping | Fewer conversion bugs |
+| OTBM maps use ClientID directly | Better compatibility with modern workflows |
 
-</div>
+Use the modified map editor:
 
-This eliminates the traditional ServerID/ClientID mismatch, making content creation and debugging significantly simpler.
+**[Download RME-CLIENTID](https://github.com/Mateuzkl/RME-CLIENTID)**
 
-> 🗺️ **To edit maps compatible with this ClientID system, use the modified RME:**  
-> **[⬇️ Download RME-CLIENTID](https://github.com/Mateuzkl/RME-CLIENTID)**
-
-### 📚 Map Tutorials
+Map tutorials:
 
 | Tutorial | Description |
-|----------|-------------|
-| [📋 ServerID → ClientID Conversion](https://github.com/Mateuzkl/forgottenserver-downgrade-1.8-8.60/wiki/Map-Conversion-Tutorial-%E2%80%90-ServerID-to-ClientID) | Convert standard TFS maps to ClientID format |
-| [🗺️ Import Canary/Crystal Maps](https://github.com/Mateuzkl/forgottenserver-downgrade-1.8-8.60/wiki/Importing-Canary-Crystal-Maps-to-RME-8.60) | Downgrade and import modern server maps |
-| [🇧🇷 Importar Mapas Canary/Crystal](https://github.com/Mateuzkl/forgottenserver-downgrade-1.8-8.60/wiki/%F0%9F%97%BA%EF%B8%8F-Importando-Mapas-Canary-Crystal-para-RME-8.60) | Tutorial em português |
+|---|---|
+| [ServerID to ClientID Conversion](https://github.com/Mateuzkl/forgottenserver-downgrade-1.8-8.60/wiki/Map-Conversion-Tutorial-%E2%80%90-ServerID-to-ClientID) | Convert standard TFS maps |
+| [Import Canary/Crystal Maps](https://github.com/Mateuzkl/forgottenserver-downgrade-1.8-8.60/wiki/Importing-Canary-Crystal-Maps-to-RME-8.60) | Downgrade and import modern maps |
+| [Importar Mapas Canary/Crystal](https://github.com/Mateuzkl/forgottenserver-downgrade-1.8-8.60/wiki/%F0%9F%97%BA%EF%B8%8F-Importando-Mapas-Canary-Crystal-para-RME-8.60) | Tutorial em portugues |
 
 ---
 
-## 🚀 Overview
-
-This is a **custom modified version** of The Forgotten Server, downgraded to protocol **8.60** but running on the modern **TFS 1.8** engine. It includes numerous exclusive systems and improvements not found in any standard TFS fork.
-
-<div align="center">
-
-| 🔢 ~900 Commits | 🧩 13+ Custom Systems |
-|:-:|:-:|
-| Actively maintained | Fully integrated in C++ |
-
-</div>
-
----
-
-## 🎮 Systems & Features
-
-### 🛡️ AutoLoot System
+## Systems
 
 <details>
-<summary><b>Click to expand</b></summary>
+<summary><b>AutoLoot</b></summary>
 
-- **Fully Integrated**: Built directly into the source for maximum performance — no Lua overhead.
-- **Bank Integration**: Automatically deposits gold if "AutoMoney" mode is enabled.
+Built into the C++ source for high performance, with optional automatic gold deposit through AutoMoney.
 
 | Command | Description |
-|---------|-------------|
-| `!autoloot` | Opens the GUI management window |
-| `!autoloot on/off` | Quickly toggle the system |
-| `!autoloot clear` | Clear your entire loot list |
+|---|---|
+| `!autoloot` | Open the management window |
+| `!autoloot on/off` | Toggle AutoLoot |
+| `!autoloot clear` | Clear your loot list |
 
 </details>
 
----
-
-### ⚔️ Guild War System
-
 <details>
-<summary><b>Click to expand</b></summary>
+<summary><b>Guild War</b></summary>
 
-- **Real Guild Wars**: Fully working war system with live emblems.
-- **Emblems**: Ally, Member, and Enemy emblems update in real-time.
+Real guild wars with live ally, member and enemy emblems.
 
 | Command | Description |
-|---------|-------------|
-| `/war invite, guildname` | Invite a guild to war |
-| `/war accept, guildname` | Accept a war declaration |
+|---|---|
+| `/war invite, guildname` | Invite a guild |
+| `/war accept, guildname` | Accept a war |
 
 </details>
 
----
-
-
-### 🏆 Reward Boss System
-
 <details>
-<summary><b>Click to expand</b></summary>
+<summary><b>Reward Boss</b></summary>
 
-- **Tibia-like Rewards**: Global Tibia style boss reward system.
-- **Reward Chests**: Stored in reward containers (ID: `21518` / `21584`).
-- Configurable reward rates via `config manager`.
+Tibia-like boss reward system with contribution tracking and reward chests.
 
 | Tracking | Description |
-|----------|-------------|
-| Damage Done | Tracks your DPS contribution |
-| Damage Taken | Tracks survivability contribution |
-| Healing Done | Tracks support contribution |
-| **Fair Distribution** | Loot distributed by total contribution score |
+|---|---|
+| Damage Done | DPS contribution |
+| Damage Taken | Survivability contribution |
+| Healing Done | Support contribution |
+| Fair Distribution | Loot based on total score |
 
 </details>
 
----
-
-### 💤 Offline Training System
-
 <details>
-<summary><b>Click to expand</b></summary>
+<summary><b>Offline Training</b></summary>
 
-- Train skills while offline using beds — **Premium required**.
-- **Usage**: Simply click on the bed to start training.
-- Automatically calculates gain based on logout duration (**Max 12h**).
-- **Configuration**: Efficiency and vocation rates in `config.lua`.
+Train skills while offline using beds. Premium is required, and gains are calculated from logout duration up to 12 hours.
 
-| Trainable Skills |
-|:-:|
-| Sword · Axe · Club · Distance · Shielding · Magic Level |
+Trainable skills: Sword, Axe, Club, Distance, Shielding and Magic Level.
 
 </details>
 
----
-
-### 🏰 Guild Halls System
-
 <details>
-<summary><b>Click to expand</b></summary>
+<summary><b>Guild Halls</b></summary>
 
-- **Guild Leaders** can purchase special Guild Halls paid via Guild Bank balance.
-- **Features**: Supports all house features — doors, beds, and protection zones.
+Guild leaders can buy special halls using the guild bank balance. Guild halls support normal house features such as doors, beds and protection zones.
 
 | Command | Access | Description |
-|---------|--------|-------------|
-| `!buyhouse` | Leader / Vice-Leader | Purchase a guild hall |
-| `!leavehouse` | Leader | Abandon the hall |
+|---|---|---|
+| `!buyhouse` | Leader / Vice-Leader | Buy a guild hall |
+| `!leavehouse` | Leader | Leave the hall |
 
 </details>
 
----
-
-### 🛡️ House Protection System
-
 <details>
-<summary><b>Click to expand</b></summary>
+<summary><b>House Protection</b></summary>
 
-- **Per-house control**: Owners can toggle protection state independently per house.
-- **Secure**: When enabled, ONLY owner and listed guests can move items.
-- Door messages show real ownership info.
+Owners can protect each house independently. When enabled, only the owner and listed guests can move items.
 
 | Command | Description |
-|---------|-------------|
-| `!protecthouse on/off` | Toggle protection state |
-| `!houseguest add <name>` | Add a guest to the safe list |
-| `!houseguest remove <name>` | Remove a guest |
-| `!houseguest list` | View current guest list |
+|---|---|
+| `!protecthouse on/off` | Toggle protection |
+| `!houseguest add <name>` | Add guest |
+| `!houseguest remove <name>` | Remove guest |
+| `!houseguest list` | Show guests |
 
 </details>
 
----
-
-### ⚡ Improved Decay System
-
 <details>
-<summary><b>Click to expand</b></summary>
+<summary><b>Live Cast</b></summary>
 
-Enhanced decay system for better server performance. Optimized item decay processing and state management — significantly reduces CPU usage on populated servers.
-
-</details>
-
----
-
-### 📺 Live Cast System
-
-<details>
-<summary><b>Click to expand</b></summary>
-
-- Stream your gameplay with `!cast` for others to watch live.
-- **Bonus**: Configurable EXP bonus for active casters.
-- **Spectators**: Can chat in the dedicated Live Cast channel.
+Players can stream gameplay with `!cast`, receive configurable EXP bonuses, and chat with spectators in a dedicated channel.
 
 | Command | Access | Description |
-|---------|--------|-------------|
-| `!cast` | Caster | Start/stop broadcasting |
-| `/spectators` | Caster | List current spectators |
-| `/kick <name>` | Caster | Kick a spectator |
-| `/mute <name>` | Caster | Mute a spectator |
-| `/ban <name>` | Caster | Ban a spectator |
+|---|---|---|
+| `!cast` | Caster | Start or stop broadcasting |
+| `/spectators` | Caster | List spectators |
+| `/kick <name>` | Caster | Kick spectator |
+| `/mute <name>` | Caster | Mute spectator |
+| `/ban <name>` | Caster | Ban spectator |
 
 </details>
 
----
+<details>
+<summary><b>Improved Decay</b></summary>
 
-### 🔒 Token Item Protection
+Optimized item decay processing and state management to reduce CPU usage on populated servers.
+
+</details>
 
 <details>
-<summary><b>Click to expand</b></summary>
+<summary><b>Token Item Protection</b></summary>
 
-Prevent character theft and account hacks with the **Token Protection System**. When enabled, your items are locked to your character, making it impossible for unauthorized users to move them out of your inventory or houses.
-
-**Key Features:**
-- **Anti-Theft**: Prevents moving items from your character or house to other locations.
-- **Smart Filtering**: You can still move "trash" items like Gold, Worms, Food, and Flowers.
-- **Normal Gameplay**: Full support for swapping items, moving to Depot, and organizing backpacks.
-- **Lending Safety**: Safely lend your character to friends without risk of losing gear.
+Locks important items to the character to reduce theft risk when sharing accounts or recovering from compromised access.
 
 | Command | Description |
-|---------|-------------|
-| `!token set, YOUR_TOKEN` | Set your secret security token (only while disabled) |
-| `!token on` | Enable the protection system |
-| `!token off, YOUR_TOKEN` | Disable protection using your secret token |
+|---|---|
+| `!token set, YOUR_TOKEN` | Set your secret token while disabled |
+| `!token on` | Enable protection |
+| `!token off, YOUR_TOKEN` | Disable protection |
 
-> [!IMPORTANT]
-> Keep your token secret! It is only required to **disable** the protection. You cannot set a new token while protection is active.
+> Keep your token secret. It is required only to disable protection.
 
 </details>
 
----
-
-### 👁️ System Spy
-
 <details>
-<summary><b>Click to expand</b></summary>
+<summary><b>System Spy</b></summary>
 
-The **System Spy** is a powerful administrative tool that allows GODs and Admins to silently observe players in real-time without their knowledge.
-
-**Functionality:**
-- **Silently Observe**: GM protocols are attached to the target's session. The target receives no notification.
-- **Viewport Mirroring**: The GM's client automatically redirects to the target's position, showing all tiles and creatures around the target.
-- **Inventory & Containers**: Real-time mirroring of the target's inventory slots and all open containers/backpacks.
-- **Auto-Sync**: The GM's view stays perfectly in sync with the target's movements.
+Administrative tool for GODs and Admins to silently inspect a player session, including viewport, inventory and open containers.
 
 | Command | Permission | Description |
-|---------|------------|-------------|
-| `/spy <name>` | GOD / Admin | Start spying on the target player |
-| `/spyinv <name>` | GOD / Admin | View the target player's current inventory slots and open containers |
-| `/unspy` | GOD / Admin | Stop spying or close the spy inventory view and return to your own state |
-
-> [!CAUTION]
-> This system is designed for server administration and debugging. Improper use may affect the gameplay experience of others.
+|---|---|---|
+| `/spy <name>` | GOD / Admin | Observe a player |
+| `/spyinv <name>` | GOD / Admin | View inventory and containers |
+| `/unspy` | GOD / Admin | Stop observing |
 
 </details>
 
----
-
-### 🎰 Magic Roulette System
-
 <details>
-<summary><b>Click to expand</b></summary>
+<summary><b>Magic Roulette</b></summary>
 
-An advanced, interactive **Magic Roulette** system with rich visual effects and animations. Players can test their luck at roulette stations for a chance to win rare rewards.
+Interactive roulette stations with animated map effects, configurable rewards and database tracking.
 
 ![Magic Roulette](https://user-images.githubusercontent.com/40324910/236821618-63cb56a4-3003-4156-a05f-02375649fe55.gif)
 
-**Features:**
-- **Interactive UI**: Lever-activated roulette with smooth visual animations on the map.
-- **Customizable Rewards**: Configure items, counts, and drop chances (including rare/legendary items).
-- **Visual Feedback**: Real-time map animations and effects during the spin.
-- **Database Tracking**: All plays are recorded in the database for auditing and statistics.
-- **Versatile Modes**: Supports both horizontal and vertical layout configurations.
-
-> **Configuration**: Can be easily customized in `data/scripts/magic-roulette-master/configroulette.lua`.
+Configuration file: `data/scripts/magic-roulette-master/configroulette.lua`
 
 </details>
 
----
-
-### 🔥 Forge System (Item Fusion)
-
 <details>
-<summary><b>Click to expand</b></summary>
+<summary><b>Forge System</b></summary>
 
 ![Forge System](forge.gif)
 
-Fuse two identical items — one is consumed, the other gains **+1 Tier**. Tier is capped by item classification.
-
-### 📖 How to Use
-1. **Combine Items**: Place two identical items of the same Tier into the Forge slots.
-2. **Materials**: Ensure you have enough **Forge Dust** and **Silver Tokens**. High tiers (T5+) require **Exalted Cores**.
-3. **Fusion**: Click the fusion button. If successful, your item gains **+1 Tier**.
-4. **Failure**: On failure, one item is destroyed and the other remains at its current Tier.
-5. **Limits**: Tier upgrades are capped by the item's **Classification** (e.g., Class 1, Class 2).
-
----
+Fuse two identical items to upgrade one of them by **+1 Tier**. Failures destroy one item and keep the other at its current tier.
 
 | Tier | Success Rate | Extra Materials |
-|:----:|:---:|:-:|
-| T0 → T1 | 50% | — |
-| T1 → T2 | 40% | — |
-| T2 → T3 | 30% | — |
-| T3 → T4 | 25% | — |
-| T4 → T5 | 20% | — |
-| T5 → T6 | 15% | Exalted Core required |
-| T6 → T7 | 10% | Exalted Core required |
-| T7 → T8 | 8% | Exalted Core required |
-| T8 → T9 | 5% | Exalted Core required |
+|:---:|:---:|:---:|
+| T0 to T1 | 50% | - |
+| T1 to T2 | 40% | - |
+| T2 to T3 | 30% | - |
+| T3 to T4 | 25% | - |
+| T4 to T5 | 20% | - |
+| T5 to T6 | 15% | Exalted Core |
+| T6 to T7 | 10% | Exalted Core |
+| T7 to T8 | 8% | Exalted Core |
+| T8 to T9 | 5% | Exalted Core |
 
-**Materials**: Forge Dust · Silver Tokens · Exalted Cores (T5+)  
-**On Success**: Upgraded item placed inside an Exaltation Chest and delivered to inventory.
+Materials: Forge Dust, Silver Tokens and Exalted Cores.
 
 | Command | Description |
-|---------|-------------|
+|---|---|
 | `/forge info` | Show forge info |
-| `/forge dust` | Check your Forge Dust |
-| `/forge silver` | Check your Silver Tokens |
+| `/forge dust` | Check Forge Dust |
+| `/forge silver` | Check Silver Tokens |
 
 </details>
 
----
-
-### 🧿 Imbuement System
-
 <details>
-<summary><b>Click to expand</b></summary>
+<summary><b>Imbuement System</b></summary>
 
-The system supports two distinct methods for applying imbuements. You can choose whichever fits your needs best:
-
-#### 📜 Method 1: Imbuement Scrolls
-Directly apply imbuements using scrolls. This is the fastest way to get your gear upgraded.
+Supports scroll-based imbuements and raw material crafting through an Etcher/workbench flow.
 
 ![Scroll Method](imbuments_scroll.gif)
 
-#### 🧪 Method 2: Raw Materials & Etching
-Craft imbuements from raw creature products and materials using the **Etcher** tool at the workbench.
-
 ![Raw Materials Method](imbuments_items.gif)
 
----
-
-- **Workbench**: 4-slot station — 1 equipment + up to 3 slots for scrolls or raw materials.
-- **Owner Lock**: To prevent theft, only the item's owner can apply imbuements.
-- **Tiers**: Flawed → Intricate → **Powerful**
-
-| Available Tiers | Types Available |
-|:-----:|:-:|
-| 3 Stages | **27 types**: Skill boosts, Magic Level, Life/Mana Leech, Critical Hit, Elemental Damage & Protection, Speed, Capacity |
+| Feature | Description |
+|---|---|
+| Workbench | 1 equipment slot plus up to 3 material slots |
+| Owner Lock | Only the item owner can apply imbuements |
+| Tiers | Flawed, Intricate and Powerful |
+| Types | 27 imbuements, including skills, leech, critical, elemental protection and more |
 
 </details>
 
----
-
-### 🏰 Instance System
-
 <details>
-<summary><b>Click to expand</b></summary>
+<summary><b>Instance System</b></summary>
 
-Create **private dungeon instances** — monsters, effects, and items are only visible to players in the same instance.
+Private dungeon instances where monsters, effects and items are visible only to players in the same instance.
 
-**Lua API:**
 ```lua
 player:setInstanceId(id)
 Game.registerInstanceArea(area)
 Game.createMonster(name, pos, extended, force, master, instanceId)
 ```
 
-**C++ Core**: Spectator filtering, item visibility, and interaction checks all respect instance boundaries.
-
-> **Use Cases**: Solo/party dungeons · Boss rooms · Quests — without interfering with the main world.
+Use it for solo dungeons, party rooms, boss fights and quests without affecting the main world.
 
 </details>
 
----
-
-### 🗺️ Zones System
-
 <details>
-<summary><b>Click to expand</b></summary>
+<summary><b>Zones System</b></summary>
 
-Allows server administrators to create custom geographical **Zones** by assigning a unique ID to a group of map coordinates. This is perfect for custom map events, localized effects, or restricted areas.
+Configurable geographical zones for safe areas, PvP arenas, custom events and territory control.
 
-**Key Features:**
-- **XML Configured**: Easily define zones in `data/world/world-zones/1.xml` by mapping an ID to `X, Y, Z` coordinates.
-- **Rich Lua API**: Full integration in Lua via the `Zone` class to query entities inside a zone:
-  - `zone:getCreatures([type])` / `zone:getCreatureCount([type])`
-  - `zone:getItems([itemId])` / `zone:getItemCount([itemId])`
-  - `zone:getGrounds()`
-  - `zone:getTiles([flags])` / `zone:getTileCount([flags])`
-- **Dynamic Creation**: Build zones on the fly using `Zone(id, positions)`.
-- **Event Callbacks**: Triggers `Creature:onChangeZone(fromZone, toZone)` in Lua whenever a creature enters or leaves a configured zone.
+Key APIs:
 
-> **Use Cases**: Safe zones, PvP arenas, custom events, or territory control without needing complex `isInArea` checks manually!
+```lua
+zone:getCreatures([type])
+zone:getItems([itemId])
+zone:getTiles([flags])
+Creature:onChangeZone(fromZone, toZone)
+```
+
+Zones can be loaded from `data/world/world-zones/1.xml` or created dynamically in Lua.
 
 </details>
 
----
-
-### 🧘 Harmony System — Monk Vocation
-
 <details>
-<summary><b>Click to expand</b></summary>
+<summary><b>Harmony System - Monk Vocation</b></summary>
 
-Exclusive to **Monks** (vocations 9–10). A resource management system where you accumulate **Harmony points (0-5)** by hitting enemies with **Builder Spells**, then spend them with powerful **Spender Spells**.
-
-#### 📊 Core Mechanics
-
-- **Gain Harmony**: Hit enemies with any attack → +1 point (max 5)
-- **Spend Harmony**: Cast spells marked with `spell:harmony(true)` → consumes ALL points
-- **Bonus Scaling**: More points = stronger spell effects
-
-#### 🎯 Harmony Bonus Table
+Exclusive to Monks. Harmony points are gained by builder spells and spent by stronger finishing spells.
 
 | Points | Base Bonus | With Virtue of Harmony |
-|:------:|:----------:|:----------------------:|
+|:---:|:---:|:---:|
 | 0 | 0% | 0% |
 | 1 | +15% | +25% |
 | 2 | +30% | +55% |
@@ -462,67 +300,54 @@ Exclusive to **Monks** (vocations 9–10). A resource management system where yo
 | 4 | +120% | +200% |
 | 5 | +240% | +400% |
 
-#### ⚡ Virtues — Modify Harmony Bonuses
-
-Cast a Virtue spell to change how your Harmony points scale:
-
-| Virtue | Effect | Spell |
-|--------|--------|-------|
-| 🧘 **Harmony** | Doubles the bonus table above | `utori virtu` (Virtue of Harmony) |
-| ⚖️ **Justice** | *Planned* — Will increase damage output | `utori justi` (Virtue of Justice) |
-| 🛡️ **Sustain** | *Planned* — Will increase defense | `utori sana` (Virtue of Sustain) |
-
-> **Note**: Justice and Sustain virtues are defined in code but not yet implemented with combat effects.
-
-#### 🌟 Serene State
-
-- **Effect**: Doubles ALL Virtue bonuses (stacks multiplicatively)
-- **Activation**: Cast `Focus Serenity` or activate `Avatar of Balance`
-- **Duration**: Temporary buff with cooldown
-
-#### 🔮 Avatar of Balance
-
-Ultimate transformation that enhances all Monk systems:
-- Sets Harmony to 5/5 instantly
-- Activates Serene State
-- +50% bonus to all Harmony effects
-- Clears all spell cooldowns
-- Duration: 30 seconds
-
-#### 📝 Commands
+Command:
 
 | Command | Description |
-|---------|-------------|
-| `!harmony` | View current Harmony points, active Virtue, Serene state, and bonus % |
-
-#### 🎮 Spell Types
-
-**Builder Spells** (gain Harmony):
-- Double Jab, Swift Jab, Flurry of Blows, Forceful Uppercut, Mystic Repulse, Chained Penance
-
-**Spender Spells** (consume Harmony):
-- Tiger Clash, Greater Tiger Clash, Sweeping Takedown, Devastating Knockout, Spiritual Outburst, Mass Spirit Mend
-
-**Example**: Mass Spirit Mend healing scales with Harmony:
-```lua
-local multiplier = 1 + (harmony * 0.6)
--- At 5 Harmony: 1 + (5 * 0.6) = 4x healing!
-```
+|---|---|
+| `!harmony` | Show points, active virtue, serene state and bonus |
 
 </details>
 
 ---
 
-## 🛠️ Compilation
+## Optional Systems
 
-### 🐧 Ubuntu 22.04 / 24.04
+Some custom systems are disabled by default in `config.lua` and `config.lua.dist`, keeping the server closer to classic 8.60 behavior.
 
-> [!IMPORTANT]
-> Requires **Boost 1.75+** and **Lua 5.4**
-> - **Ubuntu 24.04** ✅ Recommended — comes with all required versions
-> - **Ubuntu 22.04** ⚠️ May need manual Boost update (default is 1.74)
+```lua
+forgeSystemEnabled = false
+imbuementSystemEnabled = false
+monkVocationEnabled = false
+familiarSystemEnabled = false
+```
 
-#### Step 1 — Install dependencies
+| Config key | Default | Controls |
+|---|---|---|
+| `forgeSystemEnabled` | `false` | Forge tiers, commands, portal and item look text |
+| `imbuementSystemEnabled` | `false` | Imbuements, scrolls, workbench, portal and item look text |
+| `monkVocationEnabled` | `false` | Monk vocation behavior, outfits, spells and checks |
+| `familiarSystemEnabled` | `false` | Familiar summons, spells and remaining-time look text |
+
+Example:
+
+```lua
+forgeSystemEnabled = false
+imbuementSystemEnabled = true
+monkVocationEnabled = false
+familiarSystemEnabled = false
+```
+
+---
+
+## Compilation
+
+### Ubuntu 22.04 / 24.04
+
+Requires **Boost 1.75+** and **Lua 5.4**.
+
+Ubuntu 24.04 is recommended because it already ships the required versions. Ubuntu 22.04 may require a manual Boost update.
+
+Install dependencies:
 
 ```bash
 sudo apt update
@@ -535,11 +360,7 @@ sudo apt install -y \
   libabsl-dev
 ```
 
-#### Step 2 — Install simdutf manually (Linux only)
-
-> **Note:** `simdutf` is not available as a ready-to-use development package via `apt` on Ubuntu 22.04+. You must install it manually into `$HOME/.local`:
->
-> ⚠️ **Windows users**: Skip this step — `simdutf` is automatically installed via vcpkg (see `vcpkg.json`)
+Install `simdutf` manually on Linux:
 
 ```bash
 cd ~
@@ -550,9 +371,7 @@ cmake --build build -- -j"$(nproc)"
 cmake --install build
 ```
 
-#### Step 3 — Clone & Compile (Release Mode - Faster Startup)
-
-> **Note:** We use `Release` mode building as the default because it makes the server start up and load the map significantly faster.
+Build in Release mode:
 
 ```bash
 git clone https://github.com/Mateuzkl/forgottenserver-downgrade-1.8-8.60
@@ -570,35 +389,23 @@ cmake -DCMAKE_BUILD_TYPE=Release \
 cmake --build . -- -j"$(nproc)"
 ```
 
-> **Note:** CMake automatically detects `simdutf` installed in `$HOME/.local` (no need to specify `-Dsimdutf_DIR`). If you installed it elsewhere, add: `-Dsimdutf_DIR=/your/path/lib/cmake/simdutf`
-
-| CMake Flag | Effect |
-|------------|--------|
-| `-DCMAKE_BUILD_TYPE=Release` | Enables `-O3 -march=native -flto` — maximum speed |
-| `-DDISABLE_STATS=1` | Removes runtime stats collection overhead |
+| CMake flag | Effect |
+|---|---|
+| `-DCMAKE_BUILD_TYPE=Release` | Enables optimized release build |
+| `-DDISABLE_STATS=1` | Removes runtime stats overhead |
 | `-DENABLE_SLOW_TASK_DETECTION=OFF` | Removes per-task timing overhead |
-| `-DUSE_MIMALLOC=ON` | Microsoft's mimalloc allocator — faster than glibc malloc |
+| `-DUSE_MIMALLOC=ON` | Uses Microsoft's mimalloc allocator |
 
-**Alternative — run mimalloc without recompiling:**
-```bash
-LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libmimalloc.so ./tfs
-```
-
-#### 🔧 Linux Server Tuning
+Optional Linux tuning:
 
 ```bash
-# Maximum CPU performance
 sudo cpupower frequency-set -g performance
-
-# Higher process priority
 sudo nice -n -10 ./tfs
 ```
 
----
+### Windows
 
-### 🪟 Windows
-
-#### Install vcpkg
+Install vcpkg:
 
 ```bash
 git clone https://github.com/microsoft/vcpkg.git
@@ -607,19 +414,17 @@ cd vcpkg
 .\vcpkg.exe integrate install
 ```
 
-#### Build with Visual Studio
+Build with **Visual Studio 2022** or newer. Choose backend, platform and build normally; dependencies are installed through vcpkg.
 
-Use **Visual Studio 2022** (or newer), select backend (OpenGL, DirectX), platform (x86, x64) and just build. All required libraries will be automatically installed for you.
-
-> 📖 See the full [Windows Compilation Wiki Guide](https://github.com/MillhioreBT/forgottenserver-downgrade/wiki/Compiling-on-Windows-(vcpkg))
-
-**Note:** All dependencies including `simdutf` are automatically installed via vcpkg (see `vcpkg.json`). No manual installation required.
+Full guide: [Windows Compilation Wiki](https://github.com/MillhioreBT/forgottenserver-downgrade/wiki/Compiling-on-Windows-(vcpkg))
 
 ---
 
-## 📦 Client Configuration (OTCv8 / Mehah)
+## Client Configuration
 
-**1. Update `modules/game_features/game_features.lua`:**
+### OTCv8 / Mehah
+
+Enable the required features for protocol 860 in `modules/game_features/game_features.lua`:
 
 ```lua
 if(version >= 860) then
@@ -645,146 +450,80 @@ if(version >= 860) then
 end
 ```
 
-**2. Store Inbox compatibility**
+Store Inbox compatibility:
 
-- **OTCv8 / Mehah:** the server sends `CONST_SLOT_STORE_INBOX` only to OTClient connections. Enable `GamePurseSlot` for protocol `860` so the client parses the Store Inbox slot normally.
-- **Old CIP 8.60:** the original client does not parse the Store Inbox / purse inventory slot and can crash if that slot is sent. Use `!storeinbox`, `!sinbox`, or `!inbox` to open it through the normal container packet (`0x6E`). Use `!fecharinbox` or `!closeinbox` to close it.
-- Empty Store Inbox containers still open normally. The virtual container uses item ID `23396` and capacity `Vol:20`.
-- Server ownership is handled by `std::shared_ptr<StoreInbox>` in `Player`; `getStoreInbox()` returns a raw pointer only for compatibility with existing C++ and Lua call sites.
+| Client | Behavior |
+|---|---|
+| OTCv8 / Mehah | Enable `GamePurseSlot` for protocol 860 |
+| Original CIP 8.60 | Use `!storeinbox`, `!sinbox` or `!inbox` |
+| Close inbox | Use `!fecharinbox` or `!closeinbox` |
 
-**3. Extended Sprites (`GameSpritesU32`)**
-- Download: [Octv8--Classic-8.6](https://github.com/Mateuzkl/Octv8--Classic-8.6)
-- Extract `.spr` and `.dat` to your OTCv8 directory
+Extended sprites:
 
-**4. CIP Client with Mounts (DLL)**
-- Download: [Client 8.60 + DLL Mount](https://github.com/Mateuzkl/Client-cip-8.60-with-DLL-Mount)
+- [Octv8--Classic-8.6](https://github.com/Mateuzkl/Octv8--Classic-8.6)
+- Extract `.spr` and `.dat` to your OTCv8 directory.
 
----
+CIP client with mounts:
 
-## 🎮 Extended Options — Modified 8.60 CIP Clients
+- [Client 8.60 + DLL Mount](https://github.com/Mateuzkl/Client-cip-8.60-with-DLL-Mount)
 
-DLL patches that extend the old Tibia 8.60 client beyond its original protocol limits:
+### Modified CIP DLL Options
 
-| DLL Patch | Status | Extends |
-|-----------|:------:|---------|
-| `__MAGIC_EFFECTS_U16__` | ✅ | Magic effects: **255 → 65535** (uint16) |
-| `__DISTANCE_SHOOT_U16__` | ✅ | Projectile effects: **255 → 65535** (uint16) |
-| `__PLAYER_HEALTH_U32__` | ✅ | Player HP: **65535 → 4.2 billion** (uint32) |
-| `__PLAYER_MANA_U32__` | ✅ | Player Mana: **65535 → 4.2 billion** (uint32) |
-| `__PLAYER_SKILLS_U16__` | ⏳ Pending | Skill levels up to 65535 (in development) |
-| **Outfit Limit Changer** | ✅ | Outfits: **255 → 65535+** (uint16 count) |
-
----
-
-## 💬 Community (Discord)
-
-I’ve created a Discord server.
-
-If you want to discuss ideas, give suggestions, keep the 8.6 protocol standards, share systems, report errors, or show your work, feel free to join.
-
-You’re very welcome 🙂
-
-**[💬 Join the Discord Community!](https://discord.gg/GxTm7DyXVe)**
+| DLL patch | Status | Extends |
+|---|:---:|---|
+| `__MAGIC_EFFECTS_U16__` | Done | Magic effects: 255 to 65535 |
+| `__DISTANCE_SHOOT_U16__` | Done | Projectile effects: 255 to 65535 |
+| `__PLAYER_HEALTH_U32__` | Done | Player HP: 65535 to 4.2 billion |
+| `__PLAYER_MANA_U32__` | Done | Player mana: 65535 to 4.2 billion |
+| `__PLAYER_SKILLS_U16__` | Pending | Skill levels up to 65535 |
+| Outfit Limit Changer | Done | Outfits: 255 to 65535+ |
 
 ---
 
-## 🐛 Contributing & Issues
+## Downloads
 
-The base is **stable** and all systems are fully working. Found a bug? You're very welcome to help:
+### Manual AppVeyor artifacts
 
-- 🐞 **Open an Issue** → [GitHub Issues](https://github.com/Mateuzkl/forgottenserver-downgrade-1.8-8.60/issues)  
-  Include: description · steps to reproduce · relevant logs or Valgrind output
-- 🔧 **Submit a Pull Request** → Surgical, minimal patches preferred — change only what is necessary
+1. Open the [AppVeyor project page](https://ci.appveyor.com/project/Mateuzkl/forgottenserver-downgrade-1-7-8-60).
+2. Click the latest job.
+3. Open the **Artifacts** tab.
+4. Download the `.zip` or `.7z` package.
+5. Extract it into your client folder.
 
-> Any contribution is appreciated. This server is optimized, actively maintained, and packed with exclusive systems. Community involvement helps keep it that way.
+### Client updater
 
-*Maintained by [Mateuzkl](https://github.com/Mateuzkl)*
+Update the CipSoft client, executables and DLLs automatically:
 
----
-
-## 📢 Project Status
-
-<div align="center">
-
-| Metric | Value |
-|:------:|:-----:|
-| 📦 Commits | **~1000+** |
-| 🧩 Custom Systems | **13+** |
-| 🔧 Status | **Stable & Active** |
-
-</div>
+**[Client Updater Tutorial - Mateuzkl/Client_Mout_Updater](https://github.com/Mateuzkl/Client_Mout_Updater)**
 
 ---
 
-## 🤝 Support the Project
+## Contributing
 
-If you enjoy using this server or benefit from the work, any support is deeply appreciated. Donations help fund continued development and motivate new system releases.
+The base is stable and actively maintained. Bug reports and pull requests are welcome.
 
-<div align="center">
+When opening an issue, include:
 
-**💜 PIX Key (Chave Aleatória)**
+- Clear description
+- Steps to reproduce
+- Relevant logs, crash output or Valgrind output
 
+Pull requests should stay focused and change only what is necessary.
+
+---
+
+## Community & Support
+
+Join the Discord to discuss ideas, report bugs, share systems, keep the 8.60 ecosystem alive and follow project updates:
+
+**[Join the Discord Community](https://discord.gg/GxTm7DyXVe)**
+
+If this project helps you, donations are appreciated and help support continued development.
+
+```text
+PIX key: f8761afe-5581-417d-afc8-08cac410a1b0
 ```
-f8761afe-5581-417d-afc8-08cac410a1b0
-```
-
-*Thank you to everyone who contributes — code, bug reports, or donations.*
-
-</div>
-
----
-
-## 📥 Downloads & Client Updater
-
-### Manual Download (AppVeyor Artifacts)
-
-1. Open the [AppVeyor Project Page](https://ci.appveyor.com/project/Mateuzkl/forgottenserver-downgrade-1-7-8-60)
-2. Click the latest **Job** → go to the **Artifacts** tab
-3. Download the `.zip` or `.7z` with the executable and DLLs
-4. Extract into your client folder, replacing existing files
-
-### 🔄 Automated Client Updater
-
-Update your CipSoft client, executables and DLLs automatically with just a few clicks:
-
-> 📖 **[Client Updater Tutorial — Mateuzkl/Client_Mout_Updater](https://github.com/Mateuzkl/Client_Mout_Updater)**
-
----
-
-## Optional Custom Systems (`true` / `false`)
-
-Some custom systems are optional and can be enabled or disabled in `config.lua`.
-The default value is `false`, keeping the server closer to classic 8.60 behavior.
-
-If you want a system enabled, set it to `true`. If you do not want it, keep it as `false`.
-
-```lua
-forgeSystemEnabled = false
-imbuementSystemEnabled = false
-monkVocationEnabled = false
-familiarSystemEnabled = false
-```
-
-| Config key | Default | What it controls |
-|------------|---------|------------------|
-| `forgeSystemEnabled` | `false` | Enables Forge tier/classification features, forge commands, forge portal and forge item look text |
-| `imbuementSystemEnabled` | `false` | Enables imbuements, imbuement scrolls/workbench/portal and imbuement item look text |
-| `monkVocationEnabled` | `false` | Enables Monk vocation behavior, Monk outfit visibility, Monk spells and Monk checks |
-| `familiarSystemEnabled` | `false` | Enables familiar summons, familiar spells and familiar remaining-time look text |
-
-Example to enable only imbuements:
-
-```lua
-forgeSystemEnabled = false
-imbuementSystemEnabled = true
-monkVocationEnabled = false
-familiarSystemEnabled = false
-```
-
-These options are present in both `config.lua` and `config.lua.dist`.
-
----
 
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:8b5cf6,50:5b1fa8,100:0d0221&height=140&section=footer&text=Made%20with%20%F0%9F%92%9C%20by%20Mateuzkl&fontSize=18&fontColor=ffffff&fontAlignY=65" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:8b5cf6,50:5b1fa8,100:0d0221&height=140&section=footer&text=Made%20with%20%F0%9F%92%9C%20by%20Mateuzkl&fontSize=18&fontColor=ffffff&fontAlignY=65" alt="Made by Mateuzkl" />
 </p>
