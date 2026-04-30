@@ -50,6 +50,28 @@ TalkActionResult Spells::playerSaySpell(Player* player, std::string& words)
 	boost::algorithm::trim(str_words);
 
 	InstantSpell* instantSpell = getInstantSpell(str_words);
+
+	std::string customSuffix;
+	if (!instantSpell) {
+		size_t quotePos = str_words.find(" \"");
+		if (quotePos != std::string::npos) {
+			std::string baseWords = str_words.substr(0, quotePos);
+			InstantSpell* baseSpell = getInstantSpell(baseWords);
+
+			if (baseSpell && !baseSpell->getHasParam()) {
+				size_t start = quotePos + 2;
+				size_t end = str_words.rfind('"');
+				if (end > quotePos + 1) {
+					customSuffix = str_words.substr(start, end - start);
+				} else {
+					customSuffix = str_words.substr(start);
+				}
+				str_words = baseWords;
+				instantSpell = baseSpell;
+			}
+		}
+	}
+
 	if (!instantSpell) {
 		return TalkActionResult::CONTINUE;
 	}
@@ -88,6 +110,8 @@ TalkActionResult Spells::playerSaySpell(Player* player, std::string& words)
 
 		if (instantSpell->getHasParam() && !param.empty()) {
 			words += " \"" + param + "\"";
+		} else if (!customSuffix.empty()) {
+			words += " \"" + customSuffix;
 		}
 
 		return TalkActionResult::BREAK;
