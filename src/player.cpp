@@ -525,10 +525,9 @@ uint16_t Player::getClientIcons() const
 	if (const Tile* playerTile = getTile(); playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 		icons |= ICON_PIGEON;
 
-		/* Don't show ICON_SWORDS if player is in protection zone.
 		if (hasBitSet(ICON_SWORDS, icons)) {
-		    icons &= ~ICON_SWORDS;
-		}*/
+			icons &= ~ICON_SWORDS;
+		}
 	}
 
 	// Game client debugs with 10 or more icons
@@ -1030,13 +1029,16 @@ void Player::sendPing()
 		setAttackedCreature(nullptr);
 	}
 
+	const bool inProtectionZone = getZone() == ZONE_PROTECTION;
+	const bool inNoLogoutZone = getTile() && getTile()->hasFlag(TILESTATE_NOLOGOUT);
+
 	int32_t noPongKickTime = vocation->getNoPongKickTime();
-	if (pzLocked && noPongKickTime < 60000) {
+	if ((pzLocked || inProtectionZone) && noPongKickTime < 60000) {
 		noPongKickTime = 60000;
 	}
 
 	if (noPongTime >= noPongKickTime) {
-		if (isConnecting || getTile()->hasFlag(TILESTATE_NOLOGOUT)) {
+		if (isConnecting || inNoLogoutZone) {
 			return;
 		}
 
@@ -1045,8 +1047,16 @@ void Player::sendPing()
 		}
 
 		if (client) {
+			LOG_NETWORK(
+			    "{} disconnected by no-pong timeout (noPongTime={} ms, kickTime={} ms, pzLocked={}, inPz={}, position={}, ip={}).",
+			    getName(), noPongTime, noPongKickTime, pzLocked, inProtectionZone, getPosition(),
+			    convertIPToString(getIP()));
 			client->logout(true, true);
 		} else {
+			LOG_NETWORK(
+			    "{} removed by no-pong timeout without client (noPongTime={} ms, kickTime={} ms, pzLocked={}, inPz={}, position={}, ip={}).",
+			    getName(), noPongTime, noPongKickTime, pzLocked, inProtectionZone, getPosition(),
+			    convertIPToString(getIP()));
 			g_game.removeCreature(this, true);
 		}
 	}
@@ -1832,21 +1842,13 @@ void Player::onThink(uint32_t interval)
 		ghostModeStartTime = 0;
 	}
 
-	int64_t timeNow = OTSYS_TIME();
 	if (protectionTime > 0) {
 		--protectionTime;
 	}
 
-	if (timeNow - lastPing >= 5000) {
-		lastPing = timeNow;
-		if (client) {
-			client->sendPing();
-		}
-	}
-
-	// If there is no response from the client for more than 7 seconds (loss of connection), the attack stops.
-	if (timeNow - lastPong >= 7000 && !attackedCreature.expired()) {
-		setAttackedCreature(nullptr);
+	sendPing();
+	if (isRemoved()) {
+		return;
 	}
 
 	if (client && client->isWaitingForUpdate()) {
@@ -1854,6 +1856,7 @@ void Player::onThink(uint32_t interval)
 		client->setUpdateStatus(false);
 	}
 
+	const int64_t timeNow = OTSYS_TIME();
 	if (client && !client->isOTCv8 && getIP() != 0 && getBoolean(ConfigManager::DLL_CHECK_KICK)) {
 		int64_t checkInterval = getInteger(ConfigManager::DLL_CHECK_KICK_TIME) * 1000;
 		if (timeNow - lastDllCheck >= checkInterval) {
@@ -2421,6 +2424,54 @@ void Player::death(Creature* lastHitCreature)
 	loginPosition = town->getTemplePosition();
 	setInstanceID(0);
 
+	auto refreshDeathPingWindow = [this]() {
+		const int64_t timeNow = OTSYS_TIME();
+		lastPing = timeNow;
+		lastPong = timeNow;
+	};
+
+	auto removeDeathConditions = [this]() {
+		bool removedInFight = false;
+
+		auto it = conditions.begin();
+		while (it != conditions.end()) {
+			const ConditionType_t type = (*it)->getType();
+			if (type != CONDITION_INFIGHT && (!(*it)->isPersistent() || (*it)->isConstant())) {
+				++it;
+				continue;
+			}
+
+			auto owned = std::move(*it);
+			it = conditions.erase(it);
+
+			if (type == CONDITION_INFIGHT) {
+				removedInFight = true;
+			}
+
+			owned->endCondition(this);
+			onEndCondition(type);
+		}
+
+		if (!removedInFight && pzLocked) {
+			pzLocked = false;
+			onIdleStatus();
+			clearAttacked();
+
+			if (getSkull() != SKULL_RED && getSkull() != SKULL_BLACK) {
+				setSkull(SKULL_NONE);
+			}
+
+			sendIcons();
+		}
+	};
+
+	auto clearDeathCombatState = [this]() {
+		setAttackedCreature(nullptr);
+		setFollowCreature(nullptr);
+		stopWalk();
+		clearAttacked();
+	};
+
 	int32_t storedTotalReduceSkillLoss = totalReduceSkillLoss;
 
 	if (skillLoss) {
@@ -2493,10 +2544,6 @@ void Player::death(Creature* lastHitCreature)
 			blessings.reset();
 		}
 
-		sendStats();
-		sendSkills();
-		sendReLoginWindow();
-
 		if (getSkull() == SKULL_BLACK) {
 			health = 40;
 			mana = 0;
@@ -2505,52 +2552,21 @@ void Player::death(Creature* lastHitCreature)
 			mana = manaMax;
 		}
 
-		{
-			std::vector<Condition*> toRemove;
-			for (const auto& condition : conditions) {
-				if (condition->isPersistent() && !condition->isConstant()) {
-					toRemove.push_back(condition.get());
-				}
-			}
-			for (Condition* condition : toRemove) {
-				auto it = std::find_if(conditions.begin(), conditions.end(),
-				                        [condition](const auto& c) { return c.get() == condition; });
-				if (it == conditions.end()) {
-					continue;
-				}
-				auto owned = std::move(*it);
-				conditions.erase(it);
-
-				owned->endCondition(this);
-				onEndCondition(owned->getType());
-			}
-		}
+		removeDeathConditions();
+		clearDeathCombatState();
+		refreshDeathPingWindow();
+		sendStats();
+		sendSkills();
+		sendReLoginWindow();
+		g_creatureEvents->playerLogout(this);
 	} else {
 		setSkillLoss(true);
 
-		// Same snapshot pattern for the second death-branch loop.
-		{
-			std::vector<Condition*> toRemove;
-			for (const auto& condition : conditions) {
-				if (condition->isPersistent() && !condition->isConstant()) {
-					toRemove.push_back(condition.get());
-				}
-			}
-			for (Condition* condition : toRemove) {
-				auto it = std::find_if(conditions.begin(), conditions.end(),
-				                        [condition](const auto& c) { return c.get() == condition; });
-				if (it == conditions.end()) {
-					continue;
-				}
-				auto owned = std::move(*it);
-				conditions.erase(it);
-				owned->endCondition(this);
-				onEndCondition(owned->getType());
-			}
-		}
-
 		health = healthMax;
+		removeDeathConditions();
+		clearDeathCombatState();
 		g_game.internalTeleport(this, getTemplePosition(), true);
+		refreshDeathPingWindow();
 		g_game.addCreatureHealth(this);
 		refreshWorldView();
 		onThink(EVENT_CREATURE_THINK_INTERVAL);
