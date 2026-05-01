@@ -55,7 +55,9 @@ while true; do
         2>&1 | awk '{ print strftime("%F %T - "), $0; fflush(); }' \
         | tee "$LOG_FILE"
 
-    EXIT_CODE=$?
+    # The pipeline ends in tee, so $? would report tee's status instead of GDB's.
+    # PIPESTATUS[0] is the real server/GDB exit code used for restart decisions.
+    EXIT_CODE=${PIPESTATUS[0]}
 
     if [ $EXIT_CODE -eq 0 ]; then
         echo "[$(date '+%Y-%m-%d %H:%M:%S')] Server shut down cleanly (exit 0). Not restarting."

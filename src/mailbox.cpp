@@ -133,7 +133,7 @@ bool Mailbox::sendItem(Item* item) const
 		}
 	}
 
-	Player* player = g_game.getPlayerByName(receiver);
+	auto player = g_game.getPlayerByName(receiver);
 	if (player) {
 		Inbox* inbox = getDestinationInbox(*player, town);
 		if (!inbox) {
@@ -147,6 +147,7 @@ bool Mailbox::sendItem(Item* item) const
 			return true;
 		}
 	} else {
+		// Player is final and offline loads elsewhere in the codebase use this short-lived stack instance.
 		Player tmpPlayer(nullptr);
 		if (!IOLoginData::loadPlayerByName(&tmpPlayer, receiver)) {
 			return false;

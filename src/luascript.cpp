@@ -96,26 +96,27 @@ void ScriptEnvironment::resetEnv()
 	localMap.clear();
 	tempResults.clear();
 
-	auto pair = tempItems.equal_range(this);
-	auto it = pair.first;
-	while (it != pair.second) {
-		auto& itemSp = it->second;
+	std::erase_if(tempItems, [this](auto& entry) {
+		if (entry.first != this) {
+			return false;
+		}
+
+		auto& itemSp = entry.second;
 		if (itemSp && itemSp->getParent() == VirtualCylinder::virtualCylinder) {
 			g_game.ReleaseItem(std::move(itemSp));
 		}
-		it = tempItems.erase(it);
-	}
+		return true;
+	});
 }
 
 void ScriptEnvironment::clearTempItems()
 {
-	for (auto it = tempItems.begin(); it != tempItems.end();) {
-		auto& itemSp = it->second;
+	for (auto& [_, itemSp] : tempItems) {
 		if (itemSp && itemSp->getParent() == VirtualCylinder::virtualCylinder) {
 			g_game.ReleaseItem(std::move(itemSp));
 		}
-		it = tempItems.erase(it);
 	}
+	tempItems.clear();
 }
 
 void ScriptEnvironment::setNpc(Npc* npc)
@@ -240,11 +241,11 @@ void ScriptEnvironment::addTempItem(const std::shared_ptr<Item>& item) { tempIte
 
 void ScriptEnvironment::removeTempItem(Item* item)
 {
-	for (auto it = tempItems.begin(), end = tempItems.end(); it != end; ++it) {
-		if (it->second.get() == item) {
-			tempItems.erase(it);
-			break;
-		}
+	auto it = std::find_if(tempItems.begin(), tempItems.end(), [item](const auto& entry) {
+		return entry.second.get() == item;
+	});
+	if (it != tempItems.end()) {
+		tempItems.erase(it);
 	}
 }
 
@@ -1065,11 +1066,11 @@ Player* Lua::getPlayer(lua_State* L, int32_t arg)
 	if (isUserdata(L, arg)) {
 		return getUserdata<Player>(L, arg);
 	}
-	Player* player = g_game.getPlayerByID(getInteger<uint32_t>(L, arg));
-	if (!player || !Creature::isAlive(player) || player->isRemoved()) {
+	auto player = g_game.getPlayerByID(getInteger<uint32_t>(L, arg));
+	if (!player || !Creature::isAlive(player.get()) || player->isRemoved()) {
 		return nullptr;
 	}
-	return player;
+	return player.get();
 }
 
 std::string Lua::getFieldString(lua_State* L, int32_t arg, std::string_view key)
@@ -1451,6 +1452,7 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(COMBAT_ICEDAMAGE);
 	registerEnum(COMBAT_HOLYDAMAGE);
 	registerEnum(COMBAT_DEATHDAMAGE);
+	registerEnum(COMBAT_AGONYDAMAGE);
 
 	registerEnum(COMBAT_PARAM_TYPE);
 	registerEnum(COMBAT_PARAM_EFFECT);
@@ -1493,6 +1495,9 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(CONDITION_CLIPORT);
 	registerEnum(CONDITION_SPELLCOOLDOWN);
 	registerEnum(CONDITION_SPELLGROUPCOOLDOWN);
+	registerEnum(CONDITION_ROOTED);
+	registerEnum(CONDITION_FEARED);
+	registerEnum(CONDITION_AGONY);
 
 	registerEnum(CONDITIONID_DEFAULT);
 	registerEnum(CONDITIONID_COMBAT);
@@ -1559,6 +1564,7 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(CONDITION_PARAM_SPECIALSKILL_MANALEECHCHANCE);
 	registerEnum(CONDITION_PARAM_SPECIALSKILL_MANALEECHAMOUNT);
 	registerEnum(CONDITION_PARAM_AGGRESSIVE);
+	registerEnum(CONDITION_PARAM_CASTER_POSITION);
 
 	registerEnum(RETURNVALUE_CANNOTMOVEEXERCISEWEAPON);
 	registerEnum(RETURNVALUE_CANNOTMOVEGOLDPOUCH);
@@ -2502,6 +2508,7 @@ void LuaScriptInterface::registerFunctions()
 	registerEnumIn("configKeys", ConfigManager::IMBUEMENT_SYSTEM_ENABLED);
 	registerEnumIn("configKeys", ConfigManager::MONK_VOCATION_ENABLED);
 	registerEnumIn("configKeys", ConfigManager::FAMILIAR_SYSTEM_ENABLED);
+	registerEnumIn("configKeys", ConfigManager::ALLOW_MOUNT_IN_PZ);
 
 	registerEnumIn("configKeys", ConfigManager::MAP_NAME);
 	registerEnumIn("configKeys", ConfigManager::HOUSE_RENT_PERIOD);

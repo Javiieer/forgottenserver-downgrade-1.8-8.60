@@ -120,6 +120,10 @@ onlyInvitedCanMoveHouseItems = true
 -- Item Usage
 timeBetweenActions = 200
 timeBetweenExActions = 1000
+-- Set false to use timeBetweenActions for ring and necklace equip exhaustion.
+separateRingNecklaceExhaustion = true
+timeBetweenNecklace = 500
+timeBetweenRing = 500
 exhaustPotionMiliSeconds = 1500
 exhaustItemAtUsePotion = true
 
@@ -131,6 +135,17 @@ forgeSystemEnabled = false
 imbuementSystemEnabled = false
 monkVocationEnabled = false
 familiarSystemEnabled = false
+
+-- Configuration to allow mounting in Protection Zone (PZ)
+-- true = allows mounting in PZ, false = disables mounting in PZ (default behavior)
+allowMountInPz = false
+
+-- NPC Lua backend.
+-- "tfs"     loads data/npc/lib/tfs and Lua NPCs from data/npc/lua.
+-- "crystal" loads data/npc/lib/crystal and disables the default TFS Lua NPC folder.
+-- Crystal Lua NPCs are loaded from data/npc/crystal or data/npc/npc_Crystal_Server_15x when present.
+-- XML NPCs remain supported in both modes.
+npcSystem = "tfs"
 
 -- Forge Tier Abilities
 -- Formula: chance = A * tier^2 + B * tier + C

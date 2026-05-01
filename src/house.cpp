@@ -241,7 +241,7 @@ bool House::kickPlayer(Player* player, Player* target) const
 	}
 
 	Position oldPosition = target->getPosition();
-	if (g_game.internalTeleport(target, getEntryPosition()) == RETURNVALUE_NOERROR) {
+	if (g_game.internalTeleport(target, getEntryPosition(), true, 0, CONST_ME_NONE) == RETURNVALUE_NOERROR) {
 		g_game.addMagicEffect(oldPosition, CONST_ME_POFF, target->getInstanceID());
 		g_game.addMagicEffect(getEntryPosition(), CONST_ME_TELEPORT, target->getInstanceID());
 	}
@@ -283,13 +283,15 @@ bool House::transferToDepot() const
 		return false;
 	}
 
+	std::shared_ptr<Player> onlinePlayerRef;
 	Player* onlinePlayer = nullptr;
 	Player tmpPlayer(nullptr);
 	Player* targetPlayer = nullptr;
 	bool needsSave = false;
 
 	if (type == HOUSE_TYPE_NORMAL) {
-		onlinePlayer = g_game.getPlayerByGUID(owner);
+		onlinePlayerRef = g_game.getPlayerByGUID(owner);
+		onlinePlayer = onlinePlayerRef.get();
 		if (onlinePlayer) {
 			targetPlayer = onlinePlayer;
 		} else if (IOLoginData::loadPlayerById(&tmpPlayer, owner)) {
@@ -302,7 +304,8 @@ bool House::transferToDepot() const
 			guild = IOGuild::loadGuild(owner);
 		}
 		if (guild) {
-			onlinePlayer = g_game.getPlayerByGUID(guild->getOwnerGUID());
+			onlinePlayerRef = g_game.getPlayerByGUID(guild->getOwnerGUID());
+			onlinePlayer = onlinePlayerRef.get();
 			if (onlinePlayer) {
 				targetPlayer = onlinePlayer;
 			} else if (IOLoginData::loadPlayerById(&tmpPlayer, guild->getOwnerGUID())) {
@@ -328,6 +331,17 @@ bool House::transferToDepot(Player* player) const
 {
 	if (townId == 0 || owner == 0) {
 		return false;
+	}
+
+	Inbox* targetInbox = player->getInbox(townId);
+	if (!targetInbox) {
+		targetInbox = player->getInbox();
+		if (targetInbox) {
+			LOG_WARN(fmt::format("[House::transferToDepot] Fallback to player default inbox for house {} (townId {})", id, townId));
+		} else {
+			LOG_WARN(fmt::format("[House::transferToDepot] No inbox found for player when transferring house {} items", id));
+			return false;
+		}
 	}
 
 	for (HouseTile* tile : houseTiles) {
@@ -363,7 +377,7 @@ bool House::transferToDepot(Player* player) const
 						if (Container* sub = child->getContainer()) {
 							subContainers.push_back(sub);
 						} else if (child->isPickupable()) {
-							g_game.internalMoveItem(child->getParent(), player->getInbox(), INDEX_WHEREEVER, child.get(), child->getItemCount(), nullptr, FLAG_NOLIMIT);
+							g_game.internalMoveItem(child->getParent(), targetInbox, INDEX_WHEREEVER, child.get(), child->getItemCount(), nullptr, FLAG_NOLIMIT);
 						}
 					}
 				}
@@ -380,14 +394,14 @@ bool House::transferToDepot(Player* player) const
 			}
 
 			if (processedItem->isPickupable()) {
-				g_game.internalMoveItem(processedItem->getParent(), player->getInbox(), INDEX_WHEREEVER, processedItem, processedItem->getItemCount(), nullptr, FLAG_NOLIMIT);
+				g_game.internalMoveItem(processedItem->getParent(), targetInbox, INDEX_WHEREEVER, processedItem, processedItem->getItemCount(), nullptr, FLAG_NOLIMIT);
 			} else if (Container* container = processedItem->getContainer()) {
 				std::vector<std::shared_ptr<Item>> contents;
 				for (const auto& content : container->getItemList()) {
 					contents.push_back(content);
 				}
 				for (const auto& content : contents) {
-					g_game.internalMoveItem(content->getParent(), player->getInbox(), INDEX_WHEREEVER, content.get(), content->getItemCount(), nullptr, FLAG_NOLIMIT);
+					g_game.internalMoveItem(content->getParent(), targetInbox, INDEX_WHEREEVER, content.get(), content->getItemCount(), nullptr, FLAG_NOLIMIT);
 				}
 			}
 		}
@@ -578,7 +592,7 @@ void AccessList::parseList(std::string_view list)
 
 void AccessList::addPlayer(std::string_view name)
 {
-	Player* player = g_game.getPlayerByName(name);
+	auto player = g_game.getPlayerByName(name);
 	if (player) {
 		playerList.insert(player->getGUID());
 	} else {

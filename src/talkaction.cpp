@@ -15,22 +15,15 @@ TalkActions::~TalkActions() { clear(false); }
 
 void TalkActions::clear(bool fromLua)
 {
-	for (auto it = talkActions.begin(); it != talkActions.end();) {
-		if (fromLua == it->second.fromLua) {
-			it = talkActions.erase(it);
-		} else {
-			++it;
-		}
-	}
+	std::erase_if(talkActions, [fromLua](const auto& entry) { return fromLua == entry.second.fromLua; });
 
 	reInitState(fromLua);
 }
 
 LuaScriptInterface& TalkActions::getScriptInterface() { return scriptInterface; }
 
-bool TalkActions::registerLuaEvent(TalkAction* event)
+bool TalkActions::registerLuaEvent(TalkAction_ptr talkAction)
 {
-	TalkAction_ptr talkAction{event};
 	const auto& words = talkAction->stealWordsMap();
 
 	if (words.empty()) {

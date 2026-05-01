@@ -553,6 +553,10 @@ public:
 	bool setAttackedCreature(Creature* creature) override;
 	bool isImmune(CombatType_t type) const override;
 	bool isImmune(ConditionType_t type) const override;
+	void setRootImmunity();
+	bool isRootImmune() const;
+	void setFearImmunity();
+	bool isFearImmune() const;
 	bool hasShield() const;
 	bool isAttackable() const override;
 	static bool lastHitIsPlayer(Creature* lastHitCreature);
@@ -1226,6 +1230,7 @@ private:
 	void setManagerTalkState(size_t index, bool value) { managerTalkState[index] = value; }
 
 	void gainExperience(uint64_t gainExp, const std::shared_ptr<Creature>& source);
+	void updateSkullAfterPzLockEnded();
 
 	void updateInventoryWeight();
 	void reloadEquipmentStats();
@@ -1392,6 +1397,7 @@ private:
 	bool wasMounted = false;
 	bool pzLocked = false;
 	bool isConnecting = false;
+	bool logoutRequested = false;
 	bool addAttackSkillPoint = false;
 	bool randomizeMount = false;
 	bool inventoryAbilities[CONST_SLOT_LAST + 1] = {};
@@ -1403,6 +1409,8 @@ private:
 	uint8_t m_harmony = 0;
 	bool m_serene = false;
 	uint64_t m_serene_cooldown = 0;
+	int64_t rootImmunityEnd = 0;
+	int64_t fearImmunityEnd = 0;
 	VirtueMonk_t m_virtue = VIRTUE_NONE;
 	bool loading = false;
 

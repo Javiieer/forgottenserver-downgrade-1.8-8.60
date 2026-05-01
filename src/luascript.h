@@ -764,27 +764,32 @@ struct OwnedUserdataHeader {
 	void* value;
 	void (*destroy)(OwnedUserdataHeader*) noexcept;
 	void* (*release)(OwnedUserdataHeader*) noexcept;
+	uintptr_t magic;
 };
+
+inline constexpr uintptr_t OwnedUserdataMagic = 0x5446534F574E4544ULL;
 
 template <class T, class ExposedT = T>
 struct OwnedUserdata {
 	ExposedT* value;
 	void (*destroy)(OwnedUserdataHeader*) noexcept;
 	void* (*release)(OwnedUserdataHeader*) noexcept;
+	uintptr_t magic;
 	std::unique_ptr<T> owner;
 
 	explicit OwnedUserdata(std::unique_ptr<T> ptr) noexcept :
 		value(static_cast<ExposedT*>(ptr.get())),
 		destroy([](OwnedUserdataHeader* header) noexcept {
 			auto* userdata = reinterpret_cast<OwnedUserdata<T, ExposedT>*>(header);
-			userdata->owner.reset();
 			userdata->value = nullptr;
+			userdata->owner.reset();
 		}),
 		release([](OwnedUserdataHeader* header) noexcept -> void* {
 			auto* userdata = reinterpret_cast<OwnedUserdata<T, ExposedT>*>(header);
 			userdata->value = nullptr;
 			return userdata->owner.release();
 		}),
+		magic(OwnedUserdataMagic),
 		owner(std::move(ptr))
 	{}
 };
@@ -792,7 +797,7 @@ struct OwnedUserdata {
 inline int deleteOwnedUserdata(lua_State* L)
 {
 	auto* header = static_cast<OwnedUserdataHeader*>(lua_touserdata(L, 1));
-	if (header && header->value) {
+	if (header && header->value && header->magic == OwnedUserdataMagic && header->destroy) {
 		header->destroy(header);
 	}
 	return 0;
@@ -807,7 +812,7 @@ inline T* releaseOwnedUserdata(lua_State* L, int32_t arg)
 	}
 
 	auto* header = static_cast<OwnedUserdataHeader*>(lua_touserdata(L, arg));
-	if (!header || !header->release) {
+	if (!header || header->magic != OwnedUserdataMagic || !header->release) {
 		T* value = *rawUserdata;
 		*rawUserdata = nullptr;
 		return value;
@@ -816,6 +821,12 @@ inline T* releaseOwnedUserdata(lua_State* L, int32_t arg)
 	T* value = *rawUserdata;
 	header->release(header);
 	return value;
+}
+
+template <class T>
+inline std::unique_ptr<T> releaseOwnedUserdataPtr(lua_State* L, int32_t arg)
+{
+	return std::unique_ptr<T>(releaseOwnedUserdata<T>(L, arg));
 }
 
 Creature* getValidatedCreatureUserdata(lua_State* L, int32_t arg);

@@ -127,6 +127,9 @@ CombatType_t Combat::ConditionToDamageType(ConditionType_t type)
 		case CONDITION_CURSED:
 			return COMBAT_DEATHDAMAGE;
 
+		case CONDITION_AGONY:
+			return COMBAT_AGONYDAMAGE;
+
 		default:
 			break;
 	}
@@ -157,6 +160,9 @@ ConditionType_t Combat::DamageToConditionType(CombatType_t type)
 
 		case COMBAT_DEATHDAMAGE:
 			return CONDITION_CURSED;
+
+		case COMBAT_AGONYDAMAGE:
+			return CONDITION_AGONY;
 
 		case COMBAT_PHYSICALDAMAGE:
 			return CONDITION_BLEEDING;
@@ -748,6 +754,7 @@ void Combat::doCombat(Creature* caster, Creature* target) const
 					if (caster == target || !target->isImmune(condition->getType())) {
 						auto conditionCopy = condition->clone();
 						conditionCopy->setParam(CONDITION_PARAM_OWNER, caster->getID());
+						conditionCopy->setPositionParam(CONDITION_PARAM_CASTER_POSITION, caster->getPosition());
 						target->addCombatCondition(std::move(conditionCopy));
 					}
 				}
@@ -833,6 +840,7 @@ void Combat::doCombat(Creature* caster, const Position& position) const
 								auto conditionCopy = condition->clone();
 								if (caster) {
 									conditionCopy->setParam(CONDITION_PARAM_OWNER, caster->getID());
+									conditionCopy->setPositionParam(CONDITION_PARAM_CASTER_POSITION, caster->getPosition());
 								}
 
 								// TODO: infight condition until all aggressive conditions has ended
@@ -954,6 +962,7 @@ void Combat::doTargetCombat(Creature* caster, Creature* target, CombatDamage& da
 					auto conditionCopy = condition->clone();
 					if (caster) {
 						conditionCopy->setParam(CONDITION_PARAM_OWNER, caster->getID());
+						conditionCopy->setPositionParam(CONDITION_PARAM_CASTER_POSITION, caster->getPosition());
 					}
 
 					// TODO: infight condition until all aggressive conditions has ended
@@ -1207,6 +1216,7 @@ void Combat::doAreaCombat(Creature* caster, const Position& position, const Area
 						auto conditionCopy = condition->clone();
 						if (caster) {
 							conditionCopy->setParam(CONDITION_PARAM_OWNER, caster->getID());
+							conditionCopy->setPositionParam(CONDITION_PARAM_CASTER_POSITION, caster->getPosition());
 						}
 
 						// TODO: infight condition until all aggressive conditions has ended
@@ -1598,9 +1608,9 @@ void MagicField::onStepInField(Creature* creature)
 
 			Player* targetPlayer = creature->getPlayer();
 			if (targetPlayer) {
-				Player* attackerPlayer = g_game.getPlayerByID(ownerId);
+				auto attackerPlayer = g_game.getPlayerByID(ownerId);
 				if (attackerPlayer) {
-					if (Combat::isProtected(attackerPlayer, targetPlayer)) {
+					if (Combat::isProtected(attackerPlayer.get(), targetPlayer)) {
 						harmfulField = false;
 					}
 				}
@@ -1611,6 +1621,10 @@ void MagicField::onStepInField(Creature* creature)
 			}
 		}
 
-		creature->addCondition(std::move(conditionCopy));
+		if (conditionCopy->getType() == CONDITION_AGONY) {
+			creature->addCombatCondition(std::move(conditionCopy));
+		} else {
+			creature->addCondition(std::move(conditionCopy));
+		}
 	}
 }

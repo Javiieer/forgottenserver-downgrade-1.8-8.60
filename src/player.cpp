@@ -525,10 +525,9 @@ uint16_t Player::getClientIcons() const
 	if (const Tile* playerTile = getTile(); playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 		icons |= ICON_PIGEON;
 
-		/* Don't show ICON_SWORDS if player is in protection zone.
 		if (hasBitSet(ICON_SWORDS, icons)) {
-		    icons &= ~ICON_SWORDS;
-		}*/
+			icons &= ~ICON_SWORDS;
+		}
 	}
 
 	// Game client debugs with 10 or more icons
@@ -948,9 +947,6 @@ DepotLocker* Player::getDepotLocker(uint32_t depotId)
 	it = depotLockerMap.emplace(depotId, std::make_shared<DepotLocker>(ITEM_LOCKER)).first;
 	it->second->setDepotId(static_cast<uint16_t>(depotId));
 
-	DepotChest* chest = getDepotChest(depotId, true);
-	it->second->internalAddThing(chest);
-
 	bool hasInbox = false;
 	for (const auto& item : it->second->getItemList()) {
 		if (item->getID() == ITEM_INBOX) {
@@ -965,6 +961,9 @@ DepotLocker* Player::getDepotLocker(uint32_t depotId)
 			it->second->internalAddThing(inbox.get());
 		}
 	}
+
+	DepotChest* chest = getDepotChest(depotId, true);
+	it->second->internalAddThing(chest);
 
 	return it->second.get();
 }
@@ -1030,22 +1029,32 @@ void Player::sendPing()
 		setAttackedCreature(nullptr);
 	}
 
+	const bool inProtectionZone = getZone() == ZONE_PROTECTION;
+	const bool inNoLogoutZone = getTile() && getTile()->hasFlag(TILESTATE_NOLOGOUT);
+
 	int32_t noPongKickTime = vocation->getNoPongKickTime();
-	if (pzLocked && noPongKickTime < 60000) {
+	if ((pzLocked || inProtectionZone) && noPongKickTime < 60000) {
 		noPongKickTime = 60000;
 	}
 
 	if (noPongTime >= noPongKickTime) {
-		if (isConnecting || getTile()->hasFlag(TILESTATE_NOLOGOUT)) {
+		if (isConnecting || inNoLogoutZone || logoutRequested) {
 			return;
 		}
 
+		logoutRequested = true;
 		if (!g_creatureEvents->playerLogout(this)) {
+			logoutRequested = false;
 			return;
 		}
 
 		if (client) {
-			client->logout(true, true);
+			if (client->protocol()) {
+				client->logout(true, true);
+			} else {
+				client->clear();
+				g_game.removeCreature(this, true);
+			}
 		} else {
 			g_game.removeCreature(this, true);
 		}
@@ -1356,7 +1365,7 @@ void Player::onChangeZone(ZoneType_t zone)
 			uint32_t gain = ConfigManager::getInteger(ConfigManager::STAMINA_PZ_GAIN);
 			sendTextMessage(MESSAGE_STATUS_SMALL, fmt::format("You're in the protection zone. Every {} minutes, gain {} stamina.", delay, gain));
 		}
-		if (!group->access && isMounted()) {
+		if (!group->access && isMounted() && !ConfigManager::getBoolean(ConfigManager::ALLOW_MOUNT_IN_PZ)) {
 			dismount();
 			g_game.internalCreatureChangeOutfit(this, defaultOutfit);
 			wasMounted = true;
@@ -1832,21 +1841,13 @@ void Player::onThink(uint32_t interval)
 		ghostModeStartTime = 0;
 	}
 
-	int64_t timeNow = OTSYS_TIME();
 	if (protectionTime > 0) {
 		--protectionTime;
 	}
 
-	if (timeNow - lastPing >= 5000) {
-		lastPing = timeNow;
-		if (client) {
-			client->sendPing();
-		}
-	}
-
-	// If there is no response from the client for more than 7 seconds (loss of connection), the attack stops.
-	if (timeNow - lastPong >= 7000 && !attackedCreature.expired()) {
-		setAttackedCreature(nullptr);
+	sendPing();
+	if (isRemoved()) {
+		return;
 	}
 
 	if (client && client->isWaitingForUpdate()) {
@@ -1854,6 +1855,7 @@ void Player::onThink(uint32_t interval)
 		client->setUpdateStatus(false);
 	}
 
+	const int64_t timeNow = OTSYS_TIME();
 	if (client && !client->isOTCv8 && getIP() != 0 && getBoolean(ConfigManager::DLL_CHECK_KICK)) {
 		int64_t checkInterval = getInteger(ConfigManager::DLL_CHECK_KICK_TIME) * 1000;
 		if (timeNow - lastDllCheck >= checkInterval) {
@@ -2421,6 +2423,54 @@ void Player::death(Creature* lastHitCreature)
 	loginPosition = town->getTemplePosition();
 	setInstanceID(0);
 
+	auto refreshDeathPingWindow = [this]() {
+		const int64_t timeNow = OTSYS_TIME();
+		lastPing = timeNow;
+		lastPong = timeNow;
+	};
+
+	auto removeDeathConditions = [this]() {
+		bool removedInFight = false;
+
+		auto it = conditions.begin();
+		while (it != conditions.end()) {
+			const ConditionType_t type = (*it)->getType();
+			if (type != CONDITION_INFIGHT && (!(*it)->isPersistent() || (*it)->isConstant())) {
+				++it;
+				continue;
+			}
+
+			auto owned = std::move(*it);
+			it = conditions.erase(it);
+
+			if (type == CONDITION_INFIGHT) {
+				removedInFight = true;
+			}
+
+			owned->endCondition(this);
+			onEndCondition(type);
+		}
+
+		if (!removedInFight && pzLocked) {
+			pzLocked = false;
+			onIdleStatus();
+			clearAttacked();
+
+			if (getSkull() != SKULL_RED && getSkull() != SKULL_BLACK) {
+				setSkull(SKULL_NONE);
+			}
+
+			sendIcons();
+		}
+	};
+
+	auto clearDeathCombatState = [this]() {
+		setAttackedCreature(nullptr);
+		setFollowCreature(nullptr);
+		stopWalk();
+		clearAttacked();
+	};
+
 	int32_t storedTotalReduceSkillLoss = totalReduceSkillLoss;
 
 	if (skillLoss) {
@@ -2493,10 +2543,6 @@ void Player::death(Creature* lastHitCreature)
 			blessings.reset();
 		}
 
-		sendStats();
-		sendSkills();
-		sendReLoginWindow();
-
 		if (getSkull() == SKULL_BLACK) {
 			health = 40;
 			mana = 0;
@@ -2505,52 +2551,21 @@ void Player::death(Creature* lastHitCreature)
 			mana = manaMax;
 		}
 
-		{
-			std::vector<Condition*> toRemove;
-			for (const auto& condition : conditions) {
-				if (condition->isPersistent() && !condition->isConstant()) {
-					toRemove.push_back(condition.get());
-				}
-			}
-			for (Condition* condition : toRemove) {
-				auto it = std::find_if(conditions.begin(), conditions.end(),
-				                        [condition](const auto& c) { return c.get() == condition; });
-				if (it == conditions.end()) {
-					continue;
-				}
-				auto owned = std::move(*it);
-				conditions.erase(it);
-
-				owned->endCondition(this);
-				onEndCondition(owned->getType());
-			}
-		}
+		removeDeathConditions();
+		clearDeathCombatState();
+		refreshDeathPingWindow();
+		sendStats();
+		sendSkills();
+		sendReLoginWindow();
+		g_creatureEvents->playerLogout(this);
 	} else {
 		setSkillLoss(true);
 
-		// Same snapshot pattern for the second death-branch loop.
-		{
-			std::vector<Condition*> toRemove;
-			for (const auto& condition : conditions) {
-				if (condition->isPersistent() && !condition->isConstant()) {
-					toRemove.push_back(condition.get());
-				}
-			}
-			for (Condition* condition : toRemove) {
-				auto it = std::find_if(conditions.begin(), conditions.end(),
-				                        [condition](const auto& c) { return c.get() == condition; });
-				if (it == conditions.end()) {
-					continue;
-				}
-				auto owned = std::move(*it);
-				conditions.erase(it);
-				owned->endCondition(this);
-				onEndCondition(owned->getType());
-			}
-		}
-
 		health = healthMax;
+		removeDeathConditions();
+		clearDeathCombatState();
 		g_game.internalTeleport(this, getTemplePosition(), true);
+		refreshDeathPingWindow();
 		g_game.addCreatureHealth(this);
 		refreshWorldView();
 		onThink(EVENT_CREATURE_THINK_INTERVAL);
@@ -2644,15 +2659,15 @@ void Player::removeList()
 {
 	g_game.removePlayer(this);
 
-	for (const auto& it : g_game.getPlayers()) {
-		it.second->notifyStatusChange(this, VIPSTATUS_OFFLINE);
+	for (const auto& player : g_game.getPlayers()) {
+		player->notifyStatusChange(this, VIPSTATUS_OFFLINE);
 	}
 }
 
 void Player::addList()
 {
-	for (const auto& it : g_game.getPlayers()) {
-		it.second->notifyStatusChange(this, VIPSTATUS_ONLINE);
+	for (const auto& player : g_game.getPlayers()) {
+		player->notifyStatusChange(this, VIPSTATUS_ONLINE);
 	}
 
 	g_game.addPlayer(this);
@@ -3931,12 +3946,24 @@ void Player::onAddCombatCondition(ConditionType_t type)
 			sendTextMessage(MESSAGE_STATUS_DEFAULT, "You are paralyzed.");
 			break;
 
+		case CONDITION_ROOTED:
+			sendTextMessage(MESSAGE_STATUS_DEFAULT, "You are rooted.");
+			break;
+
+		case CONDITION_FEARED:
+			sendTextMessage(MESSAGE_STATUS_DEFAULT, "You are feared.");
+			break;
+
 		case CONDITION_DRUNK:
 			sendTextMessage(MESSAGE_STATUS_DEFAULT, "You are drunk.");
 			break;
 
 		case CONDITION_CURSED:
 			sendTextMessage(MESSAGE_STATUS_DEFAULT, "You are cursed.");
+			break;
+
+		case CONDITION_AGONY:
+			sendTextMessage(MESSAGE_STATUS_DEFAULT, "You are agonyed.");
 			break;
 
 		case CONDITION_FREEZING:
@@ -3965,9 +3992,7 @@ void Player::onEndCondition(ConditionType_t type)
 		pzLocked = false;
 		clearAttacked();
 
-		if (getSkull() != SKULL_RED && getSkull() != SKULL_BLACK) {
-			setSkull(SKULL_NONE);
-		}
+		updateSkullAfterPzLockEnded();
 	}
 
 	sendIcons();
@@ -4156,10 +4181,8 @@ bool Player::onKilledCreature(const std::shared_ptr<Creature>& target, bool last
 			}
 
 			if (lastHit && hasCondition(CONDITION_INFIGHT)) {
-				pzLocked = true;
-				auto condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT,
-				                                            getInteger(ConfigManager::WHITE_SKULL_TIME) * 1000, 0);
-				addCondition(std::move(condition));
+				addInFightTicks(true);
+				sendIcons();
 			}
 		}
 	}
@@ -4216,7 +4239,33 @@ bool Player::isImmune(ConditionType_t type) const
 	if (hasFlag(PlayerFlag_CannotBeAttacked)) {
 		return true;
 	}
+	if (type == CONDITION_ROOTED && isRootImmune()) {
+		return true;
+	}
+	if (type == CONDITION_FEARED && isFearImmune()) {
+		return true;
+	}
 	return Creature::isImmune(type);
+}
+
+void Player::setRootImmunity()
+{
+	rootImmunityEnd = OTSYS_TIME() + 30000;
+}
+
+bool Player::isRootImmune() const
+{
+	return OTSYS_TIME() <= rootImmunityEnd;
+}
+
+void Player::setFearImmunity()
+{
+	fearImmunityEnd = OTSYS_TIME() + 11000;
+}
+
+bool Player::isFearImmune() const
+{
+	return OTSYS_TIME() <= fearImmunityEnd;
 }
 
 bool Player::isAttackable() const
@@ -4344,13 +4393,7 @@ void Player::addOutfit(uint16_t lookType, uint8_t addons)
 
 bool Player::removeOutfit(uint16_t lookType)
 {
-	for (const auto& [outfit, _] : outfits) {
-		if (outfit == lookType) {
-			outfits.erase(outfit);
-			return true;
-		}
-	}
-	return false;
+	return outfits.erase(lookType) != 0;
 }
 
 bool Player::removeOutfitAddon(uint16_t lookType, uint8_t addons)
@@ -4500,6 +4543,24 @@ void Player::removeAttacked(const Player* attacked)
 
 void Player::clearAttacked() { attackedSet.clear(); }
 
+void Player::updateSkullAfterPzLockEnded()
+{
+	const Skulls_t currentSkull = getSkull();
+
+	if (currentSkull == SKULL_YELLOW || currentSkull == SKULL_WHITE) {
+		setSkull(SKULL_NONE);
+		sendIcons();
+		return;
+	}
+
+	if (currentSkull == SKULL_RED) {
+		if (skullTicks < 1) {
+			setSkull(SKULL_NONE);
+			sendIcons();
+		}
+	}
+}
+
 void Player::addUnjustifiedDead(const Player* attacked)
 {
 	if (hasFlag(PlayerFlag_NotGainInFight) || attacked == this || g_game.getWorldType() == WORLD_TYPE_PVP_ENFORCED) {
@@ -4514,15 +4575,32 @@ void Player::addUnjustifiedDead(const Player* attacked)
 		if (getInteger(ConfigManager::KILLS_TO_BLACK) != 0 &&
 		    skullTicks > (getInteger(ConfigManager::KILLS_TO_BLACK) - 1) * getInteger(ConfigManager::FRAG_TIME)) {
 			setSkull(SKULL_BLACK);
+			sendIcons();
 		} else if (getSkull() != SKULL_RED && getInteger(ConfigManager::KILLS_TO_RED) != 0 &&
 		           skullTicks > (getInteger(ConfigManager::KILLS_TO_RED) - 1) * getInteger(ConfigManager::FRAG_TIME)) {
 			setSkull(SKULL_RED);
+			sendIcons();
 		}
 	}
 }
 
 void Player::checkSkullTicks(int64_t ticks)
 {
+	if (skullTicks < 1) {
+		if (skull == SKULL_RED && !pzLocked) {
+			setSkull(SKULL_NONE);
+			sendIcons();
+		} else if (skull == SKULL_BLACK && !hasCondition(CONDITION_INFIGHT)) {
+			setSkull(SKULL_NONE);
+			sendIcons();
+		}
+		return;
+	}
+
+	if (getZone() == ZONE_PROTECTION) {
+		return;
+	}
+
 	int64_t newTicks = skullTicks - ticks;
 	if (newTicks < 0) {
 		skullTicks = 0;
@@ -4530,8 +4608,14 @@ void Player::checkSkullTicks(int64_t ticks)
 		skullTicks = newTicks;
 	}
 
-	if ((skull == SKULL_RED || skull == SKULL_BLACK) && skullTicks < 1 && !hasCondition(CONDITION_INFIGHT)) {
+	if (skull == SKULL_RED && skullTicks < 1) {
+		if (!pzLocked) {
+			setSkull(SKULL_NONE);
+			sendIcons();
+		}
+	} else if (skull == SKULL_BLACK && skullTicks < 1 && !hasCondition(CONDITION_INFIGHT)) {
 		setSkull(SKULL_NONE);
+		sendIcons();
 	}
 }
 
@@ -4833,7 +4917,8 @@ bool Player::toggleMount(bool mount)
 			return false;
 		}
 
-		if (!group->access && getTile() && getTile()->hasFlag(TILESTATE_PROTECTIONZONE)) {
+		if (!group->access && getTile() && getTile()->hasFlag(TILESTATE_PROTECTIONZONE)
+						   && !ConfigManager::getBoolean(ConfigManager::ALLOW_MOUNT_IN_PZ)) {
 			sendCancelMessage(RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE);
 			return false;
 		}
@@ -5094,6 +5179,11 @@ void Player::sendAutoLootWindow() const
 
 void Player::parseAutoLootWindow(const std::string& text)
 {
+	if (text.size() > 4096) {
+		sendTextMessage(MESSAGE_STATUS_CONSOLE_RED, "AutoLoot: configuration is too long.");
+		return;
+	}
+
 	if (!ConfigManager::getBoolean(ConfigManager::AUTOLOOT_ENABLED)) {
 		sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE, "AutoLoot is currently disabled.");
 		return;
@@ -5411,6 +5501,10 @@ void Player::lootCorpse(Container* container)
 		if (ret == RETURNVALUE_NOERROR) {
 			continue;
 		}
+		if (ret == RETURNVALUE_NOTENOUGHCAPACITY) {
+			sendTextMessage(MESSAGE_STATUS_SMALL, "You do not have enough capacity to autoloot this item.");
+			continue;
+		}
 
 		if (usedGoldPouch && fallbackDestination != primaryDestination) {
 			ret = g_game.internalMoveItem(container, fallbackDestination, INDEX_WHEREEVER, item,
@@ -5419,16 +5513,27 @@ void Player::lootCorpse(Container* container)
 				sendTextMessage(MESSAGE_STATUS_SMALL, "Your gold pouch is full. Item sent to store inbox.");
 				continue;
 			}
+			if (ret == RETURNVALUE_NOTENOUGHCAPACITY) {
+				sendTextMessage(MESSAGE_STATUS_SMALL, "You do not have enough capacity to autoloot this item.");
+				continue;
+			}
 		}
 
 		auto backpackItem = getInventoryItem(CONST_SLOT_BACKPACK);
 		auto backpack = backpackItem ? backpackItem->getContainer() : nullptr;
-		if (backpack && g_game.internalMoveItem(container, backpack, INDEX_WHEREEVER, item, item->getItemCount(),
-		                                        nullptr) == RETURNVALUE_NOERROR) {
-			sendTextMessage(MESSAGE_STATUS_SMALL, "Your store inbox is full. Item sent to backpack.");
-		} else {
-			sendTextMessage(MESSAGE_STATUS_SMALL, "Your store inbox is full. Item left in corpse.");
+		if (backpack) {
+			ret = g_game.internalMoveItem(container, backpack, INDEX_WHEREEVER, item, item->getItemCount(), nullptr);
+			if (ret == RETURNVALUE_NOERROR) {
+				sendTextMessage(MESSAGE_STATUS_SMALL, "Your store inbox is full. Item sent to backpack.");
+				continue;
+			}
+			if (ret == RETURNVALUE_NOTENOUGHCAPACITY) {
+				sendTextMessage(MESSAGE_STATUS_SMALL, "You do not have enough capacity to autoloot this item.");
+				continue;
+			}
 		}
+		
+		sendTextMessage(MESSAGE_STATUS_SMALL, "Your containers are full. Item left in corpse.");
 	}
 
 	if (autolootConfig.goldEnabled) {

@@ -8,6 +8,7 @@
 #include "actions.h"
 #include "bed.h"
 #include "container.h"
+#include "inbox.h"
 #include "events.h"
 #include "game.h"
 #include "house.h"
@@ -50,6 +51,8 @@ std::shared_ptr<Item> Item::CreateItem(const uint16_t type, uint16_t count /*= 0
 		return std::make_shared<RewardChest>(type);
 	} else if (it.id >= ITEM_DEPOT_BOX_1 && it.id <= ITEM_DEPOT_BOX_17) {
 		return std::make_shared<DepotBox>(type);
+	} else if (it.id == ITEM_INBOX) {
+		return std::make_shared<Inbox>(type);
 	} else if (it.isContainer()) {
 		return std::make_shared<Container>(type);
 	} else if (it.isTeleport()) {
@@ -1595,18 +1598,19 @@ bool Item::addImbuement(std::shared_ptr<Imbuement>  imbuement, bool created)
 bool Item::removeImbuement(std::shared_ptr<Imbuement> imbuement, bool decayed)
 {
 	// item:removeImbuement(imbuement) -- returns true if it found and removed the imbuement
-	for (auto imbue : imbuements) {
-		if (imbue == imbuement) {
-			Player* player = const_cast<Player*>(getHoldingPlayer());
-			if (player && isEquipped()) {
-				player->removeImbuementEffect(imbue);
-			}
-			g_events->eventItemOnRemoveImbue(this, imbuement->imbuetype, decayed);
-			imbuements.erase(std::remove(imbuements.begin(), imbuements.end(), imbue), imbuements.end());
-			return true;
-		}
+	auto it = std::find(imbuements.begin(), imbuements.end(), imbuement);
+	if (it == imbuements.end()) {
+		return false;
 	}
-	return false;
+
+	auto imbue = *it;
+	Player* player = const_cast<Player*>(getHoldingPlayer());
+	if (player && isEquipped()) {
+		player->removeImbuementEffect(imbue);
+	}
+	g_events->eventItemOnRemoveImbue(this, imbuement->imbuetype, decayed);
+	imbuements.erase(std::remove(imbuements.begin(), imbuements.end(), imbue), imbuements.end());
+	return true;
 }
 
 std::vector<std::shared_ptr<Imbuement>>& Item::getImbuements() {
